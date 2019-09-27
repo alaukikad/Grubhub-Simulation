@@ -3,31 +3,50 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
+import store from '../../js/store/index';
+import PropTypes from 'prop-types';
+import { connect } from "react-redux";
 
 class Rprofile extends Component {
-    constructor(){
-        super();
-        this.state = {  
-            email : "",
-            fullname: "",
-            contact: "",
-            address : "",
-            city : "",
-            zipcode : "",
-            restaurant : "" 
-        }
+    constructor(props){
+            super(props);
+            this.state = {  
+                email : "",
+                fullname: "",
+                contact: "",
+                address : "",
+                city : "",
+                zipcode : "",
+                restaurant : "" 
+            }
+
     }  
     //get the books data from backend  
     componentDidMount(){
 
+
+        store.subscribe(() => {
+            // When state will be updated(in our case, when items will be fetched), 
+            // we will update local component state and force component to rerender 
+            // with new data.
+            this.setState({
+              email: store.getState().username
+            });
+          });
+        console.log(this.props.propData);
+        console.log(cookie.load("email"));
+        console.log("Blehhh");
         const data = {
-            email : cookie.load('email')
+            email : cookie.load("email")
         }
+        console.log(data);
+
+
         //set the with credentials to true
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.get('http://localhost:3001/rprofile',data)
+        axios.post('http://localhost:3001/rprofile',data)
                 .then((response) => {
                     
                    
@@ -43,14 +62,19 @@ class Rprofile extends Component {
                 
             });
     }
+    
 
     render(){
       
+       // let redirectProf = <Li to= "/rupdateprofile"/>;
+        
+
         //if not logged in go to login page
         let redirectVar = null;
         if(!cookie.load('cookie')){
             redirectVar = <Redirect to= "/rlogin"/>
         }
+
         return(
             <div>
                 {redirectVar}
@@ -97,12 +121,22 @@ class Rprofile extends Component {
                                 </tr>
                             </tbody>
                         </table>
-                        <button link="" class="btn btn-primary">Update</button>
+                        <a class="btn btn-primary" href="/rupdateprofile">Update</a>
                 </div> 
                
             </div> 
         )
     }
 }
+
+
+  function mapStateToProps(state,propData) {
+    return {
+      propData: state.username
+    };
+  }
+
+  const RProfile = connect(mapStateToProps, null)(Rprofile);
+  export default RProfile;
 //export Home Component
-export default Rprofile;
+//export default Rprofile;

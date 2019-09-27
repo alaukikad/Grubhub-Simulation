@@ -6,6 +6,7 @@ import {Redirect} from 'react-router';
 import { connect } from "react-redux";
 import { checkRestaurant } from "../../js/actions/index";
 import PropTypes from 'prop-types';
+import store from '../../js/store/index';
 
 //Define a Login Component
 class Rlogin extends Component{
@@ -53,6 +54,17 @@ class Rlogin extends Component{
         }
 
         this.props.checkRestaurant(data);
+        store.subscribe(() => {
+            // When state will be updated(in our case, when items will be fetched), 
+            // we will update local component state and force component to rerender 
+            // with new data.
+            console.log(cookie.load('cookie'));
+            console.log(this.props.propData);
+            this.setState({
+              username: store.getState().username
+            });
+          });
+         
 
  
     }
@@ -91,15 +103,22 @@ class Rlogin extends Component{
         )
     }
 }
+
 function mapDispatchToProps(dispatch) {
     return {
       checkRestaurant: user => dispatch(checkRestaurant(user))
     };
   }
 
-Rlogin.propTypes = {
-    checkRestaurant: PropTypes.func.isRequired
-  };
+  function mapStateToProps(state,propData) {
+    return {
+      propData: state.username
+    };
+  }
 
-  const RLoginForm = connect(null, mapDispatchToProps)(Rlogin);
+// Rlogin.propTypes = {
+//     checkRestaurant: PropTypes.func.isRequired
+//   };
+
+  const RLoginForm = connect(mapStateToProps, mapDispatchToProps)(Rlogin);
   export default RLoginForm;

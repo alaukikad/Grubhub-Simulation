@@ -1,4 +1,4 @@
-import { RLOGIN,RSIGNUP,CLOGIN,CSIGNUP } from "../constants/action-types";
+import { RLOGIN,RSIGNUP,CLOGIN,CSIGNUP,RUPDATE,CUPDATE } from "../constants/action-types";
 
 export function emptyUser({ dispatch }) {
   return function(next) {
@@ -41,6 +41,15 @@ export function emptyUser({ dispatch }) {
         if (foundWord) {
           return dispatch({ type:"EMPTY_FIELDS" });
         }
+      }
+
+      if (action.type === RUPDATE) {
+        console.log("I am in middleware");
+        
+      }
+      if (action.type === CUPDATE) {
+        console.log("I am in middleware");
+        
       }
 
       return next(action);

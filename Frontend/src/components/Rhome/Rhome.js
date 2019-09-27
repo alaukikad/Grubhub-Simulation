@@ -3,6 +3,7 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
+import PropTypes from 'prop-types';
 
 class Rhome extends Component {
     constructor(){
@@ -36,27 +37,23 @@ class Rhome extends Component {
         //if not logged in go to login page
         let redirectVar = null;
         if(!cookie.load('cookie')){
-            redirectVar = <Redirect to= "/login"/>
+            redirectVar = <Redirect to= "/rlogin"/>
         }
         return(
             <div>
                 {redirectVar}
                 <div class="container">
-                    <h2>List of All Books</h2>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Book ID</th>
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                </tr>
-                            </thead>
-                            
-                        </table>
+                    <h2>Restaurant Home</h2>
+                        
                 </div> 
             </div> 
         )
     }
+}
+
+Rhome.propTypes = {
+    username: PropTypes.object.isRequired,
+    password: PropTypes.func.isRequired
 }
 //export Home Component
 export default Rhome;

@@ -46,9 +46,6 @@ app.use(function(req, res, next) {
   });
 
 
-
-
-
 app.post('/login',function(req,res){
   var found=false;
       con.query("SELECT email,password from users", function(err,result,fields){
@@ -68,6 +65,7 @@ app.post('/login',function(req,res){
             {
             console.log("alalsk");
             res.cookie("cookie","customer",{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie("email",req.body.username,{maxAge: 900000, httpOnly: false, path : '/'});
             req.session.user = req.body.username;
             msg="Login Successful"  
             }else{
@@ -80,10 +78,41 @@ app.post('/login',function(req,res){
 })
 
 
-  app.get('/rprofile',function(req,res){
+app.post('/cprofileupdate',function(req,res){
+  console.log("Inside Customer Profile");  
+  console.log(req.body);   
+        var sql = "UPDATE users SET name=?,address=?,contact=?,image=? WHERE email='"+req.body.pemail+"'";
+        con.query(sql,[req.body.fullname,req.body.address,req.body.contact,req.body.oimage] ,function (err, result) {
+          if (err) throw err;
+          console.log(req.body.oimage);
+          console.log(result.affectedRows + " record(s) updated");
+          res.end("Details Updated!");
+        });
+  })
+
+  
+
+
+
+app.post('/rprofileupdate',function(req,res){
+  console.log("Inside Restaurant Profile");  
+  console.log(req.body);   
+        var sql = "UPDATE restaurants SET name=?,address=?,contact=?,city=?,zipcode=?,oname=?,oimage=?,rimage=? WHERE email='"+req.body.pemail+"'";
+        con.query(sql,[req.body.restaurant,req.body.address,req.body.contact,req.body.city,req.body.zipcode,req.body.fullname,req.body.oimage,req.body.rimage] ,function (err, result) {
+          if (err) throw err;
+          
+          console.log(result.affectedRows + " record(s) updated");
+          res.end("Details Updated!");
+        });
+  })
+
+
+
+  app.post('/rprofile',function(req,res){
     console.log("Inside Restaurant Profile");  
+    console.log(req.body);
     var found=false;
-        con.query("SELECT * from restaurants where email='joe@joe.com'", function(err,result,fields){
+        con.query("SELECT * from restaurants where email='"+req.body.email+"'", function(err,result,fields){
           if(err) throw err;
          
   res.writeHead(200,{
@@ -96,15 +125,34 @@ app.post('/login',function(req,res){
     })
 
 
+
+
+    app.post('/cprofile',function(req,res){
+      console.log("Inside Restaurant Profile");  
+      console.log(req.body);
+      var found=false;
+          con.query("SELECT * from users where email='"+req.body.email+"'", function(err,result,fields){
+            if(err) throw err;
+           
+    res.writeHead(200,{
+        'Content-Type' : 'application/json'
+    });
+    console.log("User : ",JSON.stringify(result[0]));
+    res.end(JSON.stringify(result[0]));
+        });
+  
+      })
+
+
 app.post('/rlogin',function(req,res){
   var found=false;
       con.query("SELECT email,password from restaurants", function(err,result,fields){
         if(err) throw err;
 
         var msg="";
-       // console.log(result);
-        //console.log(req.body.username);
-        //console.log(req.body.password);
+       console.log(result);
+        console.log(req.body.username);
+        console.log(req.body.password);
         //console.log(found);
         
         let cust_data = result;
@@ -116,11 +164,13 @@ app.post('/rlogin',function(req,res){
             passwordInDb=element.password;
             };
         });
+          console.log(passwordInDb);
           bcrypt.compare(req.body.password, passwordInDb, function(err, resp) {
             if (resp) 
             {
             console.log("kdsl");
-            res.cookie("cookie","customer",{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie("email",req.body.username,{maxAge: 900000, httpOnly: false, path : '/'});
             req.session.user = req.body.username;
             msg="Login Successful"  
            }else{
@@ -154,17 +204,20 @@ app.post('/rregister',function(req,res){
       }else{
         bcrypt.hash(req.body.password, saltRounds, function(err, hash) 
                     {
-                        var queryString1 = "INSERT INTO restaurant (name,email,password,oname,contact, address,city,zipcode) VALUES (?,?,?,?,?)";    
-                        con.query(queryString1,[req.body.restaurant,req.body.email,req.body.password,req.body.fullname,req.body.contact,req.body.address,req.body.city,req.body.zipcode],function(error, results){
+                        var queryString1 = "INSERT INTO restaurants (name,email,password,oname,contact, address,city,zipcode) VALUES (?,?,?,?,?,?,?,?)";    
+                        con.query(queryString1,[req.body.restaurant,req.body.email,hash,req.body.fullname,req.body.contact,req.body.address,req.body.city,req.body.zipcode],function(error, results){
                             if (error){
-                                console.log("alaukikaa");
+                                console.log(error);
                                 msg="error";
+                                res.end(msg);
                             }else {
-                              res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
-                              msg="Restaurant Added Successfully!" ;                }
-        
+                              res.cookie('cookie',"restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
+                              res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
+                              console.log("Howdyyy");
+                              msg="Restaurant Added Successfully!" ;  
+                              res.end(msg);            
+                              }
                         });
-        
                     });
         ///
         // var sql = "INSERT INTO restaurants (name,email,password,oname,contact, address,city,zipcode) VALUES ('"+req.body.restaurant+"', '"+req.body.email+"', '"+req.body.password+"','"+req.body.fullname+"', "+req.body.contact+", '"+req.body.address+"','"+req.body.city+"', "+req.body.zipcode+")";
@@ -174,7 +227,7 @@ app.post('/rregister',function(req,res){
         //   }else{
         //   msg="Restaurant Added Successfully!"
         //   console.log(msg);
-          res.end(msg);
+          //res.end(msg);
         }
       });
   });
@@ -206,17 +259,21 @@ app.post('/cregister',function(req,res){
                             if (error) 
                             {
                                 console.log("alaukika:P");
-        console.log(error);
+                                console.log(error);
                                 msg="error";
+        res.end(msg);
                             }     
                             else      
                             {       
+          console.log("I am blehh");
                               res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
+                              res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
         //                       res.writeHead(200, {      
         //                             "Content-Type": "text/plain"      
         //                           });
                                   //res.end("Restaurant Added Successfully!");                   
                             msg="User Added Successfully!";
+                            res.end(msg);
                             }       
                         });       
                     });
@@ -228,7 +285,7 @@ app.post('/cregister',function(req,res){
         //   }else{
         //   msg="Restaurant Added Successfully!"
         //   console.log(msg);
-        res.end(msg);
+       
         }
       });  
   });

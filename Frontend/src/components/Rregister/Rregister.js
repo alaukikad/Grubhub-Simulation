@@ -5,7 +5,7 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import { connect } from "react-redux";
 import { registerRestaurant } from "../../js/actions/index";
-
+import store from '../../js/store/index';
 
 
 //Define a Login Component
@@ -23,7 +23,8 @@ class Rregister extends Component{
             address : "",
             city : "",
             zipcode : "",
-            restaurant : "" 
+            restaurant : "",
+            username : "" 
         }
         //Bind the handlers to this class
         this.emailChangeHandler = this.emailChangeHandler.bind(this);
@@ -37,11 +38,19 @@ class Rregister extends Component{
         this.submitForm = this.submitForm.bind(this);
     }
     //Call the Will Mount to set the auth Flag to false
-  /*  componentWillMount(){
+   componentWillMount(){
+    store.subscribe(() => {
+        // When state will be updated(in our case, when items will be fetched), 
+        // we will update local component state and force component to rerender 
+        // with new data.
+        console.log(cookie.load('cookie'));
+        console.log(this.props.propData);
         this.setState({
-            authFlag : false
-        })
-    }*/
+          username: store.getState().username
+        });
+      });
+
+    }
 
 
     //email change handler to update state variable with the text entered by the user
@@ -124,6 +133,16 @@ if(this.restaurant.value=="" || this.email.value=="" ||this.fullname.value=="" |
 alert("Please fill all Fields!");
 }else{
     this.props.registerRestaurant(data);
+    store.subscribe(() => {
+        // When state will be updated(in our case, when items will be fetched), 
+        // we will update local component state and force component to rerender 
+        // with new data.
+        console.log(cookie.load('cookie'));
+        console.log(this.props.propData);
+        this.setState({
+          username: store.getState().username
+        });
+      });
         }
     }
 
@@ -131,7 +150,7 @@ alert("Please fill all Fields!");
         //redirect based on successful login
         let redirectVar = null;
         if(cookie.load('cookie')){
-            redirectVar = <Redirect to= "/home"/>
+            redirectVar = <Redirect to= "/rhome"/>
         }
         return(
             <div>
@@ -190,6 +209,11 @@ function mapDispatchToProps(dispatch) {
       registerRestaurant: user => dispatch(registerRestaurant(user))
     };
   }
-  
-  const RegisterRest = connect(null, mapDispatchToProps)(Rregister);
+  function mapStateToProps(state,propData) {
+    return {
+      propData: state.username
+    };
+  }
+
+  const RegisterRest = connect(mapStateToProps, mapDispatchToProps)(Rregister);
   export default RegisterRest;

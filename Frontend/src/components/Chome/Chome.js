@@ -40,7 +40,7 @@ class Chome extends Component {
             <div>
                 {redirectVar}
                 <div class="container">
-                    <h2>List of All Books</h2>
+                    <h2>Customer Home</h2>
                         
                 </div> 
             </div> 

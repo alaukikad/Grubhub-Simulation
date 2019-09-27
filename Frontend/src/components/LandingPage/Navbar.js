@@ -32,7 +32,7 @@ class Navbar extends Component {
             navLogin = (
                 <ul class="nav navbar-nav navbar-right">
                     <li><Link to="/rprofile" ><span class="glyphicon glyphicon-user"></span>Profile</Link></li>
-                        <li><Link to="/rprofile" onClick = {this.handleLogout}><span class="glyphicon glyphicon-log-in"></span>Logout</Link></li>
+                        <li><Link to="/rlogin" onClick = {this.handleLogout}><span class="glyphicon glyphicon-log-in"></span>Logout</Link></li>
                 </ul>
             );
         }
@@ -53,16 +53,16 @@ class Navbar extends Component {
             );
         }
         let redirectVar = null;
-        if(cookie.load('cookie')=="customer"){
-            redirectVar = <Redirect to="/chome"/>
-        }
-        if(cookie.load('cookie')=="restaurant"){
-            redirectVar = <Redirect to="/rhome"/>
-        }
-        if(!cookie.load('cookie')){
-            console.log("I am here")
-           // redirectVar = <Redirect to="/login"/>
-        }
+        // if(cookie.load('cookie')=="customer"){
+        //     redirectVar = <Redirect to="/chome"/>
+        // }
+        // if(cookie.load('cookie')=="restaurant"){
+        //     redirectVar = <Redirect to="/rhome"/>
+        // }
+        // if(!cookie.load('cookie')){
+        //     console.log("I am here")
+        //    // redirectVar = <Redirect to="/login"/>
+        // }
         return(
             <div>
                 {redirectVar}

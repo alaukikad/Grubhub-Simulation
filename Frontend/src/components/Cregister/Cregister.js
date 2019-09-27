@@ -5,7 +5,7 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import { connect } from "react-redux";
 import { registerUser } from "../../js/actions/index";
-
+import store from '../../js/store/index';
 
 //Define a Login Component
 class Cregister extends Component{
@@ -19,7 +19,8 @@ class Cregister extends Component{
             password : "",
             fullname: "",
             contact: "",
-            address : "" 
+            address : "",
+            username : "" 
         }
         //Bind the handlers to this class
         this.emailChangeHandler = this.emailChangeHandler.bind(this);
@@ -89,6 +90,17 @@ class Cregister extends Component{
             alert("Please fill all Fields!");
             }else{
             this.props.registerUser(data);
+
+            store.subscribe(() => {
+                // When state will be updated(in our case, when items will be fetched), 
+                // we will update local component state and force component to rerender 
+                // with new data.
+                console.log(cookie.load('cookie'));
+                console.log(this.props.propData);
+                this.setState({
+                  username: store.getState().username
+                });
+              });
             }
   
         
@@ -149,6 +161,10 @@ function mapDispatchToProps(dispatch) {
       registerUser: user => dispatch(registerUser(user))
     };
   }
-  
-  const RegisterForm = connect(null, mapDispatchToProps)(Cregister);
+  function mapStateToProps(state,propData) {
+    return {
+      propData: state.username
+    };
+  }
+  const RegisterForm = connect(mapStateToProps, mapDispatchToProps)(Cregister);
   export default RegisterForm;

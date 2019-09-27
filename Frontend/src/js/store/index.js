@@ -14,6 +14,4 @@ import { emptyUser } from "../middleware/index";
     // console.log("store");
     // console.log(rr);
     
-    
-
-    export default store;
+export default store;

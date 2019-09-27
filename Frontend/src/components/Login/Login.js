@@ -5,6 +5,7 @@ import {Redirect} from 'react-router';
 import { connect } from "react-redux";
 import { checkUser } from "../../js/actions/index";
 import PropTypes from 'prop-types';
+import store from '../../js/store/index';
 
 let redirectVar = null;
 
@@ -54,6 +55,18 @@ class Login extends Component{
             password : this.state.password
         }
         this.props.checkUser(data);
+        store.subscribe(() => {
+            // When state will be updated(in our case, when items will be fetched), 
+            // we will update local component state and force component to rerender 
+            // with new data.
+            console.log(cookie.load('cookie'));
+            console.log(this.props.propData);
+            this.setState({
+              username: store.getState().username
+            });
+          });
+
+
         console.log("jasghf");
 
        console.log(cookie.load('cookie'));
@@ -104,8 +117,14 @@ function mapDispatchToProps(dispatch) {
     };
   }
   
+  function mapStateToProps(state,propData) {
+    return {
+      propData: state.username
+    };
+  }
+  
   Login.propTypes = {
     checkUser: PropTypes.func.isRequired
   };
-  const LoginForm = connect(null, mapDispatchToProps)(Login);
+  const LoginForm = connect(mapStateToProps, mapDispatchToProps)(Login);
   export default LoginForm;
