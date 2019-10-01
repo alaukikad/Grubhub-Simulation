@@ -23,15 +23,15 @@ class Cprofile extends Component {
     componentDidMount(){
 
 
-        store.subscribe(() => {
-            // When state will be updated(in our case, when items will be fetched), 
-            // we will update local component state and force component to rerender 
-            // with new data.
-            this.setState({
-              email: store.getState().username
-            });
-          });
-        console.log(this.props.propData);
+        // store.subscribe(() => {
+        //     // When state will be updated(in our case, when items will be fetched), 
+        //     // we will update local component state and force component to rerender 
+        //     // with new data.
+        //     this.setState({
+        //       email: store.getState().username
+        //     });
+        //   });
+        // console.log(this.props.propData);
         console.log(cookie.load("email"));
         console.log("Blehhh");
         const data = {
@@ -104,7 +104,7 @@ class Cprofile extends Component {
                                 </tr>
                             </tbody>
                         </table>
-                        <a class="btn btn-primary" href="/cupdateprofile">Update</a>
+                        <a class="btn btn-primary2" href="/cupdateprofile">Update</a>
                 </div> 
                
             </div> 
@@ -113,13 +113,13 @@ class Cprofile extends Component {
 }
 
 
-  function mapStateToProps(state,propData) {
-    return {
-      propData: state.username
-    };
-  }
+//   function mapStateToProps(state,propData) {
+//     return {
+//       propData: state.username
+//     };
+//   }
 
-  const CProfile = connect(mapStateToProps, null)(Cprofile);
-  export default CProfile;
+//   const CProfile = connect(mapStateToProps, null)(Cprofile);
+//   export default CProfile;
 //export Home Component
-//export default Rprofile;
+export default Cprofile;

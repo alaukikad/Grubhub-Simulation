@@ -3,6 +3,8 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
+import SearchFood from '../SeachFood/SearchFood';
+
 
 class Chome extends Component {
     constructor(props){
@@ -40,8 +42,7 @@ class Chome extends Component {
             <div>
                 {redirectVar}
                 <div class="container">
-                    <h2>Customer Home</h2>
-                        
+                <SearchFood/>     
                 </div> 
             </div> 
         )

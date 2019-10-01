@@ -3,10 +3,10 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import { connect } from "react-redux";
-import { checkRestaurant } from "../../js/actions/index";
-import PropTypes from 'prop-types';
-import store from '../../js/store/index';
+//import { connect } from "react-redux";
+//import { checkRestaurant } from "../../js/actions/index";
+//import PropTypes from 'prop-types';
+//import store from '../../js/store/index';
 
 //Define a Login Component
 class Rlogin extends Component{
@@ -53,7 +53,7 @@ class Rlogin extends Component{
             password : this.state.password
         }
 
-        this.props.checkRestaurant(data);
+      /*  this.props.checkRestaurant(data);
         store.subscribe(() => {
             // When state will be updated(in our case, when items will be fetched), 
             // we will update local component state and force component to rerender 
@@ -63,7 +63,24 @@ class Rlogin extends Component{
             this.setState({
               username: store.getState().username
             });
-          });
+          });*/
+
+          //set the with credentials to true
+        axios.defaults.withCredentials = true;
+        //make a post request with the user data
+        axios.post('http://localhost:3001/rlogin',data)
+        .then(response => {
+          alert(response.data);
+          console.log("Status Code : ",response.data);
+          if(response.data.trim() == "Login Successful"){
+              console.log("Hello peps I'm in R login reducer");
+              this.setState({
+                  authFlag: true 
+              })
+          }else{
+                  alert("Invalid Credentials!!")
+          }  
+      })
          
 
  
@@ -104,21 +121,21 @@ class Rlogin extends Component{
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-      checkRestaurant: user => dispatch(checkRestaurant(user))
-    };
-  }
+// function mapDispatchToProps(dispatch) {
+//     return {
+//       checkRestaurant: user => dispatch(checkRestaurant(user))
+//     };
+//   }
 
-  function mapStateToProps(state,propData) {
-    return {
-      propData: state.username
-    };
-  }
+//   function mapStateToProps(state,propData) {
+//     return {
+//       propData: state.username
+//     };
+//   }
 
 // Rlogin.propTypes = {
 //     checkRestaurant: PropTypes.func.isRequired
 //   };
 
-  const RLoginForm = connect(mapStateToProps, mapDispatchToProps)(Rlogin);
-  export default RLoginForm;
+ // const RLoginForm = connect(mapStateToProps, mapDispatchToProps)(Rlogin);
+  export default Rlogin;

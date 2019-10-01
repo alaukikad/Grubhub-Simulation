@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import '../../App.css';
-
+import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import { connect } from "react-redux";
-import { registerUser } from "../../js/actions/index";
-import store from '../../js/store/index';
+//import { connect } from "react-redux";
+//import { registerUser } from "../../js/actions/index";
+
 
 //Define a Login Component
 class Cregister extends Component{
@@ -20,7 +20,8 @@ class Cregister extends Component{
             fullname: "",
             contact: "",
             address : "",
-            username : "" 
+            username : "",
+            authFlag : "" 
         }
         //Bind the handlers to this class
         this.emailChangeHandler = this.emailChangeHandler.bind(this);
@@ -89,18 +90,35 @@ class Cregister extends Component{
             if( this.email.value=="" ||this.fullname.value=="" ||this.contact.value=="" ||this.address.value==""||this.password.value==""  ){
             alert("Please fill all Fields!");
             }else{
-            this.props.registerUser(data);
 
-            store.subscribe(() => {
-                // When state will be updated(in our case, when items will be fetched), 
-                // we will update local component state and force component to rerender 
-                // with new data.
-                console.log(cookie.load('cookie'));
-                console.log(this.props.propData);
-                this.setState({
-                  username: store.getState().username
-                });
-              });
+
+
+            //set the with credentials to true
+            axios.defaults.withCredentials = true;
+            //make a post request with the user data
+            axios.post('http://localhost:3001/cregister',data)
+            .then(response => {
+            alert(response.data);
+            console.log("Status Code blyi : ",response.status);
+            if(response.data.trim() == "User Added Successfully!"){
+            console.log("Hello New User!");
+            this.setState({
+              authFlag : true
+            })
+            }
+        })
+            // this.props.registerUser(data);
+
+            // store.subscribe(() => {
+            //     // When state will be updated(in our case, when items will be fetched), 
+            //     // we will update local component state and force component to rerender 
+            //     // with new data.
+            //     console.log(cookie.load('cookie'));
+            //     console.log(this.props.propData);
+            //     this.setState({
+            //       username: store.getState().username
+            //     });
+            //   });
             }
   
         
@@ -142,7 +160,7 @@ class Cregister extends Component{
                             <div class="form-group">
                                 <input ref={(ref)=> this.password=ref} onChange = {this.passwordChangeHandler} type="password" class="form-control" name="password" placeholder="Password"/>
                             </div>
-                            <button onClick = {this.submitForm} class="btn btn-primary" type="submit">Register</button>                 
+                            <button onClick = {this.submitForm} class="btn btn-primary2" type="submit">Register</button>                 
                             <div style={{paddingTop:"10px"}}>
                             <a href="/login" >Already a member? Login</a>
                             </div>
@@ -156,15 +174,17 @@ class Cregister extends Component{
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-      registerUser: user => dispatch(registerUser(user))
-    };
-  }
-  function mapStateToProps(state,propData) {
-    return {
-      propData: state.username
-    };
-  }
-  const RegisterForm = connect(mapStateToProps, mapDispatchToProps)(Cregister);
-  export default RegisterForm;
+// function mapDispatchToProps(dispatch) {
+//     return {
+//       registerUser: user => dispatch(registerUser(user))
+//     };
+//   }
+//   function mapStateToProps(state,propData) {
+//     return {
+//       propData: state.username
+//     };
+//   }
+//   const RegisterForm = connect(mapStateToProps, mapDispatchToProps)(Cregister);
+//   export default RegisterForm;
+
+export default Cregister;

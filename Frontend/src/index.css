@@ -3,6 +3,6 @@ body {
   padding: 0;
   font-family: sans-serif;
   background-image: url("./bg.jpg");
-  background-repeat:no-repeat;
+  background-repeat:repeat-y;
   background-size:100%;
 }

@@ -11,6 +11,9 @@ import Chome from './Chome/Chome';
 import Cprofile from './Cprofile/Cprofile';
 import Rupdateprofile from './Rupdateprofile/Rupdateprofile'
 import Cupdateprofile from './Cupdateprofile /Cupdateprofile'
+import Rmenu from './Rmenu/Rmenu';
+
+
 
 //Create a Main Component
 class Main extends Component {
@@ -29,6 +32,7 @@ class Main extends Component {
               <Route path="/cprofile" component={Cprofile}/>
               <Route path="/rupdateprofile" component={Rupdateprofile}/>
               <Route path="/cupdateprofile" component={Cupdateprofile}/>
+              <Route path="/rmenu" component={Rmenu}/>
             </div>
         )
     }

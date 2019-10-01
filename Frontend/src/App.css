@@ -24,19 +24,41 @@
 }
 .login-form{ text-align:center;}
 .forgot a {
-  color: #777777;
+  color: #2e2e2e;
   font-size: 14px;
   text-decoration: underline;
 }
-.login-form  .btn.btn-primary {
-  background: #f0ad4e none repeat scroll 0 0;
-  border-color: #f0ad4e;
+
+.btn.btn-primary {
+  background: #f53d3d none repeat scroll 0 0;
+  border-color: #f53d3d;
   color: #ffffff;
   font-size: 14px;
   width: 100%;
   height: 50px;
   line-height: 50px;
   padding: 0;
+}
+
+.btn.btn-primary2 {
+  background: #f53d3d none repeat scroll 0 0;
+  border-color: #f53d3d;
+  color: #ffffff;
+  font-size: 14px;
+  width: 20%;
+  
+  height: 50px;
+  line-height: 50px;
+  padding: 0;
+}
+.btn.btn-primary3 {
+  background: #f53d3d none repeat scroll 0 0;
+  border-color: #f53d3d;
+  color: #ffffff;
+  font-size: 14px;
+  width: 20%;
+  height: 30%;
+
 }
 .forgot {
   text-align: left; margin-bottom:30px;
@@ -51,10 +73,12 @@
  
 .div-left{
   padding: 10px;
+  padding-inline-start: 10%;
  
   }
  .div-right{
-  padding: 10px;
+  padding: 20px;
+  padding-inline-start: 5%;
 
   }
   .outer-right{
@@ -87,3 +111,36 @@
   margin-right: 5%;
   border-radius:12px;
   }
+
+
+  .div-left{
+    padding: 10px;
+    padding-inline-start: 10%;
+   
+    }
+   .div-right{
+    padding: 20px;
+    padding-inline-start: 5%;
+  
+    }
+    
+    .split {
+    height: 80%;
+    width: 50%;
+    position: fixed;
+    z-index: 1;
+    overflow-x: hidden;
+    background-color: #ffffff;
+    }
+    .left2 {
+    left: 0;
+    margin-left:5%;
+    margin-bottom:10%;
+    border-radius:12px;
+    }
+    .right2 {
+    right: 0;
+    margin-bottom: 10%;
+    margin-right: 5%;
+    border-radius:12px;
+    }

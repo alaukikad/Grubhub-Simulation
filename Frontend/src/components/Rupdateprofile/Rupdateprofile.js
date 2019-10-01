@@ -3,9 +3,11 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import store from '../../js/store/index';
-import { connect } from "react-redux";
-import { updateRProfile } from "../../js/actions/index";
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
+//import store from '../../js/store/index';
+//import { connect } from "react-redux";
+//import { updateRProfile } from "../../js/actions/index";
 
 class Rupdateprofile extends Component {
     constructor(props){
@@ -20,38 +22,52 @@ class Rupdateprofile extends Component {
                 restaurant : "",
                 rimage : "",
                 oimage : "",
-                username : ""
+                username : "",
+                cuisine : "",
+                options : ""
 
             }
         
-            store.subscribe(() => {
-              // When state will be updated(in our case, when items will be fetched), 
-              // we will update local component state and force component to rerender 
-              // with new data.
-              this.setState({
-                email: store.getState().email
-              });
-            });
+            // store.subscribe(() => {
+            //   // When state will be updated(in our case, when items will be fetched), 
+            //   // we will update local component state and force component to rerender 
+            //   // with new data.
+            //   this.setState({
+            //     email: store.getState().email
+            //   });
+            // });
           
         this.onChangeHandler = this.onChangeHandler.bind(this);
         this.submitProfile = this.submitProfile.bind(this);
     }  
     //get the books data from backend  
     componentDidMount(){
+        // store.subscribe(() => {
+        //     // When state will be updated(in our case, when items will be fetched), 
+        //     // we will update local component state and force component to rerender 
+        //     // with new data.
+        //     console.log(cookie.load('cookie'));
+        //     console.log(this.props.propData);
+        //     this.setState({
+        //       username: store.getState().username
+        //     });
+        //   });
+        // console.log(this.props.propData);
+        
+//set the with credentials to true
+axios.defaults.withCredentials = true;
 
+//make a post request with the user data
+axios.get('http://localhost:3001/getCuisine')
+        .then((response) => {
+            
+        this.setState({
+        options : response.data
+        });
+        
+    });
 
-        store.subscribe(() => {
-            // When state will be updated(in our case, when items will be fetched), 
-            // we will update local component state and force component to rerender 
-            // with new data.
-            console.log(cookie.load('cookie'));
-            console.log(this.props.propData);
-            this.setState({
-              username: store.getState().username
-            });
-          });
-        console.log(this.props.propData);
-        console.log.apply(cookie.load("email"))
+        console.log(cookie.load("email"))
         const data = {
             email : cookie.load("email")
         }
@@ -67,11 +83,19 @@ class Rupdateprofile extends Component {
                 contact: response.data.contact,
                 address : response.data.address,
                 city : response.data.city,
+                cuisine : response.data.cuisine,
                 zipcode : response.data.zipcode,
                 restaurant : response.data.name
                 });
                 
             });
+    }
+    cuisineChangeHandler = (value) => {
+        console.log(value.value);
+        this.setState({
+            cuisine : value.value
+        })
+        
     }
 
 
@@ -94,11 +118,24 @@ class Rupdateprofile extends Component {
             zipcode : this.state.zipcode,
             restaurant : this.state.restaurant,
             rimage : this.state.rimage,
-            oimage : this.state.oimage   
+            oimage : this.state.oimage,
+            cuisine : this.state.cuisine   
         }
 
-        this.props.updateRProfile(data);
-
+       // this.props.updateRProfile(data);
+       console.log("processing in reducer")
+       //set the with credentials to true
+       axios.defaults.withCredentials = true;
+       //make a post request with the user data
+       axios.post('http://localhost:3001/rprofileupdate',data)
+       .then(response => {
+       alert(response.data);
+       console.log("Status Code : ",response.data);
+       if(response.data.trim() == "Details Updated!"){
+           console.log("Hello peps I'm in R profile updatereducer");
+         }
+           
+   })
  
     }
     render(){
@@ -134,6 +171,10 @@ class Rupdateprofile extends Component {
                                     <td><input value={this.state.fullname} name="fullname" onChange={this.onChangeHandler}></input></td>
                                 </tr>
                                 <tr>
+                                    <td>Cuisine</td>
+                            <td><Dropdown ref={ref => (this.cuisine = ref)}  options={this.state.options}  onChange={this.cuisineChangeHandler} name="cuisine" placeholder="Cuisine"  value={this.state.cuisine}  /></td>
+                            </tr>
+                                <tr>
                                     <td>Address</td>
                                     <td><input value={this.state.address} name="address" onChange={this.onChangeHandler}></input></td>
                                 </tr>
@@ -163,7 +204,7 @@ class Rupdateprofile extends Component {
                                 </tr>
                             </tbody>
                         </table>
-                        <button type="submit" onClick={this.submitProfile} class="btn btn-primary">Submit</button>
+                        <button type="submit" onClick={this.submitProfile} class="btn btn-primary2">Submit</button>
                         </form>
                 </div> 
               
@@ -173,23 +214,23 @@ class Rupdateprofile extends Component {
     }
 }
 //export Home Component
-//export default Rupdateprofile;
+export default Rupdateprofile;
 
 
-function mapStateToProps(state,propData) {
-    return {
-      propData: state.username
-    };
-  }
+// function mapStateToProps(state,propData) {
+//     return {
+//       propData: state.username
+//     };
+//   }
 
-  function mapDispatchToProps(dispatch) {
-    return {
-      updateRProfile: user => dispatch(updateRProfile(user))
-    };
-  }
+//   function mapDispatchToProps(dispatch) {
+//     return {
+//       updateRProfile: user => dispatch(updateRProfile(user))
+//     };
+//   }
 
-  const RUpdateProfile = connect(mapStateToProps, mapDispatchToProps)(Rupdateprofile);
-  export default RUpdateProfile;
+//   const RUpdateProfile = connect(mapStateToProps, mapDispatchToProps)(Rupdateprofile);
+//   export default RUpdateProfile;
 
   
 

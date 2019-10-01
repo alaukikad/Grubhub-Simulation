@@ -3,10 +3,12 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import { connect } from "react-redux";
-import { registerRestaurant } from "../../js/actions/index";
-import store from '../../js/store/index';
-
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
+//import { connect } from "react-redux";
+//import { registerRestaurant } from "../../js/actions/index";
+//import store from '../../js/store/index';
+ 
 
 //Define a Login Component
 class Rregister extends Component{
@@ -24,7 +26,10 @@ class Rregister extends Component{
             city : "",
             zipcode : "",
             restaurant : "",
-            username : "" 
+            username : "",
+            authFlag : false,
+            cuisine :"",
+            options : []
         }
         //Bind the handlers to this class
         this.emailChangeHandler = this.emailChangeHandler.bind(this);
@@ -34,21 +39,35 @@ class Rregister extends Component{
         this.addressChangeHandler = this.addressChangeHandler.bind(this);
         this.restaurantChangeHandler = this.restaurantChangeHandler.bind(this);
         this.cityChangeHandler = this.cityChangeHandler.bind(this);
+        this.cuisineChangeHandler= this.cuisineChangeHandler.bind(this);
         this.zipcodeChangeHandler = this.zipcodeChangeHandler.bind(this);
         this.submitForm = this.submitForm.bind(this);
     }
     //Call the Will Mount to set the auth Flag to false
    componentWillMount(){
-    store.subscribe(() => {
-        // When state will be updated(in our case, when items will be fetched), 
-        // we will update local component state and force component to rerender 
-        // with new data.
-        console.log(cookie.load('cookie'));
-        console.log(this.props.propData);
-        this.setState({
-          username: store.getState().username
-        });
-      });
+    // store.subscribe(() => {
+    //     // When state will be updated(in our case, when items will be fetched), 
+    //     // we will update local component state and force component to rerender 
+    //     // with new data.
+    //     console.log(cookie.load('cookie'));
+    //     console.log(this.props.propData);
+    //     this.setState({
+    //       username: store.getState().username
+    //     });
+    //   });
+
+     //set the with credentials to true
+     axios.defaults.withCredentials = true;
+
+     //make a post request with the user data
+     axios.get('http://localhost:3001/getCuisine')
+             .then((response) => {
+                 
+             this.setState({
+             options : response.data
+             });
+             
+         });
 
     }
 
@@ -102,6 +121,13 @@ class Rregister extends Component{
         })
     }
 
+    cuisineChangeHandler = (value) => {
+        console.log(value.value);
+        this.setState({
+            cuisine : value.value
+        })
+        
+    }
 
 
 
@@ -126,23 +152,41 @@ class Rregister extends Component{
             address : this.state.address,
             city : this.state.city,
             zipcode : this.state.zipcode,
-            restaurant : this.state.restaurant
+            restaurant : this.state.restaurant,
+            cuisine : this.state.cuisine
         }
 
 if(this.restaurant.value=="" || this.email.value=="" ||this.fullname.value=="" ||this.contact.value=="" ||this.address.value==""||this.city.value=="" ||this.password.value=="" ||this.zipcode.value==""  ){
 alert("Please fill all Fields!");
 }else{
-    this.props.registerRestaurant(data);
-    store.subscribe(() => {
-        // When state will be updated(in our case, when items will be fetched), 
-        // we will update local component state and force component to rerender 
-        // with new data.
-        console.log(cookie.load('cookie'));
-        console.log(this.props.propData);
-        this.setState({
-          username: store.getState().username
-        });
-      });
+    // this.props.registerRestaurant(data);
+    // store.subscribe(() => {
+    //     // When state will be updated(in our case, when items will be fetched), 
+    //     // we will update local component state and force component to rerender 
+    //     // with new data.
+    //     console.log(cookie.load('cookie'));
+    //     console.log(this.props.propData);
+    //     this.setState({
+    //       username: store.getState().username
+    //     });
+    //   });
+
+
+     //set the with credentials to true
+     axios.defaults.withCredentials = true;
+     //make a post request with the user data
+ 
+     axios.post('http://localhost:3001/rregister',data)
+     .then(response => {
+         alert(response.data);
+         console.log("Status Code : ",response.status);
+         if(response.data.trim() == "Restaurant Added Successfully!"){
+           console.log("Hello New Restaurant");
+            this.setState({
+                authFlag: true
+            })
+         }
+     })
         }
     }
 
@@ -170,6 +214,9 @@ alert("Please fill all Fields!");
                             
                             <div class="form-group">
                                 <input ref={(ref)=> this.fullname=ref} onChange = {this.fullnameChangeHandler} type="text" class="form-control" name="fullname" placeholder="Owner's Full Name" required/>
+                            </div>
+                            <div class="form-group">
+                            <Dropdown ref={ref => (this.cuisine = ref)}  options={this.state.options}  onChange={this.cuisineChangeHandler} name="cuisine" placeholder="Cuisine"  value={this.state.cuisine}  />
                             </div>
                             <div class="form-group">
                                 <input ref={(ref)=> this.email=ref} onChange = {this.emailChangeHandler} type="email" class="form-control" name="email" placeholder="Email" required/>
@@ -204,16 +251,18 @@ alert("Please fill all Fields!");
 }
 
 
-function mapDispatchToProps(dispatch) {
-    return {
-      registerRestaurant: user => dispatch(registerRestaurant(user))
-    };
-  }
-  function mapStateToProps(state,propData) {
-    return {
-      propData: state.username
-    };
-  }
+// function mapDispatchToProps(dispatch) {
+//     return {
+//       registerRestaurant: user => dispatch(registerRestaurant(user))
+//     };
+//   }
+//   function mapStateToProps(state,propData) {
+//     return {
+//       propData: state.username
+//     };
+//   }
 
-  const RegisterRest = connect(mapStateToProps, mapDispatchToProps)(Rregister);
-  export default RegisterRest;
+//   const RegisterRest = connect(mapStateToProps, mapDispatchToProps)(Rregister);
+//   export default RegisterRest;
+
+export default Rregister;

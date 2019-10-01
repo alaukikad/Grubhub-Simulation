@@ -3,9 +3,10 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import store from '../../js/store/index';
-import { connect } from "react-redux";
-import { updateCProfile } from "../../js/actions/index";
+//import store from '../../js/store/index';
+//import { connect } from "react-redux";
+//import { updateCProfile } from "../../js/actions/index";
+
 
 class Cupdateprofile extends Component {
     constructor(props){
@@ -19,14 +20,14 @@ class Cupdateprofile extends Component {
                 bufferBase64 : ""
             }
         
-            store.subscribe(() => {
-              // When state will be updated(in our case, when items will be fetched), 
-              // we will update local component state and force component to rerender 
-              // with new data.
-              this.setState({
-                email: store.getState().email
-              });
-            });
+            // store.subscribe(() => {
+            //   // When state will be updated(in our case, when items will be fetched), 
+            //   // we will update local component state and force component to rerender 
+            //   // with new data.
+            //   this.setState({
+            //     email: store.getState().email
+            //   });
+            // });
           
         this.onChangeHandler = this.onChangeHandler.bind(this);
         this.submitProfile = this.submitProfile.bind(this);
@@ -101,7 +102,20 @@ class Cupdateprofile extends Component {
             oimage : this.state.oimage   
         }
 
-        this.props.updateCProfile(data);
+       // this.props.updateCProfile(data);
+
+       axios.defaults.withCredentials = true;
+       //make a post request with the user data
+       axios.post('http://localhost:3001/cprofileupdate',data)
+       .then(response => {
+       alert(response.data);
+       console.log("Status Code : ",response.data);
+       if(response.data.trim() == "Details Updated!"){
+           console.log("Hello peps I'm in C profile updatereducer");
+           
+         }
+           
+   })
 
  
     }
@@ -153,7 +167,7 @@ class Cupdateprofile extends Component {
                                 </tr>
                             </tbody>
                         </table>
-                        <button type="submit" onClick={this.submitProfile} class="btn btn-primary">Submit</button>
+                        <button type="submit" onClick={this.submitProfile} class="btn btn-primary2">Submit</button>
                         </form>
                 </div> 
               
@@ -163,23 +177,23 @@ class Cupdateprofile extends Component {
     }
 }
 //export Home Component
-//export default Rupdateprofile;
+export default Cupdateprofile;
 
 
-function mapStateToProps(state,propData) {
-    return {
-      propData: state.username
-    };
-  }
+// function mapStateToProps(state,propData) {
+//     return {
+//       propData: state.username
+//     };
+//   }
 
-  function mapDispatchToProps(dispatch) {
-    return {
-      updateCProfile: user => dispatch(updateCProfile(user))
-    };
-  }
+//   function mapDispatchToProps(dispatch) {
+//     return {
+//       updateCProfile: user => dispatch(updateCProfile(user))
+//     };
+//   }
 
-  const CUpdateProfile = connect(mapStateToProps, mapDispatchToProps)(Cupdateprofile);
-  export default CUpdateProfile;
+//   const CUpdateProfile = connect(mapStateToProps, mapDispatchToProps)(Cupdateprofile);
+//   export default CUpdateProfile;
 
   
 

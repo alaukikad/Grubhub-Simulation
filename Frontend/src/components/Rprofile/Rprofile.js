@@ -17,7 +17,8 @@ class Rprofile extends Component {
                 address : "",
                 city : "",
                 zipcode : "",
-                restaurant : "" 
+                restaurant : "",
+                cuisine : "" 
             }
 
     }  
@@ -25,15 +26,15 @@ class Rprofile extends Component {
     componentDidMount(){
 
 
-        store.subscribe(() => {
-            // When state will be updated(in our case, when items will be fetched), 
-            // we will update local component state and force component to rerender 
-            // with new data.
-            this.setState({
-              email: store.getState().username
-            });
-          });
-        console.log(this.props.propData);
+        // store.subscribe(() => {
+        //     // When state will be updated(in our case, when items will be fetched), 
+        //     // we will update local component state and force component to rerender 
+        //     // with new data.
+        //     this.setState({
+        //       email: store.getState().username
+        //     });
+        //   });
+        // console.log(this.props.propData);
         console.log(cookie.load("email"));
         console.log("Blehhh");
         const data = {
@@ -51,13 +52,15 @@ class Rprofile extends Component {
                     
                    
                 this.setState({
+                    cuisine : response.data.cuisine,
                 email : response.data.email,
                 fullname: response.data.oname,
                 contact: response.data.contact,
                 address : response.data.address,
                 city : response.data.city,
                 zipcode : response.data.zipcode,
-                restaurant : response.data.name
+                restaurant : response.data.name,
+            
                 });
                 
             });
@@ -100,6 +103,10 @@ class Rprofile extends Component {
                                     <td>{this.state.fullname}</td>
                                 </tr>
                                 <tr>
+                                    <td>Cuisine</td>
+                                    <td>{this.state.cuisine}</td>
+                                </tr>
+                                <tr>
                                     <td>Address</td>
                                     <td>{this.state.address}</td>
                                 </tr>
@@ -121,7 +128,7 @@ class Rprofile extends Component {
                                 </tr>
                             </tbody>
                         </table>
-                        <a class="btn btn-primary" href="/rupdateprofile">Update</a>
+                        <a class="btn btn-primary2" href="/rupdateprofile">Update</a>
                 </div> 
                
             </div> 
@@ -130,13 +137,13 @@ class Rprofile extends Component {
 }
 
 
-  function mapStateToProps(state,propData) {
-    return {
-      propData: state.username
-    };
-  }
+//   function mapStateToProps(state,propData) {
+//     return {
+//       propData: state.username
+//     };
+//   }
 
-  const RProfile = connect(mapStateToProps, null)(Rprofile);
-  export default RProfile;
-//export Home Component
-//export default Rprofile;
+//   const RProfile = connect(mapStateToProps, null)(Rprofile);
+//   export default RProfile;
+// //export Home Component
+export default Rprofile;

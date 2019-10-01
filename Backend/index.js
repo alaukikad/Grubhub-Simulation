@@ -48,15 +48,17 @@ app.use(function(req, res, next) {
 
 app.post('/login',function(req,res){
   var found=false;
-      con.query("SELECT email,password from users", function(err,result,fields){
+      con.query("SELECT email,password,name from users", function(err,result,fields){
         if(err) throw err;
         var msg="";
+        var uname;
         let cust_data = result;
         let flag = false;
         let passwordInDb="";
         cust_data.forEach(element => {
         if(req.body.username==element.email){
           flag=true;
+          uname=element.name;
           passwordInDb=element.password;
           }
         });
@@ -65,6 +67,7 @@ app.post('/login',function(req,res){
             {
             console.log("alalsk");
             res.cookie("cookie","customer",{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie("user",uname,{maxAge: 900000, httpOnly: false, path : '/'});
             res.cookie("email",req.body.username,{maxAge: 900000, httpOnly: false, path : '/'});
             req.session.user = req.body.username;
             msg="Login Successful"  
@@ -90,22 +93,46 @@ app.post('/cprofileupdate',function(req,res){
         });
   })
 
+
+  app.post('/edititem',function(req,res){
+    console.log("Inside Edit Item ");  
+    console.log(req.body);   
+
+    con.query("SELECT sid from sections where name='"+req.body.section+"'", function(err,result1,fields){
+      if(err) throw err;
+
+          var sql = "UPDATE menu SET itemname=?,image=?,description=?,price=?,sid=? WHERE mid="+req.body.id;
+          con.query(sql,[req.body.itemname,req.body.image,req.body.description,req.body.price,result1[0]] ,function (err, result) {
+            if (err) throw err;
+            console.log(result.affectedRows + " record(s) updated");
+            res.end("Details Updated!");
+          });
+        })
+    })
+
+    app.post('/getitem',function(req,res){
+      console.log("Inside Get Item ");  
+      console.log(req.body);   
+  
+      con.query("SELECT * from menu NATURAL JOIN sections where mid="+req.body.id, function(err,result,fields){
+        if(err) throw err;
+              res.end(JSON.stringify(result[0]));
+            });
+    })
+      
   
 
-
-
 app.post('/rprofileupdate',function(req,res){
-  console.log("Inside Restaurant Profile");  
+  console.log("Inside Restaurant Profile1");  
   console.log(req.body);   
-        var sql = "UPDATE restaurants SET name=?,address=?,contact=?,city=?,zipcode=?,oname=?,oimage=?,rimage=? WHERE email='"+req.body.pemail+"'";
-        con.query(sql,[req.body.restaurant,req.body.address,req.body.contact,req.body.city,req.body.zipcode,req.body.fullname,req.body.oimage,req.body.rimage] ,function (err, result) {
+        var sql = "UPDATE restaurants SET name=?,address=?,contact=?,city=?,zipcode=?,oname=?,oimage=?,rimage=?,cuisine=? WHERE email='"+req.body.pemail+"'";
+        con.query(sql,[req.body.restaurant,req.body.address,req.body.contact,req.body.city,req.body.zipcode,req.body.fullname,req.body.oimage,req.body.rimage,req.body.cuisine] ,function (err, result) {
           if (err) throw err;
           
           console.log(result.affectedRows + " record(s) updated");
           res.end("Details Updated!");
         });
   })
-
 
 
   app.post('/rprofile',function(req,res){
@@ -115,16 +142,144 @@ app.post('/rprofileupdate',function(req,res){
         con.query("SELECT * from restaurants where email='"+req.body.email+"'", function(err,result,fields){
           if(err) throw err;
          
-  res.writeHead(200,{
-      'Content-Type' : 'application/json'
-  });
-  console.log("Restaurant : ",JSON.stringify(result[0]));
-  res.end(JSON.stringify(result[0]));
+        res.writeHead(200,{
+          'Content-Type' : 'application/json'
+        });
+        console.log("Restaurant : ",JSON.stringify(result[0]));
+        res.end(JSON.stringify(result[0]));
       });
-
     })
 
 
+    app.post('/deleteitem',function(req,res){
+      console.log("Inside Delete Item ");  
+      console.log(req.body);
+      var msg="";
+          con.query("DELETE from menu where mid="+req.body.id, function(err,result,fields){
+            if(err) throw err;
+           
+          res.writeHead(200,{
+            'Content-Type' : 'application/json'
+          });
+
+          res.end("Item Deleted");
+        });
+      })
+
+
+    app.get('/getCuisine',function(req,res){
+      console.log("Inside Cuisine ");  
+      var cuisineList=[];
+      
+          con.query("SELECT * from cuisines", function(err,result,fields){
+            if(err) throw err;
+           
+            for(var i=0;i<result.length;i++){
+              cuisineList[i]=result[i].name;
+            }
+          res.writeHead(200,{
+              'Content-Type' : 'application/json'
+          });
+      console.log(cuisineList);
+      res.end(JSON.stringify(cuisineList));
+      });
+      })
+
+
+      app.post('/getMenu',function(req,res){
+        console.log("Inside Menu ");  
+        console.log(req.body.email);
+            con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
+              if(err) throw err;
+             
+              console.log(result1[0].rid);
+              con.query("SELECT * from menu where rid="+result1[0].rid, function(err,result,fields){
+                if(err) throw err;
+
+            res.writeHead(200,{
+                'Content-Type' : 'application/json'
+            });
+        console.log(result);
+        res.end(JSON.stringify(result));
+              })
+        });
+        })
+
+       
+
+        app.post('/searchFood',function(req,res){
+          console.log("Inside Search ");  
+          let c=req.body.criteria;
+// console.log(c);
+// console.log(req.body.searchFood);
+          if(c=="cuisine"){
+              con.query("SELECT * from restaurants where cuisine='"+req.body.searchFood+"'", function(err,result,fields){
+                if(err) throw err;
+                  res.writeHead(200,{
+                     'Content-Type' : 'application/json'
+                  });
+                  console.log(result);
+                  res.end(JSON.stringify(result));
+                  
+               })
+              }else if(c=="zipcode"){
+                con.query("SELECT * from restaurants where zipcode="+req.body.searchFood, function(err,result1,fields){
+                  if(err) throw err;
+                  
+                    res.writeHead(200,{
+                      'Content-Type' : 'application/json'
+                   });
+                   console.log(result);
+                  res.end(JSON.stringify(result));
+                
+              })
+              }else if(c=="foodItem"){
+                con.query("SELECT * from menu NATURAL JOIN restaurants where itemname='"+req.body.searchFood+"'", function(err,result,fields){
+                  if(err) throw err;
+
+                  res.writeHead(200,{
+                    'Content-Type' : 'application/json'
+                 });
+                 console.log(result);
+                res.end(JSON.stringify(result));
+                })
+              }else if(c=="restaurant"){
+                con.query("SELECT * from restaurants where name='"+req.body.searchFood+"'", function(err,result1,fields){
+                  if(err) throw err;
+                 
+                res.writeHead(200,{
+                    'Content-Type' : 'application/json'
+                });
+                console.log(result);
+                res.end(JSON.stringify(result));
+                
+                })
+          }
+        })
+
+        app.post('/getSection',function(req,res){
+          console.log("Inside Section ");  
+          var sectionList=[];
+          console.log(req.body.email);
+              con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
+                if(err) throw err;
+                
+                console.log(result1[0].rid);
+                con.query("SELECT * from sections where rid="+result1[0].rid, function(err,result,fields){
+                  if(err) throw err;
+                 
+                  for(var i=0;i<result.length;i++){
+                    sectionList[i]=result[i].name;
+                  }
+  
+              res.writeHead(200,{
+                  'Content-Type' : 'application/json'
+              });
+          console.log(sectionList);
+          res.end(JSON.stringify(sectionList));
+                })
+          });
+          })
 
 
     app.post('/cprofile',function(req,res){
@@ -146,11 +301,11 @@ app.post('/rprofileupdate',function(req,res){
 
 app.post('/rlogin',function(req,res){
   var found=false;
-      con.query("SELECT email,password from restaurants", function(err,result,fields){
+      con.query("SELECT email,password,name from restaurants", function(err,result,fields){
         if(err) throw err;
-
+        var uname="";
         var msg="";
-       console.log(result);
+        console.log(result);
         console.log(req.body.username);
         console.log(req.body.password);
         //console.log(found);
@@ -161,6 +316,7 @@ app.post('/rlogin',function(req,res){
         cust_data.forEach(element => {
             if(req.body.username==element.email){
             flag=true;
+            uname=element.name;
             passwordInDb=element.password;
             };
         });
@@ -170,6 +326,7 @@ app.post('/rlogin',function(req,res){
             {
             console.log("kdsl");
             res.cookie("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie("user",uname,{maxAge: 900000, httpOnly: false, path : '/'});
             res.cookie("email",req.body.username,{maxAge: 900000, httpOnly: false, path : '/'});
             req.session.user = req.body.username;
             msg="Login Successful"  
@@ -181,6 +338,53 @@ app.post('/rlogin',function(req,res){
         })
     })
   
+
+    app.post('/additem',function(req,res){
+      var msg="";
+
+      con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
+        if(err) throw err;
+        console.log(result1[0].rid);
+
+         con.query("SELECT sid from sections where name='"+req.body.section+"'", function(err,result2,fields){
+           if(err) throw err;
+
+           var queryString1 = "INSERT INTO menu (itemname,description,price,image, sid,rid) VALUES (?,?,?,?,?,?)";    
+           con.query(queryString1,[req.body.itemname,req.body.description,req.body.price,req.body.image,result2[0].sid,result1[0].rid],function(error, results){
+               if (error){
+                   console.log(error);
+                   msg="Could Not Add Item! :(";
+                   res.end(msg);
+                }else {
+                  console.log("Addededded");
+                  msg="Item Added Successfully!" ;  
+                  res.end(msg);            
+                }
+              })
+           })
+      });
+    })
+
+    app.post('/addsection',function(req,res){
+      var msg="";
+      con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
+        if(err) throw err;
+        console.log(result1[0].rid);
+
+           var queryString1 = "INSERT INTO sections (name,rid) VALUES (?,?)";    
+           con.query(queryString1,[req.body.sectionname,result1[0].rid],function(error, results){
+               if (error){
+                   console.log(error);
+                   msg="Could Not Add Section! :(";
+                   res.end(msg);
+                }else {
+                  console.log("Addededded");
+                  msg="Section Added Successfully!" ;  
+                  res.end(msg);            
+                }
+              })
+           })
+    })
 
 
 
@@ -204,15 +408,16 @@ app.post('/rregister',function(req,res){
       }else{
         bcrypt.hash(req.body.password, saltRounds, function(err, hash) 
                     {
-                        var queryString1 = "INSERT INTO restaurants (name,email,password,oname,contact, address,city,zipcode) VALUES (?,?,?,?,?,?,?,?)";    
-                        con.query(queryString1,[req.body.restaurant,req.body.email,hash,req.body.fullname,req.body.contact,req.body.address,req.body.city,req.body.zipcode],function(error, results){
+                        var queryString1 = "INSERT INTO restaurants (name,email,password,oname,contact, address,city,zipcode,cuisine) VALUES (?,?,?,?,?,?,?,?,?)";    
+                        con.query(queryString1,[req.body.restaurant,req.body.email,hash,req.body.fullname,req.body.contact,req.body.address,req.body.city,req.body.zipcode,req.body.cuisine],function(error, results){
                             if (error){
                                 console.log(error);
                                 msg="error";
                                 res.end(msg);
                             }else {
                               res.cookie('cookie',"restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
-                              res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie("user",req.body.restaurant,{maxAge: 900000, httpOnly: false, path : '/'});                      
+        res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
                               console.log("Howdyyy");
                               msg="Restaurant Added Successfully!" ;  
                               res.end(msg);            
@@ -267,7 +472,8 @@ app.post('/cregister',function(req,res){
                             {       
           console.log("I am blehh");
                               res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
-                              res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie("user",req.body.fullname,{maxAge: 900000, httpOnly: false, path : '/'});                     
+        res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
         //                       res.writeHead(200, {      
         //                             "Content-Type": "text/plain"      
         //                           });
