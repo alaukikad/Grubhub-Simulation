@@ -9,6 +9,7 @@ let restName="";
 let restID=0;
 let goToOrders=false;
 let goToHome=false;
+let cartClear=false;
 
 class Cart extends Component {
     constructor(props){
@@ -75,6 +76,7 @@ class Cart extends Component {
         //update the state with the response data
         alert(response.data)
          goToHome=true;
+         cartClear=true;
         this.setState({   
         });
         console.log("Inside cancel")
@@ -108,8 +110,10 @@ class Cart extends Component {
           }
           let goHome=null;
           if(goToHome){
-             goHome = <Redirect to= "/chome"/>
+              goToHome=false;
+              goHome = window.location.reload();
             }
+            
         return(
             <div>
                 {redirectVar}
@@ -120,7 +124,6 @@ class Cart extends Component {
                     <h2>My Cart</h2>
                     <h3><b>{restName}</b></h3>
                         <table class="table">
-
                         <thead>
                                 <tr>
                                     <th>Item Name</th>

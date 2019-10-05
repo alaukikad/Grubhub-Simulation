@@ -70,8 +70,6 @@ this.setState({
             [e.target.name] : e.target.value
         })
     }
-
-
     sectionChangeHandler = (value) => {
         console.log(value.value);
         this.setState({
@@ -79,6 +77,7 @@ this.setState({
         })
         
     }
+
 
     //submit Register handler to send a request to the node backend
     submitForm= (e) => {
@@ -109,10 +108,10 @@ alert("Please fill all Fields!");
  
      axios.post('http://localhost:3001/additem',data)
      .then(response => {
-         alert(response.data);
          console.log("Status Code : ",response.status);
-         if(response.data.trim() == "Item Added Successfully!"){
+         if(response.data.trim =="Item Added Successfully!"){
            console.log("Hello New Item");
+           alert("Item Added Successfully!");
             this.setState({   
             })
          }
@@ -162,9 +161,7 @@ alert("Please fill all Fields!");
                             <div class="form-group">
                                 <input ref={(ref)=> this.price=ref} onChange = {this.onChangeHandler} type="number" class="form-control" name="price" placeholder="Price" required/>
                             </div>
-                            <div class="form-group">
-                            <input value={this.state.image} name="image" type="file" accept="image/png, image/jpeg" onChange={this.onChangeHandler}/>
-                            </div>
+                            
                             <button onClick = {this.submitForm} class="btn btn-primary3" type="submit">Add</button>                 
 
                             </form>

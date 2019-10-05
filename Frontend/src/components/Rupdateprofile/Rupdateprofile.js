@@ -13,6 +13,9 @@ class Rupdateprofile extends Component {
     constructor(props){
             super(props);
             this.state = {  
+                rid : "",
+                file1 : "",
+                file2 : "",
                 email : "",
                 fullname: "",
                 contact: "",
@@ -36,7 +39,8 @@ class Rupdateprofile extends Component {
             //     email: store.getState().email
             //   });
             // });
-          
+            this.oimageChangeHandler = this.oimageChangeHandler.bind(this);
+            this.rimageChangeHandler = this.rimageChangeHandler.bind(this);
         this.onChangeHandler = this.onChangeHandler.bind(this);
         this.submitProfile = this.submitProfile.bind(this);
     }  
@@ -78,6 +82,7 @@ axios.get('http://localhost:3001/getCuisine')
         axios.post('http://localhost:3001/rprofile',data)
                 .then((response) => {
                 this.setState({
+                rid : response.data.rid,
                 email: response.data.email,
                 fullname: response.data.oname,
                 contact: response.data.contact,
@@ -86,8 +91,7 @@ axios.get('http://localhost:3001/getCuisine')
                 cuisine : response.data.cuisine,
                 zipcode : response.data.zipcode,
                 restaurant : response.data.name
-                });
-                
+                });  
             });
     }
     cuisineChangeHandler = (value) => {
@@ -97,7 +101,16 @@ axios.get('http://localhost:3001/getCuisine')
         })
         
     }
-
+    rimageChangeHandler = e => {
+        this.setState({
+          file2: e.target.files[0]
+        })
+      }
+      oimageChangeHandler = e => {
+        this.setState({
+          file1: e.target.files[0]
+        })
+      }
 
     onChangeHandler = (e) => {
         this.setState({
@@ -106,6 +119,48 @@ axios.get('http://localhost:3001/getCuisine')
     }
     submitProfile = (e) => {
         var headers = new Headers();
+// Owner Image
+        e.preventDefault()
+        let formData = new FormData()
+        console.log(this.state.file1.name)
+        formData.append('myImage', this.state.file1, this.state.file1.name)
+        formData.append('rid', this.state.rid)
+        let config = {
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        }
+        axios
+          .post('http://localhost:3001/rprofileuploadimage', formData, config)
+          .then(response => {
+            console.log('Image uploaded')
+            console.log(response.data.filename)
+            this.setState({
+              oimage: "http://localhost:3001/images/all/" + response.data.filename+ ""
+            })
+
+            const formData2 = new FormData()
+            console.log(this.state.file2.name)
+            formData2.append('myImage', this.state.file2, this.state.file2.name)
+            formData2.append('rid', this.state.rid)
+            
+            axios
+              .post('http://localhost:3001/restaurantuploadimage', formData2, config)
+              .then(response => {
+                console.log('Image uploadedfddf')
+                console.log(response.data.filename)
+                this.setState({
+                  rimage: "http://localhost:3001/images/all/" + response.data.filename+ ""
+                })
+              })
+              .catch(error => { })
+          })
+          .catch(error => { })
+
+          //Restaurant Image
+          
+        
+
         //prevent page from refresh
         e.preventDefault();
         const data = {
@@ -148,13 +203,24 @@ axios.get('http://localhost:3001/getCuisine')
         return(
             <div>
                 {redirectVar}
-                <div class="container split left div-left" style={{backgroundColor:"white", width:"25%"}}>
+                
                    
-                   <div>
-                   <h2>Hiii</h2>
-                   
-                   </div>
+                <div class="container split left div-left" style={{ width:"30%"}}>
+                {/* <div class="container" style={{backgroundColor:"white", borderRadius:"12px",height : "300px", width : "220px"}}> */}
+                <img
+                src={this.state.rimage}
+                id="dp"
+                style={{border:"10px solid black" ,marginBottom:"10%",borderColor: "white" ,WebkitBorderRadius: "25%" , height : "200px", width : "200px"}}
+                alt="User Display"
+                 />
+                <img
+                src={this.state.oimage}
+                id="dp"
+                style={{border:"10px solid black" ,marginBottom:"10%",borderColor: "white" ,WebkitBorderRadius: "25%" , height : "200px", width : "200px"}}
+                alt="User Display"
+                />
                 </div>
+                
                 <div class="container split right div-right" style={{backgroundColor:"white", width:"60%",opacity:"80%"}}>
                     
                     <h2>Restaurant Profile</h2>
@@ -196,11 +262,11 @@ axios.get('http://localhost:3001/getCuisine')
                                 </tr>
                                 <tr>
                                     <td>Restaurant Image </td>
-                                    <td><input value={this.state.rimage} name="rimage" type="file" accept="image/png, image/jpeg" onChange={this.onChangeHandler}></input></td>
+                                    <td><input  name="rimage" type="file" accept="image/png, image/jpeg" onChange={this.rimageChangeHandler}></input></td>
                                 </tr>
                                 <tr>
                                     <td>Owner Image </td>
-                                    <td><input value={this.state.oimage} name= "oimage" type="file" accept="image/png, image/jpeg" onChange={this.onChangeHandler}></input></td>
+                                    <td><input  name= "oimage" type="file" accept="image/png, image/jpeg" onChange={this.oimageChangeHandler}></input></td>
                                 </tr>
                             </tbody>
                         </table>

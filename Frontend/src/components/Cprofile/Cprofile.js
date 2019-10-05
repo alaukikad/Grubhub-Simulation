@@ -14,8 +14,8 @@ class Cprofile extends Component {
                 email : "",
                 fullname: "",
                 contact: "",
-                address : ""
-                
+                address : "",
+                oimage : ""
             }
 
     }  
@@ -50,8 +50,8 @@ class Cprofile extends Component {
                 email : response.data.email,
                 fullname: response.data.name,
                 contact: response.data.contact,
-                address : response.data.address
-                
+                address : response.data.address,
+                oimage : "http://localhost:3001/images/all/" + response.data.image+ "" 
                 });
                 
             });
@@ -72,13 +72,18 @@ class Cprofile extends Component {
         return(
             <div>
                 {redirectVar}
-                <div class="container split left div-left" style={{backgroundColor:"white", width:"25%"}}>
-                   
-                   <div>
-                   <h2></h2>
-                   
-                   </div>
-                </div>
+                <div class="container split left div-left" style={{width:"30%"}}>
+                 
+                           
+                   <img
+                src={this.state.oimage}
+                id="dp"
+                style={{border:"10px solid black" ,marginBottom:"10%",borderColor: "white" ,WebkitBorderRadius: "25%" , height : "200px", width : "200px"}}
+                alt="User Display"
+              />
+              </div>
+             
+                 
                 <div class="container split right div-right" style={{backgroundColor:"white", width:"60%",opacity:"80%"}}>
                     
                     <h2>Customer Profile</h2>

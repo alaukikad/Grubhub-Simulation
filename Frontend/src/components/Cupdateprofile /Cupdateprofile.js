@@ -7,17 +7,17 @@ import {Redirect} from 'react-router';
 //import { connect } from "react-redux";
 //import { updateCProfile } from "../../js/actions/index";
 
-
 class Cupdateprofile extends Component {
     constructor(props){
             super(props);
             this.state = {  
+                uid : "",
                 email : "",
                 fullname: "",
                 contact: "",
                 address : "",
-                oimage : "",
-                bufferBase64 : ""
+                file: "",
+                oimage :""
             }
         
             // store.subscribe(() => {
@@ -34,7 +34,7 @@ class Cupdateprofile extends Component {
     }  
     //get the books data from backend  
     componentDidMount(){
-        console.log(this.props.propData);
+       // console.log(this.props.propData);
         console.log("I am in component");
         console.log(cookie.load("email"));
 
@@ -49,19 +49,16 @@ class Cupdateprofile extends Component {
                 .then((response) => {
                 
                 this.setState({
+                uid : response.data.uid,
                 email: response.data.email,
                 fullname: response.data.name,
                 contact: response.data.contact,
                 address : response.data.address,
-                oimage : response.data.image
-                 
+                oimage : "http://localhost:3001/images/all/" + response.data.image+ "" 
                 });
 
               //  var b64encoded = btoa(String.fromCharCode.apply(null, response.data.image));
                 //image.src = 'data:image/jpeg;base64,' + b64encoded;
-
-                console.log(this.state.oimage);
-                console.log(response.data.image)
                 //var buffer=new Buffer(response.data.oimage);
                 // var bufferBase64 = this.state.oimage.toString('base64');
                 // console.log(bufferBase64);
@@ -75,31 +72,45 @@ class Cupdateprofile extends Component {
         });
     }
 
-    handleUploadFile = (event) => {
-        const data = new FormData()
-        data.append('file', event.target.files[0])
-        data.append('name', 'some value user types')
-        data.append('description', 'some value user types')
-        axios.post('/files', data).then((response) => {
-          this.setState({
-            oimage: response.data.fileUrl
-          })
+    imageChangeHandler = e => {
+        this.setState({
+          file: e.target.files[0]
         })
-
-
       }
+
 
     submitProfile = (e) => {
         var headers = new Headers();
         //prevent page from refresh
+
+        e.preventDefault()
+        const formData = new FormData()
+        console.log(this.state.file.name)
+        formData.append('myImage', this.state.file, this.state.file.name)
+        formData.append('uid', this.state.uid)
+        const config = {
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        }
+        axios
+          .post('http://localhost:3001/cprofileuploadimage', formData, config)
+          .then(response => {
+            console.log('Image uploaded')
+            console.log(response.data.filename)
+            this.setState({
+              oimage: "http://localhost:3001/images/all/" + response.data.filename+ ""
+            })
+          })
+          .catch(error => { })
+
         e.preventDefault();
         const data = {
             pemail :cookie.load("email"),
             email : this.state.email,
             fullname: this.state.fullname,
             contact: this.state.contact,
-            address : this.state.address,
-            oimage : this.state.oimage   
+            address : this.state.address
         }
 
        // this.props.updateCProfile(data);
@@ -111,10 +122,8 @@ class Cupdateprofile extends Component {
        alert(response.data);
        console.log("Status Code : ",response.data);
        if(response.data.trim() == "Details Updated!"){
-           console.log("Hello peps I'm in C profile updatereducer");
-           
-         }
-           
+           console.log("Hello peps I'm in C profile update");
+       }         
    })
 
  
@@ -129,15 +138,15 @@ class Cupdateprofile extends Component {
         return(
             <div>
                 {redirectVar}
-                <div class="container split left div-left" style={{backgroundColor:"white", width:"25%"}}>
-                   
-                   <div>
-                   <h2></h2>
-                   
-                  
-                   
-                   </div>
+                <div class="container split left div-left" style={{ width:"30%"}}>       
+                 <img
+                  src={this.state.oimage}
+                  id="dp"
+                  style={{border:"10px solid black" ,marginBottom:"10%",borderColor: "white" ,WebkitBorderRadius: "25%" , height : "200px", width : "200px"}}
+                  alt="User Display"
+                 />
                 </div>
+            
                 <div class="container split right div-right" style={{backgroundColor:"white", width:"60%",opacity:"80%"}}>
                     
                     <h2>Customer Profile</h2>
@@ -163,7 +172,7 @@ class Cupdateprofile extends Component {
                                 </tr>
                                 <tr>
                                     <td>Owner Image </td>
-                                    <td><input  name= "oimage" type="file" accept="image/png, image/jpeg" onChange={this.onChangeHandler}></input></td>
+                                    <td><input  name= "oimage" type="file" accept="image/png, image/jpeg" onChange={this.imageChangeHandler}></input></td>
                                 </tr>
                             </tbody>
                         </table>

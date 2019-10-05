@@ -22,6 +22,7 @@ class EditItem extends Component{
             description: "",
             price : "",
             image : "",
+            file : "",
             section : "",
             options : []
         }
@@ -30,6 +31,7 @@ class EditItem extends Component{
         this.sectionChangeHandler= this.sectionChangeHandler.bind(this);
         this.onChangeHandler = this.onChangeHandler.bind(this);
         this.submitForm = this.submitForm.bind(this);
+        this.updateImage= this.updateImage.bind(this);
     }
     //Call the Will Mount to set the auth Flag to false
    componentWillMount(){
@@ -52,6 +54,7 @@ class EditItem extends Component{
         })
     
         this.setState({
+            oimage: "",
             secList : response.data,
             options : o
         });
@@ -90,6 +93,11 @@ console.log(this.props.ItemID);
         })
     }
 
+    imageChangeHandler = e => {
+        this.setState({
+          file: e.target.files[0]
+        })
+      }
 
     sectionChangeHandler = (value) => {
         console.log(value.value);
@@ -98,7 +106,28 @@ console.log(this.props.ItemID);
         })
         
     }
-
+    updateImage = (e)=>{
+        e.preventDefault()
+        const formData = new FormData()
+        console.log(this.state.file.name)
+        formData.append('myImage', this.state.file, this.state.file.name)
+        formData.append('mid', this.props.ItemID)
+        const config = {
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        }
+        axios
+          .post('http://localhost:3001/itemuploadimage', formData, config)
+          .then(response => {
+            console.log('Image uploaded')
+            console.log(response.data.filename)
+            this.setState({
+              oimage: "http://localhost:3001/images/all/" + response.data.filename+ ""
+            })
+          })
+          .catch(error => { })
+   }
     //submit Register handler to send a request to the node backend
     submitForm= (e) => {
         var headers = new Headers();
@@ -129,10 +158,12 @@ alert("Please fill all Fields!");
  
      axios.post('http://localhost:3001/edititem',data)
      .then(response => {
-         alert(response.data);
+         
          console.log("Status Code : ",response.status);
          if(response.data.trim() == "Details Updated!"){
            console.log("Hello Edited Item");
+           this.updateImage(e);
+           alert(response.data);
             this.setState({
             })
          }
@@ -180,7 +211,7 @@ alert("Please fill all Fields!");
                                 <input ref={(ref)=> this.price=ref}  value={this.state.price} onChange = {this.onChangeHandler} type="number" class="form-control" name="price" placeholder="Price" required/>
                             </div>
                             <div class="form-group">
-                            <input value={this.state.image} name="image" type="file" accept="image/png, image/jpeg" onChange={this.onChangeHandler}/>
+                            <input  name="image" type="file" accept="image/png, image/jpeg" onChange={this.imageChangeHandler}/>
                             </div>
                             <button onClick = {this.submitForm} class="btn btn-primary3" type="submit">Edit</button>                 
 

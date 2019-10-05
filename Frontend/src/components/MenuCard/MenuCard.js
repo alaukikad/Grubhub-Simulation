@@ -5,7 +5,7 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 
 let goToCart=false;
-let quant=null;
+let quant=[];
 let secList=[];
 
 class MenuCard extends Component {
@@ -84,7 +84,13 @@ checkOut=(e)=>{
             let itemdetails = secItems.map(item =>  {
                 display.push(
                     <tr>
-                        <td><img src={item.image} style={{height: "60px",width:"90px", margin : "10px"}}></img></td>
+                        <td> 
+                        <img
+                        src={"http://localhost:3001/images/all/"+item.image+""}
+                        id="itemimg"
+                        style={{height: "60px",width:"90px", margin : "10px"}}
+                        alt="Item Display"/>
+                        </td>
                         <td><div style={{margin : "10px"}}>{item.itemname}</div></td>
                         <td><div style={{margin : "10px"}}>{item.description}</div></td>
                         <td><div style={{margin : "10px"}}>${item.price}</div></td>

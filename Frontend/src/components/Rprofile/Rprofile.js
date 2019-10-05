@@ -18,7 +18,9 @@ class Rprofile extends Component {
                 city : "",
                 zipcode : "",
                 restaurant : "",
-                cuisine : "" 
+                cuisine : "" ,
+                rimage : "",
+                oimage :""
             }
 
     }  
@@ -52,7 +54,7 @@ class Rprofile extends Component {
                     
                    
                 this.setState({
-                    cuisine : response.data.cuisine,
+                cuisine : response.data.cuisine,
                 email : response.data.email,
                 fullname: response.data.oname,
                 contact: response.data.contact,
@@ -60,7 +62,8 @@ class Rprofile extends Component {
                 city : response.data.city,
                 zipcode : response.data.zipcode,
                 restaurant : response.data.name,
-            
+                oimage : "http://localhost:3001/images/all/" + response.data.oimage+ "",
+                rimage : "http://localhost:3001/images/all/" + response.data.rimage+ ""
                 });
                 
             });
@@ -81,15 +84,28 @@ class Rprofile extends Component {
         return(
             <div>
                 {redirectVar}
-                <div class="container split left div-left" style={{backgroundColor:"white", width:"25%"}}>
-                   
-                   <div>
-                   <h2>Hiii</h2>
-                   
-                   </div>
+                
+
+                <div class="container split left div-left" style={{ width:"30%"}}>
+                {/* <div class="container" style={{backgroundColor:"white", borderRadius:"12px",height : "300px", width : "220px"}}> */}
+                <img
+                src={this.state.rimage}
+                id="dp"
+                style={{border:"10px solid black" ,marginBottom:"10%",borderColor: "white" ,WebkitBorderRadius: "25%" , height : "200px", width : "200px"}}
+                alt="User Display"
+                 />
+                <img
+                src={this.state.oimage}
+                id="dp"
+                style={{border:"10px solid black" ,marginBottom:"10%",borderColor: "white" ,WebkitBorderRadius: "25%" , height : "200px", width : "200px"}}
+                alt="User Display"
+                />
                 </div>
+            
+            {/* </div> */}
+              
                 <div class="container split right div-right" style={{backgroundColor:"white", width:"60%",opacity:"80%"}}>
-                    
+                
                     <h2>Restaurant Profile</h2>
                         <table class="table">
                             <tbody>
