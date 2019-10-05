@@ -7,6 +7,7 @@ import {Redirect} from 'react-router';
 let goToCart=false;
 let quant=[];
 let secList=[];
+let display;
 
 class MenuCard extends Component {
     constructor(props){
@@ -14,7 +15,7 @@ class MenuCard extends Component {
             this.state = {  
                 menu:[]
             } 
-        
+       
         this.checkOut = this.checkOut.bind(this);    
         this.setQuantity = this.setQuantity.bind(this);
     }  
@@ -23,24 +24,34 @@ class MenuCard extends Component {
         const data = {
             email : this.props.restID
         }
-        
+        let resp1="";
+
         axios.defaults.withCredentials = true;
         axios.post('http://localhost:3001/getMenu',data)
         .then((response) => {
         //update the state with the response data
-        this.setState({
-            menu : this.state.menu.concat(response.data) 
-        });
-        console.log(this.state.menu)
-    });
-    axios.post('http://localhost:3001/getSection',data)
+        console.log("In get menu constructor")
+        resp1=response.data
+        console.log(resp1)
+        })
+        
+        axios.post('http://localhost:3001/getSection',data)
         .then((response) => {
         //update the state with the response data
         console.log("here in Sections")
         console.log(response.data)
         secList=response.data;
         console.log(secList)
-    });
+        console.log(resp1)
+        this.setState({
+            menu : this.state.menu.concat(resp1) 
+        });
+        })
+    console.log("i am ahiyaaa")
+    console.log(resp1);
+    
+    console.log("In menu")
+    console.log(this.state.menu)
     }
    
     setQuantity=(e)=>{
@@ -77,11 +88,14 @@ checkOut=(e)=>{
 
 
     render(){
-        let display=[];
+        display=[]
         let sectionDetails= secList.map(sec => {
+            console.log("in section Display")
             console.log(sec)
             let secItems=this.state.menu.filter(item=> item.name == sec.value)
             let itemdetails = secItems.map(item =>  {
+                console.log("Hello There")
+                console.log(item)
                 display.push(
                     <tr>
                         <td> 
@@ -124,7 +138,9 @@ checkOut=(e)=>{
         if(!cookie.load('cookie')){
             redirectVar = <Redirect to= "/login"/>
         }
-       
+        if(cookie.load('cookie')=="restaurant"){
+            redirectVar = <Redirect to= "/login"/>
+        }
       let goForward=null;
       if(goToCart){
           goToCart=false;

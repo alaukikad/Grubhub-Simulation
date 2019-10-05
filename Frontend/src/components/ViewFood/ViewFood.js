@@ -33,7 +33,13 @@ class ViewFood extends Component {
         let restaurantdetails = this.props.restaurants.map(rest =>  {
             return(
                 <tr>
-                <td><img src="" style={{height: "80px",width:"100px", padding:"10px", marginBottom:"10px"}}></img></td>
+                <td>
+                <img
+                        src={"http://localhost:3001/images/all/"+rest.rimage+""}
+                        id="restimg"
+                        style={{marginLeft:"20px",height: "80px",width:"120px"}}
+                        alt="Restaurant Display"/>
+                </td>
                 <td><b><h4>{rest.name}</h4></b></td>
                 <td><b><h4>{rest.cuisine}</h4></b></td>
                 <td><b><h4>{rest.address}</h4></b></td>
@@ -48,7 +54,9 @@ class ViewFood extends Component {
         if(!cookie.load('cookie')){
             redirectVar = <Redirect to= "/login"/>
         }
-        
+        if(cookie.load('cookie')=="restaurant"){
+            redirectVar = <Redirect to= "/login"/>
+        }
         let getMenu=null;
         if(restID!=null){
             getMenu=<MenuCard key='menucard' restID={restID}></MenuCard>;

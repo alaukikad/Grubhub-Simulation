@@ -135,6 +135,9 @@ class Cupdateprofile extends Component {
         if(!cookie.load('cookie')){
             redirectVar = <Redirect to= "/login"/>
         }
+        if(cookie.load('cookie')=="restaurant"){
+            redirectVar = <Redirect to= "/login"/>
+        }
         return(
             <div>
                 {redirectVar}

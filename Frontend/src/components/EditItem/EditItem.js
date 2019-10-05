@@ -180,6 +180,9 @@ alert("Please fill all Fields!");
         if(!cookie.load('cookie')){
             redirectVar = <Redirect to= "/rlogin"/>
         }
+        if(cookie.load('cookie')=="customer"){
+            redirectVar = <Redirect to= "/rlogin"/>
+        }
         let goBack=null;
         if(updateFlag){
             console.log("Hello");

@@ -56,6 +56,9 @@ class CancelledOrder extends Component {
     if(!cookie.load('cookie')){
         redirectVar = <Redirect to= "/login"/>
     }
+    if(cookie.load('cookie')=="customer"){
+        redirectVar = <Redirect to= "/rlogin"/>
+    }
     let display=[];
     let addData=[];
        let details = orderList.forEach ( (v,k,order) => {

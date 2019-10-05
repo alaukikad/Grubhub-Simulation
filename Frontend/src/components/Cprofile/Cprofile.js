@@ -68,7 +68,9 @@ class Cprofile extends Component {
         if(!cookie.load('cookie')){
             redirectVar = <Redirect to= "/rlogin"/>
         }
-
+        if(cookie.load('cookie')=="restaurant"){
+            redirectVar = <Redirect to= "/login"/>
+        }
         return(
             <div>
                 {redirectVar}

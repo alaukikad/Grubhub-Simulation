@@ -105,7 +105,9 @@ class PendingOrder extends Component {
     if(!cookie.load('cookie')){
         redirectVar = <Redirect to= "/rlogin"/>
     }
-    
+    if(cookie.load('cookie')=="customer"){
+        redirectVar = <Redirect to= "/rlogin"/>
+    }
     if(updateFlag){
         updateFlag=false;
         redirectVar =<Redirect to= "/rhome"/>

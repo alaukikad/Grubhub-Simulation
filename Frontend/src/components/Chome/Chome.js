@@ -33,7 +33,10 @@ class Chome extends Component {
             console.log("Able to read cookie ahjsajhdj");
             redirectVar = <Redirect to= "/login"/>
         }
-        else if(cookie.load('cookie'))
+        if(cookie.load('cookie')=="restaurant"){
+            redirectVar = <Redirect to= "/login"/>
+        }
+        else if(cookie.load('cookie')=="customer")
         {
             redirectVar = <Redirect to= "/chome"/>
         }

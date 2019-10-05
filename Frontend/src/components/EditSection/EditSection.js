@@ -92,6 +92,9 @@ alert("Please fill Section Name Field!");
         if(!cookie.load('cookie')){
             redirectVar = <Redirect to= "/rlogin"/>
         }
+        if(cookie.load('cookie')=="customer"){
+            redirectVar = <Redirect to= "/rlogin"/>
+        }
 
         let goBack=null;
         if(updateFlag){
