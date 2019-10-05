@@ -53,20 +53,26 @@ class Rhome extends Component {
         if(!cookie.load('cookie')){
             redirectVar = <Redirect to= "/rlogin"/>
         }
+        if(cookie.load('cookie')=="customer"){
+            redirectVar = <Redirect to= "/rlogin"/>
+        }
         
         let goToOrder=null;
         if(orderType=="p")
         {
-           goToOrder=<PendingOrder></PendingOrder>;
+           goToOrder=<PendingOrder/>
            orderType=null;
+           
        } else if(orderType=="c")
        {
-           goToOrder=<CancelledOrder></CancelledOrder>;
+           goToOrder=<CancelledOrder/>;
            orderType=null;
+           
         }else  if(orderType=="d")
         {
-           goToOrder=<DeliveredOrder></DeliveredOrder>;
+           goToOrder=<DeliveredOrder/>;
            orderType=null;
+           
        }
        
 

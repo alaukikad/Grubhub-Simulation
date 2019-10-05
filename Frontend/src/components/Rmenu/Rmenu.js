@@ -6,10 +6,13 @@ import {Redirect} from 'react-router';
 import AddItem from '../AddItem/AddItem';
 import AddSection from '../AddSection/AddSection';
 import EditItem from '../EditItem/EditItem';
+import EditSection from '../EditSection/EditSection';
 
 let ItemID=null;
 let getDetail=null;
 let delFlag=null;
+let secList;
+let sectionID=null;
 
 class Rmenu extends Component {
     constructor(props){
@@ -17,9 +20,11 @@ class Rmenu extends Component {
             this.state = {  
                 menu:[],
                 section:[],
-                options:[],
-                open : false
-            } 
+                options:[]
+            }
+            secList=[];
+            this.editSection = this.editSection.bind(this);
+            this.deleteSection = this.deleteSection.bind(this);
     }  
    
     componentDidMount(){
@@ -39,8 +44,16 @@ class Rmenu extends Component {
        axios.post('http://localhost:3001/getSection',data)
         .then((response) => {
         //update the state with the response data
+        console.log("here")
+        console.log(response.data)
+        let o=[]
+        let temp=response.data.map( sec=>{
+           o.push(sec.value);
+        })
+        secList=response.data;
+
         this.setState({
-            options : response.data
+            options : o
         });
     });
     }
@@ -51,6 +64,30 @@ class Rmenu extends Component {
         this.setState({
         })
     }
+
+    editSection=(value)=>{
+        console.log('edit section');
+        console.log(value)
+        sectionID=value;
+        this.setState({
+        })
+    }
+
+    deleteSection=(value)=>{
+        const data = {
+            id : value
+        }
+        axios.defaults.withCredentials = true;
+        axios.post('http://localhost:3001/deleteSection',data)
+        .then((response) => {
+            alert(response.data);
+        //update the state with the response data
+        this.setState({       
+        });
+    });
+        delFlag=true;
+    }
+
 
     deleteItem=(value)=>{
         const data = {
@@ -66,29 +103,57 @@ class Rmenu extends Component {
         });
     });
 
-
-
         delFlag=true;
     }
 
     render(){
+        let display=[]
         
-        let itemdetails = this.state.menu.map(item =>  {
-            return(
-                <tr>
-                    <td><img src={item.image} style={{height: "60px",width:"90px"}}></img></td>
-                    <td>{item.itemname}</td>
-                    <td>{item.description}</td>
-                    <td>${item.price}</td>
-                    <td><a class="glyphicon glyphicon-pencil" onClick={this.editItem.bind(this,item.mid)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
-                    <td><a class="glyphicon glyphicon-trash" onClick={this.deleteItem.bind(this,item.mid)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
-                </tr> 
-            )
+        let sectionDetails= secList.forEach(sec => {
+            let secItems=this.state.menu.filter(item=> item.name == sec.value)
+            display.push(
+                <div>
+                <div style={{display:"Flex"}}>
+                <h4>{sec.value}</h4>
+                <a class="glyphicon glyphicon-pencil" onClick={this.editSection.bind(this,sec.key)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a>
+                <a class="glyphicon glyphicon-trash" onClick={this.deleteSection.bind(this,sec.key)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a>
+                </div>  
+                <table class="table">
+                    
+                    <tbody>
+                        {/*Display the Tbale row based on data recieved*/}
+                        {itemdetails}    
+                    </tbody>
+                    </table>
+                </div>)
+            let itemdetails = secItems.map(item =>  {
+                display.push(
+                    <tr>
+                        <td><img src={item.image} style={{height: "60px",width:"90px", margin : "10px"}}></img></td>
+                        <td><div style={{margin : "10px"}}>{item.itemname}</div></td>
+                        <td><div style={{margin : "10px"}}>{item.description}</div></td>
+                        <td><div style={{margin : "10px"}}>${item.price}</div></td>
+                        <td><a class="glyphicon glyphicon-pencil" onClick={this.editItem.bind(this,item.mid)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
+                        <td><a class="glyphicon glyphicon-trash" onClick={this.deleteItem.bind(this,item.mid)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
+                       
+                    </tr> 
+                )
+            })     
         })
+
+        display.push(
+            <div>
+                {sectionDetails}
+             </div>
+                   
+        )
    
         //if not logged in go to login page
         let redirectVar = null;
         if(!cookie.load('cookie')){
+            redirectVar = <Redirect to= "/rlogin"/>
+        }
+        if(cookie.load('cookie')=="customer"){
             redirectVar = <Redirect to= "/rlogin"/>
         }
         if(delFlag){
@@ -103,33 +168,28 @@ class Rmenu extends Component {
         else{
             getDetail=<AddItem/>
         }
+        let getSection=null
+
+        if(sectionID!=null)
+        {
+            getDetail=<EditSection key='itemdets' sectionID={sectionID}></EditSection>;
+            sectionID=null;
+        }
+        else{
+            getSection=<AddSection/> 
+        }
         return(
             <div>
                 {redirectVar}
                 <div class="container split left div-left2" style={{backgroundColor:"white", width:"25%"}}>
-                <AddSection/>  
-               {getDetail}
-                  
+                {getSection}
+                {getDetail}
+    
                 </div>
                 <div class="container split right div-right2" style={{backgroundColor:"white", width:"62%",opacity:"80%"}}>
-                <div>
-                   
-                   <h2>Menu</h2>
-                   <hr>
-                
-                   </hr>
-                   <h4>Section Name</h4>
-                <table class="table">
-                        
-                        <tbody>
-                            {/*Display the Tbale row based on data recieved*/}
-                            
-                            {itemdetails}
-                           
-                        </tbody>
-                    </table>
-                   
-                   </div>
+               <h2 style={{color:"red"}}>Menu</h2>
+               <hr></hr>
+                {display}
                 </div>  
             </div> 
         )}

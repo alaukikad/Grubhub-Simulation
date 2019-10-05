@@ -80,7 +80,6 @@ app.post('/login',function(req,res){
   })
 })
 
-
 app.post('/cprofileupdate',function(req,res){
   console.log("Inside Customer Profile");  
   console.log(req.body);   
@@ -93,24 +92,34 @@ app.post('/cprofileupdate',function(req,res){
         });
   })
 
-
-  app.post('/edititem',function(req,res){
+app.post('/edititem',function(req,res){
     console.log("Inside Edit Item ");  
     console.log(req.body);   
 
-    con.query("SELECT sid from sections where name='"+req.body.section+"'", function(err,result1,fields){
-      if(err) throw err;
-
           var sql = "UPDATE menu SET itemname=?,image=?,description=?,price=?,sid=? WHERE mid="+req.body.id;
-          con.query(sql,[req.body.itemname,req.body.image,req.body.description,req.body.price,result1[0]] ,function (err, result) {
+          con.query(sql,[req.body.itemname,req.body.image,req.body.description,req.body.price,req.body.sid] ,function (err, result) {
             if (err) throw err;
             console.log(result.affectedRows + " record(s) updated");
             res.end("Details Updated!");
           });
-        })
+       
     })
 
-    app.post('/getitem',function(req,res){
+app.post('/editsection',function(req,res){
+      console.log("Inside Edit Section ");  
+      console.log(req.body);   
+
+            var sql = "UPDATE sections SET name=? WHERE sid="+req.body.id;
+            con.query(sql,[req.body.name],function (err, result) {
+              if (err) throw err;
+
+              console.log(result.affectedRows + " record(s) updated");
+              res.end("Section Updated!");
+            });
+         
+      }) 
+
+app.post('/getitem',function(req,res){
       console.log("Inside Get Item ");  
       console.log(req.body);   
   
@@ -120,8 +129,6 @@ app.post('/cprofileupdate',function(req,res){
             });
     })
       
-  
-
 app.post('/rprofileupdate',function(req,res){
   console.log("Inside Restaurant Profile1");  
   console.log(req.body);   
@@ -134,7 +141,7 @@ app.post('/rprofileupdate',function(req,res){
         });
   })
 
-  app.post('/confirmOrder',function(req,res){
+app.post('/confirmOrder',function(req,res){
     console.log("Inside Confirm Order");  
     console.log(req.body);   
     con.query("SELECT uid from users where email='"+req.body.email+"'", function(err,result1,fields){
@@ -154,8 +161,7 @@ app.post('/rprofileupdate',function(req,res){
   })
   })
 
-
-  app.post('/cancelOrder',function(req,res){
+app.post('/cancelOrder',function(req,res){
     console.log("Inside Confirm Order");  
     console.log(req.body);   
     con.query("SELECT uid from users where email='"+req.body.email+"'", function(err,result1,fields){
@@ -168,7 +174,7 @@ app.post('/rprofileupdate',function(req,res){
         })
   })
 
-  app.post('/upcomingOrder',function(req,res){
+app.post('/upcomingOrder',function(req,res){
     console.log("Inside Upcoming Order");  
     console.log(req.body);   
     con.query("SELECT uid from users where email='"+req.body.email+"'", function(err,result1,fields){
@@ -181,7 +187,7 @@ app.post('/rprofileupdate',function(req,res){
     })
   })
 
-  app.post('/pastOrder',function(req,res){
+app.post('/pastOrder',function(req,res){
     console.log("Inside Past Order");  
     console.log(req.body);   
     con.query("SELECT uid from users where email='"+req.body.email+"'", function(err,result1,fields){
@@ -194,12 +200,12 @@ app.post('/rprofileupdate',function(req,res){
     })
   })
 
-  app.post('/deliveredOrder',function(req,res){
+app.post('/cancelledOrder',function(req,res){
     console.log("Inside Delivered Order");  
     console.log(req.body);   
     con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
       if(err) throw err;
-      con.query("SELECT u.name,u.uid,o.oid,m.itemname,od.price,od.qty,s.status from users u,orders o,orderdetails od,restaurants r,menu m,status s where s.statid=o.status && u.uid=o.uid && r.rid="+result1[0].rid+" && m.mid=od.mid && o.status=6 && od.oid=o.oid && o.rid=r.rid ", function(err,result,fields){
+      con.query("SELECT u.name,u.address,u.uid,o.oid,m.itemname,od.price,od.qty,s.status from users u,orders o,orderdetails od,restaurants r,menu m,status s where s.statid=o.status && u.uid=o.uid && r.rid="+result1[0].rid+" && m.mid=od.mid && o.status=5 && od.oid=o.oid && o.rid=r.rid ", function(err,result,fields){
         if(err) throw err;
 
         res.end(JSON.stringify(result));
@@ -207,12 +213,12 @@ app.post('/rprofileupdate',function(req,res){
     })
   })
 
-  app.post('/deliveredOrder',function(req,res){
+app.post('/pendingOrder',function(req,res){
     console.log("Inside Delivered Order");  
     console.log(req.body);   
     con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
       if(err) throw err;
-      con.query("SELECT u.name,u.uid,o.oid,m.itemname,od.price,od.qty,s.status from users u,orders o,orderdetails od,restaurants r,menu m,status s where s.statid=o.status && u.uid=o.uid && r.rid="+result1[0].rid+" && m.mid=od.mid && o.status=5 && od.oid=o.oid && o.rid=r.rid ", function(err,result,fields){
+      con.query("SELECT u.name,u.address,u.uid,o.oid,m.itemname,od.price,od.qty,s.status from users u,orders o,orderdetails od,restaurants r,menu m,status s where s.statid=o.status && u.uid=o.uid && r.rid="+result1[0].rid+" && m.mid=od.mid && o.status in (2,3,4) && od.oid=o.oid && o.rid=r.rid ", function(err,result,fields){
         if(err) throw err;
 
         res.end(JSON.stringify(result));
@@ -220,8 +226,39 @@ app.post('/rprofileupdate',function(req,res){
     })
   })
 
+app.post('/deliveredOrder',function(req,res){
+    console.log("Inside Delivered Order");  
+    console.log(req.body);   
+    con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
+      if(err) throw err;
+      con.query("SELECT u.name,u.address,u.uid,o.oid,m.itemname,od.price,od.qty,s.status from users u,orders o,orderdetails od,restaurants r,menu m,status s where s.statid=o.status && u.uid=o.uid && r.rid="+result1[0].rid+" && m.mid=od.mid && o.status=6 && od.oid=o.oid && o.rid=r.rid ", function(err,result,fields){
+        if(err) throw err;
 
-  app.post('/rprofile',function(req,res){
+        res.end(JSON.stringify(result));
+      })
+    })
+  })
+
+app.post('/updateOrderStatus',function(req,res){
+    console.log("Inside Update Order Status");  
+    console.log(req.body);   
+    con.query("SELECT statid from status where status='"+req.body.status+"'", function(err,result1,fields){
+      if(err) throw err;
+      con.query("UPDATE orders SET status="+result1[0].statid+" WHERE oid="+req.body.oid, function(err,result,fields){
+        if(err) throw err;
+
+        con.query("UPDATE orderdetails SET status="+result1[0].statid+" WHERE oid="+req.body.oid, function(err,result,fields){
+          if(err) throw err;
+        
+        
+          res.end("Details Updated!");
+
+        })
+      })
+    })
+  })
+
+app.post('/rprofile',function(req,res){
     console.log("Inside Restaurant Profile");  
     console.log(req.body);
     var found=false;
@@ -236,8 +273,7 @@ app.post('/rprofileupdate',function(req,res){
       });
     })
 
-
-    app.post('/deleteitem',function(req,res){
+app.post('/deleteitem',function(req,res){
       console.log("Inside Delete Item ");  
       console.log(req.body);
       var msg="";
@@ -252,8 +288,8 @@ app.post('/rprofileupdate',function(req,res){
         });
       })
 
-      app.post('/checkOut',function(req,res){
-        console.log("Inside Delete Item ");  
+app.post('/checkOut',function(req,res){
+        console.log("Inside CheckOut Item ");  
         console.log(req.body);
         let p=[];
         let q=req.body.qty;
@@ -261,9 +297,9 @@ app.post('/rprofileupdate',function(req,res){
         con.query("SELECT uid from users where email='"+req.body.uid+"'", function(err,result1,fields){
           if(err) throw err;
 
-          con.query("SELECT * from orderdetails od,restaurants r where uid="+result1[0].uid+" AND status=1 AND r.rid=od.rid AND r.email='"+req.body.email+"'", function(err,result3,fields){
+          con.query("SELECT * from orderdetails od,restaurants r where uid="+result1[0].uid+" AND status=1 AND r.rid=od.rid AND r.email!='"+req.body.email+"'", function(err,result3,fields){
             if(err) throw err;
-
+            
           if(result3==null){  
           for(var i=0;i<q.length;i++){
             console.log(i)
@@ -291,19 +327,18 @@ app.post('/rprofileupdate',function(req,res){
             res.end("Proceeding!");
           }
         }else{
+          console.log("blehhh")
           res.writeHead(200,{
             'Content-Type' : 'application/json'
           });
-          res.end("Can Add Only one Restaurant Orders to Cart!");
+          res.end("You already have Items in your Cart!");
         }
           
         })
       })
         })
 
-
-
-    app.get('/getCuisine',function(req,res){
+app.get('/getCuisine',function(req,res){
       console.log("Inside Cuisine ");  
       var cuisineList=[];
       
@@ -321,15 +356,14 @@ app.post('/rprofileupdate',function(req,res){
       });
       })
 
-
-      app.post('/getMenu',function(req,res){
+app.post('/getMenu',function(req,res){
         console.log("Inside Menu ");  
         console.log(req.body.email);
             con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
               if(err) throw err;
              
               console.log(result1[0].rid);
-              con.query("SELECT * from menu where rid="+result1[0].rid, function(err,result,fields){
+              con.query("SELECT * from menu m, sections s where m.sid=s.sid && m.rid="+result1[0].rid, function(err,result,fields){
                 if(err) throw err;
 
             res.writeHead(200,{
@@ -341,7 +375,7 @@ app.post('/rprofileupdate',function(req,res){
         });
         })
 
-        app.post('/getCart',function(req,res){
+app.post('/getCart',function(req,res){
           console.log("Inside Cart");  
           console.log(req.body);
           var found=false;
@@ -360,7 +394,7 @@ app.post('/rprofileupdate',function(req,res){
           })
           })
 
-        app.post('/searchFood',function(req,res){
+app.post('/searchFood',function(req,res){
           console.log("Inside Search ");  
           let c=req.body.criteria;
 // console.log(c);
@@ -410,9 +444,9 @@ app.post('/rprofileupdate',function(req,res){
           }
         })
 
-        app.post('/getSection',function(req,res){
+app.post('/getSection',function(req,res){
           console.log("Inside Section ");  
-          var sectionList=[];
+         
           console.log(req.body.email);
               con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
                 if(err) throw err;
@@ -421,21 +455,38 @@ app.post('/rprofileupdate',function(req,res){
                 con.query("SELECT * from sections where rid="+result1[0].rid, function(err,result,fields){
                   if(err) throw err;
                  
+                  let a=[]
                   for(var i=0;i<result.length;i++){
-                    sectionList[i]=result[i].name;
+                  
+                    a.push({"key" : result[i].sid,"value" :result[i].name} )
                   }
   
               res.writeHead(200,{
                   'Content-Type' : 'application/json'
               });
-          console.log(sectionList);
-          res.end(JSON.stringify(sectionList));
+          
+          res.end(JSON.stringify(a));
                 })
           });
           })
 
+app.post('/getSectionFromID',function(req,res){
+            console.log("Inside Section ID ");  
+           
+            console.log(req.body.id);
+              
+                  con.query("SELECT name from sections where sid="+req.body.id, function(err,result,fields){
+                    if(err) throw err;
+                     
+                res.writeHead(200,{
+                    'Content-Type' : 'application/json'
+                });
+            
+            res.end(result[0].name);
+                  })    
+})
 
-    app.post('/cprofile',function(req,res){
+app.post('/cprofile',function(req,res){
       console.log("Inside Restaurant Profile");  
       console.log(req.body);
       var found=false;
@@ -450,7 +501,6 @@ app.post('/rprofileupdate',function(req,res){
         });
   
       })
-
 
 app.post('/rlogin',function(req,res){
   var found=false;
@@ -491,19 +541,15 @@ app.post('/rlogin',function(req,res){
         })
     })
   
-
-    app.post('/additem',function(req,res){
+app.post('/additem',function(req,res){
       var msg="";
 
       con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
         if(err) throw err;
         console.log(result1[0].rid);
 
-         con.query("SELECT sid from sections where name='"+req.body.section+"'", function(err,result2,fields){
-           if(err) throw err;
-
            var queryString1 = "INSERT INTO menu (itemname,description,price,image, sid,rid) VALUES (?,?,?,?,?,?)";    
-           con.query(queryString1,[req.body.itemname,req.body.description,req.body.price,req.body.image,result2[0].sid,result1[0].rid],function(error, results){
+           con.query(queryString1,[req.body.itemname,req.body.description,req.body.price,req.body.image,req.body.sid,result1[0].rid],function(error, results){
                if (error){
                    console.log(error);
                    msg="Could Not Add Item! :(";
@@ -514,11 +560,11 @@ app.post('/rlogin',function(req,res){
                   res.end(msg);            
                 }
               })
-           })
+           
       });
     })
 
-    app.post('/addsection',function(req,res){
+app.post('/addsection',function(req,res){
       var msg="";
       con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
         if(err) throw err;
@@ -539,7 +585,24 @@ app.post('/rlogin',function(req,res){
            })
     })
 
+app.post('/deleteSection',function(req,res){
+      console.log("Inside Delete Selection ");  
+      console.log(req.body);
+      var msg="";
+          con.query("DELETE from menu where sid="+req.body.id, function(err,result,fields){
+            if(err) throw err;
 
+            con.query("DELETE from sections where sid="+req.body.id, function(err,result,fields){
+              if(err) throw err;
+           
+          res.writeHead(200,{
+            'Content-Type' : 'application/json'
+          });
+
+          res.end("Section Deleted");
+        });
+        });
+      })
 
 app.post('/rregister',function(req,res){
   var found=false;
@@ -589,8 +652,6 @@ app.post('/rregister',function(req,res){
         }
       });
   });
-
-  
 
 app.post('/cregister',function(req,res){
   var found=false;

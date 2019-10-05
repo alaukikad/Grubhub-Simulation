@@ -9,7 +9,7 @@ import 'react-dropdown/style.css';
 let updateFlag=false;
 
 //Define a Login Component
-class AddSection extends Component{
+class EditSection extends Component{
     //call the constructor method
     constructor(props){
         //Call the constrictor of Super class i.e The Component
@@ -19,14 +19,24 @@ class AddSection extends Component{
             sectionname : ""
         }
         //Bind the handlers to this class
-        
-       
         this.onChangeHandler = this.onChangeHandler.bind(this);
         this.submitForm = this.submitForm.bind(this);
     }
     //Call the Will Mount to set the auth Flag to false
    componentWillMount(){
-   
+    const data={
+        id: this.props.sectionID
+    }
+      //set the with credentials to true
+      axios.defaults.withCredentials = true;
+      //make a post request with the user data
+      axios.post('http://localhost:3001/getSectionFromID',data)
+      .then((response) => {
+      //update the state with the response data
+      this.setState({
+          sectionname : response.data
+      });
+     })
 
     }
 
@@ -37,7 +47,6 @@ class AddSection extends Component{
             [e.target.name] : e.target.value
         })
     }
-
 
 
     //submit Register handler to send a request to the node backend
@@ -54,16 +63,20 @@ if(this.sectionname.value=="" ){
 alert("Please fill Section Name Field!");
 }else{
    
+    const data={
+        id: this.props.sectionID,
+        name : this.state.sectionname
+    }
      //set the with credentials to true
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://localhost:3001/addsection',data)
+     axios.post('http://localhost:3001/editsection',data)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);
-         if(response.data.trim() == "Section Added Successfully!"){
-           console.log("Hello New Section");
+         if(response.data.trim() == "Section Updated!"){
+           console.log("Hello Updated Section");
            updateFlag=true;
             this.setState({
             })
@@ -90,23 +103,19 @@ alert("Please fill Section Name Field!");
                 {goBack}
             <div>
                <div>
-               <h4>Add Section</h4>
+               <h4>Edit Section</h4>
                     <form>
                         <div class="form-group">
-                                <input ref={(ref)=> this.sectionname=ref} style={{flex:"10",width :"80%"}} onChange = {this.onChangeHandler} type="text" class="form-control" name="sectionname" placeholder="Section Name" required/>
-                            </div>
+                            <input ref={(ref)=> this.sectionname=ref} style={{flex:"10",width :"80%"}} onChange = {this.onChangeHandler} value={this.state.sectionname} type="text" class="form-control" name="sectionname" placeholder="Section Name" required/>
+                        </div>
                            
-                            <button onClick = {this.submitForm} class="btn btn-primary3" type="submit"> Add </button>                 
-
-                            </form>
+                        <button onClick = {this.submitForm} class="btn btn-primary3" type="submit"> Edit </button>                 
+                         </form>
                     </div>
-                   
                     </div>
-            
             </div>
         )
     }
 }
 
-
-export default AddSection;
+export default EditSection;

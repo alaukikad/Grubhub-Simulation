@@ -29,7 +29,9 @@ class SearchFood extends Component{
     }
     //Call the Will Mount to set the auth Flag to false
    componentWillMount(){
-   
+   this.setState({
+       restaurants :[]
+   })
 
     }
     criteriaChangeHandler = (value) => {
@@ -70,7 +72,7 @@ alert("Please fill Section Name Field!");
      axios.post('http://localhost:3001/searchfood',data)
      .then(response => {
          this.setState({
-            restaurants : this.state.restaurants.concat(response.data) 
+            restaurants : response.data
          })
          if(response.data==""){
              alert("Nothing to Show!:(")

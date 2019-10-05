@@ -17,6 +17,7 @@ class EditItem extends Component{
         super(props);
         //maintain the state required for this component
         this.state = {
+            secList :[],
             itemname : "",
             description: "",
             price : "",
@@ -39,14 +40,31 @@ class EditItem extends Component{
      axios.defaults.withCredentials = true;
 
      //make a post request with the user data
-     axios.post('http://localhost:3001/getSection',data)
-     .then((response) => {
-     //update the state with the response data
-   
-     this.setState({
-         options : response.data
-     });
+
+        axios.post('http://localhost:3001/getSection',data)
+        .then((response) => {
+        //update the state with the response data
+        console.log("here")
+        console.log(response.data)
+        let o=[]
+        let temp=response.data.map( sec=>{
+           o.push(sec.value);
+        })
+    
+        this.setState({
+            secList : response.data,
+            options : o
+        });
     })
+
+    //  axios.post('http://localhost:3001/getSection',data)
+    //  .then((response) => {
+    //  //update the state with the response data
+   
+    //  this.setState({
+    //      options : response.data
+    //  });
+    // })
 console.log(this.props.ItemID);
      const data2={
         id: this.props.ItemID
@@ -84,6 +102,13 @@ console.log(this.props.ItemID);
     //submit Register handler to send a request to the node backend
     submitForm= (e) => {
         var headers = new Headers();
+        var scid;
+        for(var i=0;i<this.state.secList.length;i++){
+            if(this.state.section== this.state.secList[i].value){
+             scid=this.state.secList[i].key;
+            break;
+            }
+        }
         //prevent page from refresh
         e.preventDefault();
         const data = {
@@ -91,7 +116,7 @@ console.log(this.props.ItemID);
             itemname : this.state.itemname,
             description: this.state.description,
             price : this.state.price,
-            section : this.state.section,
+            sid : scid,
             image : this.state.image
         }
 

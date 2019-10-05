@@ -4,13 +4,14 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 
-let orderList=new Map();
+let orderList;
 let total=[];
 let c=-1;
 
 class PastOrders extends Component {
     constructor(props){
             super(props);
+            orderList=new Map();
             this.state = {  
                 cart: []
             }
@@ -90,13 +91,15 @@ total[++c]=0
     console.log(det);
     display.push(
     
-    <tr>
-    <td>{det["item"]}</td>
-     <td>................... </td>
-    <td>{det.quantity}</td>
-    <td>.................................. </td> 
-    <td>${det.price}</td>
-    </tr>
+        <table>
+        <td><div style={{marginRight:"40px"}}>{det["item"]}</div></td>
+         <td> </td>
+        <td><div style={{marginRight:"50px",marginLeft:"40px"}}>{det.quantity}</div></td>
+        <td> </td> 
+        <td><div style={{marginLeft:"80px"}}>${det.price}</div></td>
+        </table>
+   
+
    
     )
     })

@@ -16,6 +16,7 @@ class AddItem extends Component{
         super(props);
         //maintain the state required for this component
         this.state = {
+            secList : [],
             itemname : "",
             description: "",
             price : "",
@@ -38,15 +39,28 @@ class AddItem extends Component{
      axios.defaults.withCredentials = true;
 
      //make a post request with the user data
-     axios.post('http://localhost:3001/getSection',data)
-     .then((response) => {
-     //update the state with the response data
-    // alert(response.data)
-     this.setState({
-         options : response.data
-     });
- });
-
+//      axios.post('http://localhost:3001/getSection',data)
+//      .then((response) => {
+//      //update the state with the response data
+//     // alert(response.data)
+//      this.setState({
+//          options : response.data
+//      });
+//  });
+axios.post('http://localhost:3001/getSection',data)
+.then((response) => {
+//update the state with the response data
+console.log("here")
+console.log(response.data)
+let o=[]
+let temp=response.data.map( sec=>{
+   o.push(sec.value);
+})
+this.setState({
+        secList : response.data,
+        options : o
+});
+})
     }
 
 
@@ -69,6 +83,13 @@ class AddItem extends Component{
     //submit Register handler to send a request to the node backend
     submitForm= (e) => {
         var headers = new Headers();
+        var scid;
+        for(var i=0;i<this.state.secList.length;i++){
+            if(this.state.section== this.state.secList[i].value){
+             scid=this.state.secList[i].key;
+            break;
+            }
+        }
         //prevent page from refresh
         e.preventDefault();
         const data = {
@@ -76,25 +97,12 @@ class AddItem extends Component{
             itemname : this.state.itemname,
             description: this.state.description,
             price : this.state.price,
-            section : this.state.section
+            sid : scid
         }
 
 if(this.itemname.value=="" || this.description.value=="" ||this.section.value=="" ||this.price.value=="" ){
 alert("Please fill all Fields!");
 }else{
-    // this.props.registerRestaurant(data);
-    // store.subscribe(() => {
-    //     // When state will be updated(in our case, when items will be fetched), 
-    //     // we will update local component state and force component to rerender 
-    //     // with new data.
-    //     console.log(cookie.load('cookie'));
-    //     console.log(this.props.propData);
-    //     this.setState({
-    //       username: store.getState().username
-    //     });
-    //   });
-
-
      //set the with credentials to true
      axios.defaults.withCredentials = true;
      //make a post request with the user data

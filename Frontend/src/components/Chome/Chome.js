@@ -10,7 +10,6 @@ class Chome extends Component {
     constructor(props){
         super(props);
         this.state = {  
-           
         }
     }  
     //get the books data from backend  

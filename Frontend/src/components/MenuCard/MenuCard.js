@@ -4,26 +4,18 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 
-
-let ItemID=null;
-let getDetail=null;
 let goToCart=false;
-var quantityMap = new Map();
-let quant=[];
+let quant=null;
+let secList=[];
 
 class MenuCard extends Component {
     constructor(props){
             super(props);
             this.state = {  
-                menu:[],
-                section:[],
-                options:[],
-               
+                menu:[]
             } 
-
+        
         this.checkOut = this.checkOut.bind(this);    
-        this.incrementItem = this.incrementItem.bind(this);
-        this.decrementItem = this.decrementItem.bind(this);
         this.setQuantity = this.setQuantity.bind(this);
     }  
    
@@ -41,84 +33,95 @@ class MenuCard extends Component {
         });
         console.log(this.state.menu)
     });
+    axios.post('http://localhost:3001/getSection',data)
+        .then((response) => {
+        //update the state with the response data
+        console.log("here in Sections")
+        console.log(response.data)
+        secList=response.data;
+        console.log(secList)
+    });
     }
    
-    incrementItem=(e)=>{
-
-        // var qty=quant[mid]+1
-        // quant[mid]=qty;
-        // console.log(quant);
-    // var qt=quantityMap.get(mid);
-    // quantityMap.set(mid,(qt+1));
-    // console.log(quantityMap.get(mid))
-     }
-
     setQuantity=(e)=>{
     console.log(e);
     console.log(e.target.value);
     console.log(e.target.name)
     quant[e.target.name]=e.target.value;
-    console.log(quant);
-    // quantityMap.set([e.target.name],e.target.value)
-    // console.log(quantityMap)
-    // console.log(quantityMap.get(e.target.name))
+    console.log(quant); 
     }
 
-     decrementItem=(mid)=>{
-        var qty=quant[mid]-1
-        quant[mid]=qty;
-        console.log(quant);
-    // var qt=quantityMap.get(i.mid);
-    // console.log(quantityMap.get(i.mid))
-    // quantityMap.set(i.mid,(qt-1));
-    // console.log(quantityMap.get(i.mid))
-     }
-
 checkOut=(e)=>{
-    console.log("Inside Checout1")
+    console.log("Inside Checkout1")
     const data = {
         rid : this.props.restID,
         qty : quant,
         uid : cookie.load('email')
     }
-    
+    console.log(quant)
+    if(quant==null){
+    alert("No Food Added to Cart!")
+    }else{
     axios.defaults.withCredentials = true;
     axios.post('http://localhost:3001/checkOut',data)
     .then((response) => {
     //update the state with the response data
     alert(response.data)
-goToCart=true;
+    goToCart=true;
     this.setState({   
     });
-    console.log("Inside Checout2")
+    console.log("Inside Checkout2")
 });
+    }
 }
 
 
     render(){
-        
-        let itemdetails = this.state.menu.map(item =>  {
-            return(
-                <tr>
-                    <td><img src={item.image} style={{height: "60px",width:"90px"}}></img></td>
-                    <td>{item.itemname}</td>
-                    <td>{item.description}</td>
-                    <td>${item.price}</td>
-                    <td><a class="glyphicon glyphicon-plus" onClick={this.incrementItem.bind(item.mid,this)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
-                    <td><input type="text" name={item.mid} pattern="[0-9]*" onChange={this.setQuantity.bind(this)} style={{width:"50px"}}></input></td>
-                    <td><a class="glyphicon glyphicon-minus" onClick={this.decrementItem.bind(item.mid,this)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
-                </tr> 
-            )
+        let display=[];
+        let sectionDetails= secList.map(sec => {
+            console.log(sec)
+            let secItems=this.state.menu.filter(item=> item.name == sec.value)
+            let itemdetails = secItems.map(item =>  {
+                display.push(
+                    <tr>
+                        <td><img src={item.image} style={{height: "60px",width:"90px", margin : "10px"}}></img></td>
+                        <td><div style={{margin : "10px"}}>{item.itemname}</div></td>
+                        <td><div style={{margin : "10px"}}>{item.description}</div></td>
+                        <td><div style={{margin : "10px"}}>${item.price}</div></td>
+                        <td><input type="text" name={item.mid} pattern="[0-9]*" onChange={this.setQuantity.bind(this)} style={{width:"50px"}}></input></td>
+                    </tr> 
+                )
+            })
+            display.push(
+                <div>
+                <div style={{display:"Flex"}}>
+                <h4>{sec.value}</h4>
+                </div>  
+                <table class="table">
+                    <tbody>
+                        {/*Display the Tbale row based on data recieved*/}
+                        {itemdetails}    
+                    </tbody>
+                    </table>
+                </div>)
+                 
         })
-   
+    
+        display.push(
+            <div>
+                {sectionDetails}
+             </div>
+                   
+        )
         //if not logged in go to login page
         let redirectVar = null;
         if(!cookie.load('cookie')){
             redirectVar = <Redirect to= "/login"/>
         }
        
-let goForward=null;
+      let goForward=null;
       if(goToCart){
+          goToCart=false;
          redirectVar = <Redirect to= "/cart"/>
         }
 
@@ -128,21 +131,9 @@ let goForward=null;
                 {goForward}
                 <div style={{backgroundColor:"white",marginLeft:"2%",opacity:"80%",overflowY:"auto"}}>
                 <div>
-                   
                    <h2 style={{color:"red"}}>Menu</h2>
-                   <hr>
-                
-                   </hr>
-                   <h4>Section Name</h4>
-                <table class="table">
-                        
-                        <tbody>
-                            {/*Display the Tbale row based on data recieved*/}
-                            
-                            {itemdetails}
-                           
-                        </tbody>
-                    </table>
+                   <hr></hr>
+                   {display}
                     <a class="btn btn-primary2" onClick={this.checkOut.bind(this)}>Check Out</a>
                    </div>
                 </div>  
