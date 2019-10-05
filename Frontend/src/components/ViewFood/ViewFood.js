@@ -75,7 +75,7 @@ class ViewFood extends Component {
         return(
             <div style={{overflowY:"auto"}}>
                 {redirectVar}
-                <div style={{backgroundColor:"white", width:"100%",opacity:"80%",overflowY:"auto"}}>
+                <div style={{backgroundColor:"white", borderRadius:"12px",width:"100%",opacity:"80%",overflowY:"auto"}}>
                 {getMenu}
                 </div>  
             </div> 

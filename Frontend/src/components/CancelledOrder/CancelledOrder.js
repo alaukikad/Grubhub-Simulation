@@ -4,17 +4,16 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 
+
 let orderList=new Map();
 let total=[];
 let c=-1;
 
-class PastOrders extends Component {
+class CancelledOrder extends Component {
     constructor(props){
             super(props);
-            this.state = {  
-                cart: []
-            }
     }  
+   
     componentDidMount(){
         console.log("I am here")
         const data = {
@@ -22,12 +21,12 @@ class PastOrders extends Component {
         }
       
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/pastOrder',data)
+        axios.post('http://localhost:3001/cancelledOrder',data)
         .then((response) => {
         let mapping=response.data.map(val=>{
             var obj1={
             "ID": val.oid,
-            "restaurant":val.name,
+            "customer":val.name,
             "item":val.itemname,
             "price":val.price,
             "status":val.status,
@@ -67,7 +66,7 @@ console.log(v)
 total[++c]=0
  display.push(<div>
                <br></br>
-              <div><h4>Restaurant : {v[0].restaurant}</h4></div>
+              <div><h4>Customer : {v[0].customer}</h4></div>
               <div> <b>Status :  {v[0].status}</b></div>
               <hr></hr>
               <div>
@@ -116,7 +115,7 @@ total[++c]=0
                 {redirectVar}
                 
                 <div class="container" style={{backgroundColor:"white", width:"60%",opacity:"80%"}}>
-                        <h3>Past Orders</h3>
+                        <h3>Cancelled Orders</h3>
                         
                       {details}
                       {display}
@@ -127,4 +126,4 @@ total[++c]=0
     }
 }
 
-export default PastOrders;
+export default CancelledOrder;

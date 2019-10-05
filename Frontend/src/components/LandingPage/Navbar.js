@@ -25,7 +25,8 @@ class Navbar extends Component {
             navLogin = (
                 
                 <ul class="nav navbar-nav navbar-right">
-                    <li><Link to="/cprofile" ><span class="glyphicon glyphicon-shopping-cart"></span>Orders</Link></li>
+                    <li><Link to="/cart" ><span class="glyphicon glyphicon-shopping-cart"></span>Cart</Link></li>
+                    <li><Link to="/myOrders" ><span class="glyphicon glyphicon-list-alt"></span>Orders</Link></li>
                         <li><Link to="/cprofile" ><span class="glyphicon glyphicon-user"></span>{cookie.load('user')}</Link></li>
                         <li><Link to="/clogin" onClick = {this.handleLogout}><span class="glyphicon glyphicon-log-in"></span>Logout</Link></li>
                 </ul>

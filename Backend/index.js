@@ -134,6 +134,92 @@ app.post('/rprofileupdate',function(req,res){
         });
   })
 
+  app.post('/confirmOrder',function(req,res){
+    console.log("Inside Confirm Order");  
+    console.log(req.body);   
+    con.query("SELECT uid from users where email='"+req.body.email+"'", function(err,result1,fields){
+      if(err) throw err;
+    con.query("INSERT INTO orders (uid,rid,status,price,timestamp) VALUES ("+result1[0].uid+","+req.body.rid+",2,"+req.body.total+",now())", function(err,result2,fields){
+      if(err) throw err;
+      con.query("SELECT * from orders where uid="+result1[0].uid+" AND rid="+req.body.rid+" AND status=2 AND price="+req.body.total, function(err,result3,fields){
+        if(err) throw err;
+    
+          con.query("UPDATE orderdetails SET status=2,oid="+result3[0].oid+" WHERE uid="+result1[0].uid+" AND status=1" ,function (err, result) {
+            if (err) throw err; 
+            console.log(result.affectedRows + " record(s) updated");
+            res.end("Details Updated!");
+          })
+          });
+    })
+  })
+  })
+
+
+  app.post('/cancelOrder',function(req,res){
+    console.log("Inside Confirm Order");  
+    console.log(req.body);   
+    con.query("SELECT uid from users where email='"+req.body.email+"'", function(err,result1,fields){
+      if(err) throw err;
+          con.query("DELETE from orderdetails WHERE uid="+result1[0].uid+" AND status=1" ,function (err, result) {
+            if (err) throw err; 
+            
+            res.end("Cart Cleared!");
+          })
+        })
+  })
+
+  app.post('/upcomingOrder',function(req,res){
+    console.log("Inside Upcoming Order");  
+    console.log(req.body);   
+    con.query("SELECT uid from users where email='"+req.body.email+"'", function(err,result1,fields){
+      if(err) throw err;
+      con.query("SELECT o.oid,r.name,m.itemname,od.price,od.qty,s.status from orders o,orderdetails od,restaurants r,menu m,status s where s.statid=o.status && o.uid="+result1[0].uid+" && m.mid=od.mid && o.status in (2,3,4) && od.oid=o.oid && o.rid=r.rid ", function(err,result,fields){
+        if(err) throw err;
+
+        res.end(JSON.stringify(result));
+      })
+    })
+  })
+
+  app.post('/pastOrder',function(req,res){
+    console.log("Inside Past Order");  
+    console.log(req.body);   
+    con.query("SELECT uid from users where email='"+req.body.email+"'", function(err,result1,fields){
+      if(err) throw err;
+      con.query("SELECT o.oid,r.name,m.itemname,od.price,od.qty,s.status from orders o,orderdetails od,restaurants r,menu m,status s where s.statid=o.status && o.uid="+result1[0].uid+" && m.mid=od.mid && o.status in (5,6) && od.oid=o.oid && o.rid=r.rid ", function(err,result,fields){
+        if(err) throw err;
+
+        res.end(JSON.stringify(result));
+      })
+    })
+  })
+
+  app.post('/deliveredOrder',function(req,res){
+    console.log("Inside Delivered Order");  
+    console.log(req.body);   
+    con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
+      if(err) throw err;
+      con.query("SELECT u.name,u.uid,o.oid,m.itemname,od.price,od.qty,s.status from users u,orders o,orderdetails od,restaurants r,menu m,status s where s.statid=o.status && u.uid=o.uid && r.rid="+result1[0].rid+" && m.mid=od.mid && o.status=6 && od.oid=o.oid && o.rid=r.rid ", function(err,result,fields){
+        if(err) throw err;
+
+        res.end(JSON.stringify(result));
+      })
+    })
+  })
+
+  app.post('/deliveredOrder',function(req,res){
+    console.log("Inside Delivered Order");  
+    console.log(req.body);   
+    con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
+      if(err) throw err;
+      con.query("SELECT u.name,u.uid,o.oid,m.itemname,od.price,od.qty,s.status from users u,orders o,orderdetails od,restaurants r,menu m,status s where s.statid=o.status && u.uid=o.uid && r.rid="+result1[0].rid+" && m.mid=od.mid && o.status=5 && od.oid=o.oid && o.rid=r.rid ", function(err,result,fields){
+        if(err) throw err;
+
+        res.end(JSON.stringify(result));
+      })
+    })
+  })
+
 
   app.post('/rprofile',function(req,res){
     console.log("Inside Restaurant Profile");  
@@ -165,6 +251,56 @@ app.post('/rprofileupdate',function(req,res){
           res.end("Item Deleted");
         });
       })
+
+      app.post('/checkOut',function(req,res){
+        console.log("Inside Delete Item ");  
+        console.log(req.body);
+        let p=[];
+        let q=req.body.qty;
+        var sql=""
+        con.query("SELECT uid from users where email='"+req.body.uid+"'", function(err,result1,fields){
+          if(err) throw err;
+
+          con.query("SELECT * from orderdetails od,restaurants r where uid="+result1[0].uid+" AND status=1 AND r.rid=od.rid AND r.email='"+req.body.email+"'", function(err,result3,fields){
+            if(err) throw err;
+
+          if(result3==null){  
+          for(var i=0;i<q.length;i++){
+            console.log(i)
+            console.log(q[i]);
+            if(q[i]!=null){
+              console.log(q[i]);
+              console.log(i);
+              sql="SELECT mid,price from menu where mid=?"
+             
+              con.query(sql,[i], function(err,result2,fields){
+                if(err) throw err;
+                
+                console.log(result2[0].mid);
+                console.log(result2[0].price);
+                i=result2[0].mid
+               con.query("INSERT INTO orderdetails (mid,qty,status,price,uid) VALUES ("+i+","+q[i]+",1,"+q[i]*result2[0].price+","+result1[0].uid+")", function(err,result,fields){
+              if(err) throw err;
+            
+            })
+          })
+            }
+            res.writeHead(200,{
+              'Content-Type' : 'application/json'
+            });
+            res.end("Proceeding!");
+          }
+        }else{
+          res.writeHead(200,{
+            'Content-Type' : 'application/json'
+          });
+          res.end("Can Add Only one Restaurant Orders to Cart!");
+        }
+          
+        })
+      })
+        })
+
 
 
     app.get('/getCuisine',function(req,res){
@@ -205,7 +341,24 @@ app.post('/rprofileupdate',function(req,res){
         });
         })
 
-       
+        app.post('/getCart',function(req,res){
+          console.log("Inside Cart");  
+          console.log(req.body);
+          var found=false;
+              con.query("SELECT uid from users where email='"+req.body.email+"'", function(err,result1,fields){
+                if(err) throw err;
+               
+                con.query("SELECT did,oid,o.mid,qty,status,itemname,o.price,m.rid,name from orderdetails o,menu m,restaurants r where uid="+result1[0].uid+" AND status=1 AND o.mid=m.mid AND r.rid=m.rid", function(err,result,fields){
+                  if(err) throw err;
+
+        res.writeHead(200,{
+            'Content-Type' : 'application/json'
+        });
+            console.log("Menu : ",JSON.stringify(result));
+            res.end(JSON.stringify(result));
+            });
+          })
+          })
 
         app.post('/searchFood',function(req,res){
           console.log("Inside Search ");  

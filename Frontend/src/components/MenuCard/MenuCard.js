@@ -7,7 +7,9 @@ import {Redirect} from 'react-router';
 
 let ItemID=null;
 let getDetail=null;
-let delFlag=null;
+let goToCart=false;
+var quantityMap = new Map();
+let quant=[];
 
 class MenuCard extends Component {
     constructor(props){
@@ -15,15 +17,20 @@ class MenuCard extends Component {
             this.state = {  
                 menu:[],
                 section:[],
-                options:[]
+                options:[],
+               
             } 
+
+        this.checkOut = this.checkOut.bind(this);    
+        this.incrementItem = this.incrementItem.bind(this);
+        this.decrementItem = this.decrementItem.bind(this);
+        this.setQuantity = this.setQuantity.bind(this);
     }  
    
     componentDidMount(){
         const data = {
             email : this.props.restID
         }
-
         
         axios.defaults.withCredentials = true;
         axios.post('http://localhost:3001/getMenu',data)
@@ -32,34 +39,61 @@ class MenuCard extends Component {
         this.setState({
             menu : this.state.menu.concat(response.data) 
         });
+        console.log(this.state.menu)
     });
     }
    
-    editItem=(value)=>{
-        console.log('edit item');
-        ItemID=value;
-        this.setState({
-        })
+    incrementItem=(e)=>{
+
+        // var qty=quant[mid]+1
+        // quant[mid]=qty;
+        // console.log(quant);
+    // var qt=quantityMap.get(mid);
+    // quantityMap.set(mid,(qt+1));
+    // console.log(quantityMap.get(mid))
+     }
+
+    setQuantity=(e)=>{
+    console.log(e);
+    console.log(e.target.value);
+    console.log(e.target.name)
+    quant[e.target.name]=e.target.value;
+    console.log(quant);
+    // quantityMap.set([e.target.name],e.target.value)
+    // console.log(quantityMap)
+    // console.log(quantityMap.get(e.target.name))
     }
 
-    deleteItem=(value)=>{
-        const data = {
-            id : value
-        }
-     
-        axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/deleteitem',data)
-        .then((response) => {
-            alert(response.data);
-        //update the state with the response data
-        this.setState({       
-        });
+     decrementItem=(mid)=>{
+        var qty=quant[mid]-1
+        quant[mid]=qty;
+        console.log(quant);
+    // var qt=quantityMap.get(i.mid);
+    // console.log(quantityMap.get(i.mid))
+    // quantityMap.set(i.mid,(qt-1));
+    // console.log(quantityMap.get(i.mid))
+     }
+
+checkOut=(e)=>{
+    console.log("Inside Checout1")
+    const data = {
+        rid : this.props.restID,
+        qty : quant,
+        uid : cookie.load('email')
+    }
+    
+    axios.defaults.withCredentials = true;
+    axios.post('http://localhost:3001/checkOut',data)
+    .then((response) => {
+    //update the state with the response data
+    alert(response.data)
+goToCart=true;
+    this.setState({   
     });
+    console.log("Inside Checout2")
+});
+}
 
-
-
-        delFlag=true;
-    }
 
     render(){
         
@@ -70,9 +104,9 @@ class MenuCard extends Component {
                     <td>{item.itemname}</td>
                     <td>{item.description}</td>
                     <td>${item.price}</td>
-                    <td><a class="glyphicon glyphicon-plus" onClick={this.editItem.bind(this,item.mid)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
-                    <td><input type="number" style={{width:"50px"}}></input></td>
-                    <td><a class="glyphicon glyphicon-minus" onClick={this.deleteItem.bind(this,item.mid)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
+                    <td><a class="glyphicon glyphicon-plus" onClick={this.incrementItem.bind(item.mid,this)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
+                    <td><input type="text" name={item.mid} pattern="[0-9]*" onChange={this.setQuantity.bind(this)} style={{width:"50px"}}></input></td>
+                    <td><a class="glyphicon glyphicon-minus" onClick={this.decrementItem.bind(item.mid,this)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
                 </tr> 
             )
         })
@@ -83,10 +117,15 @@ class MenuCard extends Component {
             redirectVar = <Redirect to= "/login"/>
         }
        
+let goForward=null;
+      if(goToCart){
+         redirectVar = <Redirect to= "/cart"/>
+        }
+
         return(
             <div style={{margin:"5%"}}>
                 {redirectVar}
-                
+                {goForward}
                 <div style={{backgroundColor:"white",marginLeft:"2%",opacity:"80%",overflowY:"auto"}}>
                 <div>
                    
@@ -104,7 +143,7 @@ class MenuCard extends Component {
                            
                         </tbody>
                     </table>
-                    <a class="btn btn-primary2">Check Out</a>
+                    <a class="btn btn-primary2" onClick={this.checkOut.bind(this)}>Check Out</a>
                    </div>
                 </div>  
             </div> 

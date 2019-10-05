@@ -60,6 +60,18 @@
   height: 30%;
 
 }
+.td-row{
+  margin-right: "1001px";
+}
+.btn.btn-primary4 {
+  background: green none repeat scroll 0 0;
+  border-color: green;
+  color: #ffffff;
+  font-size: 14px;
+  width: 20%;
+  height: 30%;
+
+}
 .forgot {
   text-align: left; margin-bottom:30px;
 }

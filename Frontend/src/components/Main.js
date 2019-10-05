@@ -12,7 +12,8 @@ import Cprofile from './Cprofile/Cprofile';
 import Rupdateprofile from './Rupdateprofile/Rupdateprofile'
 import Cupdateprofile from './Cupdateprofile /Cupdateprofile'
 import Rmenu from './Rmenu/Rmenu';
-
+import Cart from './Cart/Cart';
+import MyOrders from './MyOrders/MyOrders'
 
 
 //Create a Main Component
@@ -33,6 +34,8 @@ class Main extends Component {
               <Route path="/rupdateprofile" component={Rupdateprofile}/>
               <Route path="/cupdateprofile" component={Cupdateprofile}/>
               <Route path="/rmenu" component={Rmenu}/>
+              <Route path="/cart" component={Cart}/>
+              <Route path="/myOrders" component={MyOrders}/>
             </div>
         )
     }

@@ -41,7 +41,7 @@ class Chome extends Component {
         return(
             <div>
                 {redirectVar}
-                <div class="container">
+                <div class="container" style={{borderRadius:"12px"}} >
                 <SearchFood/>     
                 </div> 
             </div> 

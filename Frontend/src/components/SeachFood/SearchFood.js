@@ -114,7 +114,7 @@ alert("Please fill Section Name Field!");
                     </div>
 
 
-                    <div style={{marginTop:"10%", height:"100%",width:"100%",background:"white"}}>
+                    <div style={{marginTop:"10%", height:"100%",width:"100%",background:"white", borderRadius:"12px"}}>
                <ViewFood key='viewfood' restaurants={this.state.restaurants}></ViewFood>
             </div>
             </div>

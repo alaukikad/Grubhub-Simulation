@@ -3,57 +3,92 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import PropTypes from 'prop-types';
+import DeliveredOrder from '../DeliveredOrder/DeliveredOrder';
+import PendingOrder from '../PendingOrder/PendingOrder';
+import CancelledOrder from '../CancelledOrder/CancelledOrder';
+
+let orderType=null;
 
 class Rhome extends Component {
-    constructor(){
-        super();
-        this.state = {  
-           
-        }
+    constructor(props){
+            super(props);
+            this.state = {  
+                cart: []
+            }
+
+            this.deliveredOrder = this.deliveredOrder.bind(this); 
+            this.pendingOrder = this.pendingOrder.bind(this); 
+            this.cancelledOrder = this.cancelledOrder.bind(this); 
+
     }  
     //get the books data from backend  
     componentDidMount(){
-       /* axios.get('http://localhost:3001/home')
-                .then((response) => {
-                //update the state with the response data
-                this.setState({
-                    books : this.state.books.concat(response.data) 
-                });
-            });*/
+        console.log(cookie.load("email"));
+    }
+    
+    pendingOrder=(value)=>{
+        console.log('pending order');
+        orderType="p"
+        this.setState({
+        })
+    }
+    cancelledOrder=(value)=>{
+        console.log('cancelled order');
+        orderType="c"
+        this.setState({
+        })
+    }
+
+    deliveredOrder=(value)=>{
+        console.log('delivered order');
+        orderType="d"
+        this.setState({
+        })
     }
 
     render(){
-        //iterate over books to create a table row
-        /*let details = this.state.books.map(book => {
-            return(
-                <tr>
-                    <td>{book.BookID}</td>
-                    <td>{book.Title}</td>
-                    <td>{book.Author}</td>
-                </tr>
-            )
-        })*/
+      
         //if not logged in go to login page
         let redirectVar = null;
         if(!cookie.load('cookie')){
             redirectVar = <Redirect to= "/rlogin"/>
         }
+        
+        let goToOrder=null;
+        if(orderType=="p")
+        {
+           goToOrder=<PendingOrder></PendingOrder>;
+           orderType=null;
+       } else if(orderType=="c")
+       {
+           goToOrder=<CancelledOrder></CancelledOrder>;
+           orderType=null;
+        }else  if(orderType=="d")
+        {
+           goToOrder=<DeliveredOrder></DeliveredOrder>;
+           orderType=null;
+       }
+       
+
         return(
             <div>
                 {redirectVar}
-                <div class="container">
-                    <h2>Restaurant Home</h2>
-                        
+                
+                <div class="container" style={{backgroundColor:"white", width:"60%",opacity:"80%",borderRadius:"12px"}}>
+                    
+                    <h2>My Orders</h2>
+                    <br></br>
+
+                    <a class="btn btn-primary3" style={{margin:"10px"}} onClick={this.pendingOrder.bind(this)}>Pending Orders</a>
+                    <a class="btn btn-primary3" style={{margin:"10px"}} onClick={this.deliveredOrder.bind(this)}>Delivered Orders</a>
+                    <a class="btn btn-primary3" style={{margin:"10px"}} onClick={this.cancelledOrder.bind(this)}>Cancelled Orders</a>
+                    <hr></hr>
+                        {goToOrder}
                 </div> 
+               
             </div> 
         )
     }
 }
 
-Rhome.propTypes = {
-    username: PropTypes.object.isRequired,
-    password: PropTypes.func.isRequired
-}
-//export Home Component
 export default Rhome;
