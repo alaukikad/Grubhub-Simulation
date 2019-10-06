@@ -59,10 +59,10 @@ class Navbar extends Component {
                     <li><Link to="/rlogin">Restaurant </Link></li>
                 </ul>
             );
-            loadLogin = (  <ul class="nav navbar-nav navbar-right">
-                        <li><Link to="/login"><span class="glyphicon glyphicon-log-in"></span> Login</Link></li>
-                </ul>
-            );
+            // loadLogin = (  <ul class="nav navbar-nav navbar-right">
+            //             <li><Link to="/login"><span class="glyphicon glyphicon-log-in"></span> Login</Link></li>
+            //     </ul>
+            // );
         }
 
         let redirectVar = null;

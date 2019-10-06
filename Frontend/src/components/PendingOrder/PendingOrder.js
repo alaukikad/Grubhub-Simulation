@@ -136,13 +136,13 @@ total[++c]=0
              <div style={{display:"flex", margin: "10px"}}>
                 
                  <Dropdown options={this.state.options} name="status" onChange={this.statusChangeHandler.bind(this,v[0].ID)} placeholder="Update Status" value={v[0].status}/>
-                 <button class="btn btn-primary4" onClick={this.updateStatus} name={v[0].ID} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}>Update</button>
+                 <button class="btn btn-primary4" onClick={this.updateStatus} name={v[0].ID} style={{padding:"5px", margin:"5px", borderRadius:"8px"}}>Update</button>
             </div>
             
               <hr></hr>
               <div>
                   <table class="table">
-                      <thead>
+                      <thead style={{backgroundColor:"red", height :"20px", color: "white", margin: "10px"}}>
                           <th>Item Name</th>
                           <th>Item Quantity</th>
                           <th>Item Price</th>

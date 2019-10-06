@@ -9,6 +9,7 @@ app.set('view engine', 'ejs');
 var mysql=require('mysql');
 const bcrypt =require('bcryptjs');
 const saltRounds =10;
+var router = express.Router();
 //use cors to allow cross origin resource sharing
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
@@ -46,7 +47,7 @@ app.use(function(req, res, next) {
   });
 
 
-app.post('/login',function(req,res){
+router.post('/login',function(req,res){
   var found=false;
       con.query("SELECT email,password,name from users", function(err,result,fields){
         if(err) throw err;
@@ -79,3 +80,5 @@ app.post('/login',function(req,res){
   });
   })
 })
+
+module.exports = router;

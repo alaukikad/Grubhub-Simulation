@@ -8,6 +8,8 @@ let goToCart=false;
 let quant=[];
 let secList=[];
 let display;
+let resp1=[];
+let itemdetails = null;
 
 class MenuCard extends Component {
     constructor(props){
@@ -24,8 +26,7 @@ class MenuCard extends Component {
         const data = {
             email : this.props.restID
         }
-        let resp1="";
-
+    
         axios.defaults.withCredentials = true;
         axios.post('http://localhost:3001/getMenu',data)
         .then((response) => {
@@ -92,26 +93,7 @@ checkOut=(e)=>{
         let sectionDetails= secList.map(sec => {
             console.log("in section Display")
             console.log(sec)
-            let secItems=this.state.menu.filter(item=> item.name == sec.value)
-            let itemdetails = secItems.map(item =>  {
-                console.log("Hello There")
-                console.log(item)
-                display.push(
-                    <tr>
-                        <td> 
-                        <img
-                        src={"http://localhost:3001/images/all/"+item.image+""}
-                        id="itemimg"
-                        style={{height: "60px",width:"90px", margin : "10px"}}
-                        alt="Item Display"/>
-                        </td>
-                        <td><div style={{margin : "10px"}}>{item.itemname}</div></td>
-                        <td><div style={{margin : "10px"}}>{item.description}</div></td>
-                        <td><div style={{margin : "10px"}}>${item.price}</div></td>
-                        <td><input type="text" name={item.mid} pattern="[0-9]*" onChange={this.setQuantity.bind(this)} style={{width:"50px"}}></input></td>
-                    </tr> 
-                )
-            })
+            let secItems=resp1.filter(item=> item.name == sec.value)
             display.push(
                 <div>
                 <div style={{display:"Flex"}}>
@@ -120,12 +102,31 @@ checkOut=(e)=>{
                 <table class="table">
                     <tbody>
                         {/*Display the Tbale row based on data recieved*/}
-                        {itemdetails}    
+                        {itemdetails}   
                     </tbody>
                     </table>
                 </div>)
-                 
+                 itemdetails =secItems.map(item =>  {
+                    console.log("Hello There")
+                    console.log(item)
+                    display.push(
+                        <tr>
+                            <td> 
+                            <img
+                            src={"http://localhost:3001/images/all/"+item.image+""}
+                            id="itemimg"
+                            style={{height: "60px",width:"90px", margin : "10px"}}
+                            alt="Item Display"/>
+                            </td>
+                            <td><div style={{margin : "10px"}}>{item.itemname}</div></td>
+                            <td><div style={{margin : "10px"}}>{item.description}</div></td>
+                            <td><div style={{margin : "10px"}}>${item.price}</div></td>
+                            <td><input type="text" name={item.mid} pattern="[0-9]*" onChange={this.setQuantity.bind(this)} style={{width:"50px"}}></input></td>
+                        </tr> 
+                    )
+                })
         })
+        
     
         display.push(
             <div>

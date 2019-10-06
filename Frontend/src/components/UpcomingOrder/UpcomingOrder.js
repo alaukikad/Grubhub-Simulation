@@ -75,7 +75,7 @@ total[++c]=0
               <hr></hr>
               <div>
                   <table class="table">
-                      <thead>
+                      <thead style={{backgroundColor:"red", height :"20px", color: "white", margin: "10px"}}>
                           <th>Item Name</th>
                           <th>Item Quantity</th>
                           <th>Item Price</th>
@@ -94,11 +94,11 @@ total[++c]=0
     display.push(
     
         <table>
-        <td><div style={{marginRight:"40px"}}>{det["item"]}</div></td>
-         <td> </td>
-        <td><div style={{marginRight:"50px",marginLeft:"40px"}}>{det.quantity}</div></td>
+        <td><div style={{marginRight:"40px", display:"flex"}}>{det["item"]}</div></td>
+        <td> </td>
+        <td><div style={{marginRight:"50px", display:"flex",marginLeft:"40px"}}>{det.quantity}</div></td>
         <td> </td> 
-        <td><div style={{marginLeft:"80px"}}>${det.price}</div></td>
+        <td><div style={{marginLeft:"80px", display:"flex"}}>${det.price}</div></td>
         </table>
    
     )

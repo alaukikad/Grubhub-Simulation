@@ -160,7 +160,7 @@ class Cregister extends Component{
                             <div class="form-group">
                                 <input ref={(ref)=> this.password=ref} onChange = {this.passwordChangeHandler} type="password" class="form-control" name="password" placeholder="Password"/>
                             </div>
-                            <button onClick = {this.submitForm} class="btn btn-primary2" type="submit">Register</button>                 
+                            <button onClick = {this.submitForm} class="btn btn-primary" type="submit">Register</button>                 
                             <div style={{paddingTop:"10px"}}>
                             <a href="/login" >Already a member? Login</a>
                             </div>

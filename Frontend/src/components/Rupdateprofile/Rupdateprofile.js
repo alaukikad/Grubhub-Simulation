@@ -90,7 +90,9 @@ axios.get('http://localhost:3001/getCuisine')
                 city : response.data.city,
                 cuisine : response.data.cuisine,
                 zipcode : response.data.zipcode,
-                restaurant : response.data.name
+                restaurant : response.data.name,
+                oimage : "http://localhost:3001/images/all/" + response.data.oimage+ "",
+                rimage : "http://localhost:3001/images/all/" + response.data.rimage+ ""
                 });  
             });
     }
@@ -159,8 +161,6 @@ axios.get('http://localhost:3001/getCuisine')
 
           //Restaurant Image
           
-        
-
         //prevent page from refresh
         e.preventDefault();
         const data = {
@@ -172,8 +172,6 @@ axios.get('http://localhost:3001/getCuisine')
             city : this.state.city,
             zipcode : this.state.zipcode,
             restaurant : this.state.restaurant,
-            rimage : this.state.rimage,
-            oimage : this.state.oimage,
             cuisine : this.state.cuisine   
         }
 

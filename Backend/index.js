@@ -11,6 +11,14 @@ const bcrypt =require('bcryptjs');
 const saltRounds =10;
 var path = require('path');
 const multer = require('multer');
+var router = express.Router();
+
+//////////
+
+
+
+//////////////
+
 
 
 //use cors to allow cross origin resource sharing
@@ -31,6 +39,12 @@ app.use(session({
 app.use(bodyParser.json());
 
 app.use(express.static('public'))
+
+var loginRouter = require('./src/customers/login/index');
+var rloginRouter = require('./src/restaurants/rlogin/index');
+app.use('/login',loginRouter);
+app.use('/rlogin',rloginRouter);
+
 
 const storage = multer.diskStorage({
   destination: './public/images/all/',
@@ -311,78 +325,82 @@ app.post('/cregister',function(req,res){
         });  
     });
 
-app.post('/rlogin',function(req,res){
-      var found=false;
-          con.query("SELECT email,password,name from restaurants", function(err,result,fields){
-            if(err) throw err;
-            var uname="";
-            var msg="";
-            console.log(result);
-            console.log(req.body.username);
-            console.log(req.body.password);
-            //console.log(found);
+// app.post('/rlogin',function(req,res){
+//       var found=false;
+//           con.query("SELECT email,password,name from restaurants", function(err,result,fields){
+//             if(err) throw err;
+//             var uname="";
+//             var msg="";
+//             console.log(result);
+//             console.log(req.body.username);
+//             console.log(req.body.password);
+//             //console.log(found);
             
-            let cust_data = result;
-            let flag = false;
-            let passwordInDb="";
-            cust_data.forEach(element => {
-                if(req.body.username==element.email){
-                flag=true;
-                uname=element.name;
-                passwordInDb=element.password;
-                };
-            });
-              console.log(passwordInDb);
-              bcrypt.compare(req.body.password, passwordInDb, function(err, resp) {
-                if (resp) 
-                {
-                console.log("kdsl");
-                res.cookie("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
-                res.cookie("user",uname,{maxAge: 900000, httpOnly: false, path : '/'});
-                res.cookie("email",req.body.username,{maxAge: 900000, httpOnly: false, path : '/'});
-                req.session.user = req.body.username;
-                msg="Login Successful"  
-               }else{
-               //console.log("I ma here");
-               msg="Invalid credentials"
-                }
-               res.end(msg)});
-            })
-        })
-          
-app.post('/login',function(req,res){
-  var found=false;
-      con.query("SELECT email,password,name from users", function(err,result,fields){
-        if(err) throw err;
-        var msg="";
-        var uname;
-        let cust_data = result;
-        let flag = false;
-        let passwordInDb="";
-        cust_data.forEach(element => {
-        if(req.body.username==element.email){
-          flag=true;
-          uname=element.name;
-          passwordInDb=element.password;
-          }
-        });
-          bcrypt.compare(req.body.password, passwordInDb, function(err, resp) {
-            if (resp) 
-            {
-            console.log("alalsk");
-            res.cookie("cookie","customer",{maxAge: 900000, httpOnly: false, path : '/'});
-            res.cookie("user",uname,{maxAge: 900000, httpOnly: false, path : '/'});
-            res.cookie("email",req.body.username,{maxAge: 900000, httpOnly: false, path : '/'});
-            req.session.user = req.body.username;
-            msg="Login Successful"  
-            }else{
-      //console.log("I ma here");
-      msg="Invalid credentials"
-      }
-    res.end(msg)
-  });
-  })
-})
+//             let cust_data = result;
+//             let flag = false;
+//             let passwordInDb="";
+//             cust_data.forEach(element => {
+//                 if(req.body.username==element.email){
+//                 flag=true;
+//                 uname=element.name;
+//                 passwordInDb=element.password;
+//                 };
+//             });
+//               console.log(passwordInDb);
+//               bcrypt.compare(req.body.password, passwordInDb, function(err, resp) {
+//                 if (resp) 
+//                 {
+//                 console.log("kdsl");
+//                 res.cookie("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
+//                 res.cookie("user",uname,{maxAge: 900000, httpOnly: false, path : '/'});
+//                 res.cookie("email",req.body.username,{maxAge: 900000, httpOnly: false, path : '/'});
+//                 req.session.user = req.body.username;
+//                 msg="Login Successful"  
+//                }else{
+//                //console.log("I ma here");
+//                msg="Invalid credentials"
+//                 }
+//                res.end(msg)});
+//             })
+//         })
+
+
+// app.post('/login',function(req,res){
+//   var found=false;
+//       con.query("SELECT email,password,name from users", function(err,result,fields){
+//         if(err) throw err;
+//         var msg="";
+//         var uname;
+//         let cust_data = result;
+//         let flag = false;
+//         let passwordInDb="";
+//         cust_data.forEach(element => {
+//         if(req.body.username==element.email){
+//           flag=true;
+//           uname=element.name;
+//           passwordInDb=element.password;
+//           }
+//         });
+//           bcrypt.compare(req.body.password, passwordInDb, function(err, resp) {
+//             if (resp) 
+//             {
+//             console.log("alalsk");
+//             res.cookie("cookie","customer",{maxAge: 900000, httpOnly: false, path : '/'});
+//             res.cookie("user",uname,{maxAge: 900000, httpOnly: false, path : '/'});
+//             res.cookie("email",req.body.username,{maxAge: 900000, httpOnly: false, path : '/'});
+//             req.session.user = req.body.username;
+//             msg="Login Successful"  
+//             }else{
+//       //console.log("I ma here");
+//       msg="Invalid credentials"
+//       }
+//     res.end(msg)
+//   });
+//   })
+// })
+
+
+
 
 app.post('/cprofile',function(req,res){
   console.log("Inside Restaurant Profile");  
@@ -734,8 +752,8 @@ app.post('/searchFood',function(req,res){
                     res.writeHead(200,{
                       'Content-Type' : 'application/json'
                    });
-                   console.log(result);
-                  res.end(JSON.stringify(result));
+                   console.log(result1);
+                  res.end(JSON.stringify(result1));
                 
               })
               }else if(c=="foodItem"){

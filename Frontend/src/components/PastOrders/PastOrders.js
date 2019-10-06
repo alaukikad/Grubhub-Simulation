@@ -76,7 +76,7 @@ total[++c]=0
               <hr></hr>
               <div>
                   <table class="table">
-                      <thead>
+                      <thead style={{backgroundColor:"red", height :"20px", color: "white", margin: "10px"}}>
                           <th>Item Name</th>
                           <th>Item Quantity</th>
                           <th>Item Price</th>
