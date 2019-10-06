@@ -29,6 +29,7 @@ app.use(bodyParser.json());
 
 
 var con = mysql.createPool({
+  connectionLimit:20,
   host: "localhost",
   user: "root",
   password: "password",
