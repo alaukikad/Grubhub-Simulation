@@ -89,8 +89,8 @@ app.use(function(req, res, next) {
           res.writeHead(200,{
               'Content-Type' : 'application/json'
           });
-          console.log(result);
-          res.end(JSON.stringify(result));
+          console.log(result1);
+          res.end(JSON.stringify(result1));
           
           })
     }
