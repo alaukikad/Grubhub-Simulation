@@ -32,7 +32,7 @@ class Cart extends Component {
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://localhost:3001/getCart',data)
+        axios.post('http://localhost:3001/getCart/getCart',data)
                 .then((response) => {             
                 this.setState({
                 cart : this.state.cart.concat(response.data)              
@@ -52,7 +52,7 @@ class Cart extends Component {
         }
         
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/confirmOrder',data)
+        axios.post('http://localhost:3001/confirmOrder/confirmOrder',data)
         .then((response) => {
         //update the state with the response data
          goToOrders=true;
@@ -71,7 +71,7 @@ class Cart extends Component {
         }
         
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/cancelOrder',data)
+        axios.post('http://localhost:3001/cancelOrder/cancelOrder',data)
         .then((response) => {
         //update the state with the response data
         alert(response.data)

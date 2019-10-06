@@ -30,7 +30,7 @@ class EditSection extends Component{
       //set the with credentials to true
       axios.defaults.withCredentials = true;
       //make a post request with the user data
-      axios.post('http://localhost:3001/getSectionFromID',data)
+      axios.post('http://localhost:3001/getSectionFromID/getSectionFromID',data)
       .then((response) => {
       //update the state with the response data
       this.setState({
@@ -71,7 +71,7 @@ alert("Please fill Section Name Field!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://localhost:3001/editsection',data)
+     axios.post('http://localhost:3001/editsection/editsection',data)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);

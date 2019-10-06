@@ -49,7 +49,7 @@ class Rprofile extends Component {
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://localhost:3001/rprofile',data)
+        axios.post('http://localhost:3001/rprofile/rprofile',data)
                 .then((response) => {
                     
                    

@@ -60,7 +60,7 @@ class Rregister extends Component{
      axios.defaults.withCredentials = true;
 
      //make a post request with the user data
-     axios.get('http://localhost:3001/getCuisine')
+     axios.get('http://localhost:3001/getCuisine/getCuisine')
              .then((response) => {
                  
              this.setState({
@@ -176,7 +176,7 @@ alert("Please fill all Fields!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://localhost:3001/rregister',data)
+     axios.post('http://localhost:3001/rregister/rregister',data)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);

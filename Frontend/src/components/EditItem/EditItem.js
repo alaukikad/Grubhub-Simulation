@@ -43,7 +43,7 @@ class EditItem extends Component{
 
      //make a post request with the user data
 
-        axios.post('http://localhost:3001/getSection',data)
+        axios.post('http://localhost:3001/getSection/getSection',data)
         .then((response) => {
         //update the state with the response data
         console.log("here")
@@ -72,7 +72,7 @@ console.log(this.props.ItemID);
      const data2={
         id: this.props.ItemID
     }
-     axios.post('http://localhost:3001/getItem',data2)
+     axios.post('http://localhost:3001/getItem/getItem',data2)
      .then((response) => {
      //update the state with the response data
      //alert(response.data)
@@ -107,6 +107,7 @@ console.log(this.props.ItemID);
         
     }
     updateImage = (e)=>{
+        console.log(" me ithee")
         e.preventDefault()
         const formData = new FormData()
         console.log(this.state.file.name)
@@ -156,13 +157,14 @@ alert("Please fill all Fields!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://localhost:3001/edititem',data)
+     axios.post('http://localhost:3001/edititem/edititem',data)
      .then(response => {
          
          console.log("Status Code : ",response.status);
          if(response.data.trim() == "Details Updated!"){
            console.log("Hello Edited Item");
-           this.updateImage(e);
+           if(this.state.file!="")
+             this.updateImage(e);
            alert(response.data);
             this.setState({
             })

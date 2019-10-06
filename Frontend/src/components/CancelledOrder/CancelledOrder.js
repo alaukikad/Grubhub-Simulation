@@ -22,7 +22,7 @@ class CancelledOrder extends Component {
         }
       
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/cancelledOrder',data)
+        axios.post('http://localhost:3001/cancelledOrder/cancelledOrder',data)
         .then((response) => {
         let mapping=response.data.map(val=>{
             var obj1={

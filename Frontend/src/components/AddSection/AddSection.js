@@ -58,7 +58,7 @@ alert("Please fill Section Name Field!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://localhost:3001/addsection',data)
+     axios.post('http://localhost:3001/addsection/addsection',data)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);

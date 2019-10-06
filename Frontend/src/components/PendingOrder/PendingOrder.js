@@ -33,7 +33,7 @@ class PendingOrder extends Component {
         }
       
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/pendingOrder',data)
+        axios.post('http://localhost:3001/pendingOrder/pendingOrder',data)
         .then((response) => {
         let mapping=response.data.map(val=>{
             var obj1={
@@ -86,7 +86,7 @@ class PendingOrder extends Component {
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://localhost:3001/updateOrderStatus',data)
+     axios.post('http://localhost:3001/updateOrderStatus/updateOrderStatus',data)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);

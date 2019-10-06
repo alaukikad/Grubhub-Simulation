@@ -45,7 +45,7 @@ class Cupdateprofile extends Component {
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://localhost:3001/cprofile',data)
+        axios.post('http://localhost:3001/cprofile/cprofile',data)
                 .then((response) => {
                 
                 this.setState({
@@ -117,7 +117,7 @@ class Cupdateprofile extends Component {
 
        axios.defaults.withCredentials = true;
        //make a post request with the user data
-       axios.post('http://localhost:3001/cprofileupdate',data)
+       axios.post('http://localhost:3001/cprofileupdate/cprofileupdate',data)
        .then(response => {
        alert(response.data);
        console.log("Status Code : ",response.data);

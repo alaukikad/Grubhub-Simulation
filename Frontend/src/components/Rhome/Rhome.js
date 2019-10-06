@@ -82,7 +82,7 @@ class Rhome extends Component {
                 
                 <div class="container" style={{backgroundColor:"white", width:"60%",opacity:"80%",borderRadius:"12px"}}>
                     
-                    <h2>My Orders</h2>
+                    <h2>Restaurant Orders</h2>
                     <br></br>
 
                     <a class="btn btn-primary3" style={{margin:"10px"}} onClick={this.pendingOrder.bind(this)}>Pending Orders</a>

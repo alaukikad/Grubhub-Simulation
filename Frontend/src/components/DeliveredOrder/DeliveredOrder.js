@@ -22,7 +22,7 @@ class DeliveredOrder extends Component {
         }
       
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/deliveredOrder',data)
+        axios.post('http://localhost:3001/deliveredOrder/deliveredOrder',data)
         .then((response) => {
         let mapping=response.data.map(val=>{
             var obj1={

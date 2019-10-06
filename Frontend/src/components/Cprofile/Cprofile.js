@@ -42,7 +42,7 @@ class Cprofile extends Component {
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://localhost:3001/cprofile',data)
+        axios.post('http://localhost:3001/cprofile/cprofile',data)
                 .then((response) => {
                     
                    

@@ -62,7 +62,7 @@ class Rupdateprofile extends Component {
 axios.defaults.withCredentials = true;
 
 //make a post request with the user data
-axios.get('http://localhost:3001/getCuisine')
+axios.get('http://localhost:3001/getCuisine/getCuisine')
         .then((response) => {
             
         this.setState({
@@ -79,7 +79,7 @@ axios.get('http://localhost:3001/getCuisine')
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://localhost:3001/rprofile',data)
+        axios.post('http://localhost:3001/rprofile/rprofile',data)
                 .then((response) => {
                 this.setState({
                 rid : response.data.rid,
@@ -123,15 +123,17 @@ axios.get('http://localhost:3001/getCuisine')
         var headers = new Headers();
 // Owner Image
         e.preventDefault()
+        let config = {
+            headers: {
+              'content-type': 'multipart/form-data'
+            }
+          }
+        if(this.state.file1!="" || this.state.file2!=""){
         let formData = new FormData()
         console.log(this.state.file1.name)
         formData.append('myImage', this.state.file1, this.state.file1.name)
         formData.append('rid', this.state.rid)
-        let config = {
-          headers: {
-            'content-type': 'multipart/form-data'
-          }
-        }
+        
         axios
           .post('http://localhost:3001/rprofileuploadimage', formData, config)
           .then(response => {
@@ -140,7 +142,7 @@ axios.get('http://localhost:3001/getCuisine')
             this.setState({
               oimage: "http://localhost:3001/images/all/" + response.data.filename+ ""
             })
-
+       
             const formData2 = new FormData()
             console.log(this.state.file2.name)
             formData2.append('myImage', this.state.file2, this.state.file2.name)
@@ -158,7 +160,7 @@ axios.get('http://localhost:3001/getCuisine')
               .catch(error => { })
           })
           .catch(error => { })
-
+        }
           //Restaurant Image
           
         //prevent page from refresh
@@ -180,7 +182,7 @@ axios.get('http://localhost:3001/getCuisine')
        //set the with credentials to true
        axios.defaults.withCredentials = true;
        //make a post request with the user data
-       axios.post('http://localhost:3001/rprofileupdate',data)
+       axios.post('http://localhost:3001/rprofileupdate/rprofileupdate',data)
        .then(response => {
        alert(response.data);
        console.log("Status Code : ",response.data);

@@ -29,7 +29,6 @@ app.use(bodyParser.json());
 
 
 var con = mysql.createPool({
-  connectionLimit: 10,
   host: "localhost",
   user: "root",
   password: "password",
@@ -49,6 +48,7 @@ app.use(function(req, res, next) {
 
 router.post('/login',function(req,res){
   var found=false;
+  console.log(req.body)
       con.query("SELECT email,password,name from users", function(err,result,fields){
         if(err) throw err;
         var msg="";
@@ -76,7 +76,8 @@ router.post('/login',function(req,res){
       //console.log("I ma here");
       msg="Invalid credentials"
       }
-    res.end(msg)
+      res.end(msg);
+     
   });
   })
 })
