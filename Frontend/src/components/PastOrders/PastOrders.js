@@ -23,7 +23,7 @@ class PastOrders extends Component {
         }
       
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/pastOrder/pastOrder',data)
+        axios.post('http://54.196.229.70:3001/pastOrder/pastOrder',data)
         .then((response) => {
         let mapping=response.data.map(val=>{
             var obj1={

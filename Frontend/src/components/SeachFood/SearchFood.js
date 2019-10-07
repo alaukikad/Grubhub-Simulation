@@ -69,7 +69,7 @@ alert("Please fill Section Name Field!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://localhost:3001/searchfood/searchfood',data)
+     axios.post('http://54.196.229.70:3001/searchfood/searchfood',data)
      .then(response => {
          this.setState({
             restaurants : response.data

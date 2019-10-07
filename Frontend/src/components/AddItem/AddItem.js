@@ -47,7 +47,7 @@ class AddItem extends Component{
 //          options : response.data
 //      });
 //  });
-axios.post('http://localhost:3001/getSection/getSection',data)
+axios.post('http://54.196.229.70:3001/getSection/getSection',data)
 .then((response) => {
 //update the state with the response data
 console.log("here")
@@ -106,7 +106,7 @@ alert("Please fill all Fields!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://localhost:3001/additem/additem',data)
+     axios.post('http://54.196.229.70:3001/additem/additem',data)
      .then(response => {
          console.log("Status Code : ",response.status);
          if(response.data.trim =="Item Added Successfully!"){
@@ -145,7 +145,7 @@ alert("Please fill all Fields!");
             <div>
                
                    
-                    <form action="http://127.0.0.1:3000/additem" method="post">
+                    <form action="http://54.196.229.70:3000/additem" method="post">
                         <div class="panel">
                             
                             <h4>Add Item</h4>

@@ -34,14 +34,14 @@ class Rmenu extends Component {
 
         console.log(cookie.load('email'));
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/getMenu/getMenu',data)
+        axios.post('http://54.196.229.70:3001/getMenu/getMenu',data)
         .then((response) => {
         //update the state with the response data
         this.setState({
             menu : this.state.menu.concat(response.data) 
         });
     });
-       axios.post('http://localhost:3001/getSection/getSection',data)
+       axios.post('http://54.196.229.70:3001/getSection/getSection',data)
         .then((response) => {
         //update the state with the response data
         console.log("here")
@@ -78,7 +78,7 @@ class Rmenu extends Component {
             id : value
         }
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/deleteSection/deleteSection',data)
+        axios.post('http://54.196.229.70:3001/deleteSection/deleteSection',data)
         .then((response) => {
             alert(response.data);
         //update the state with the response data
@@ -95,7 +95,7 @@ class Rmenu extends Component {
         }
      
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/deleteitem/deleteitem',data)
+        axios.post('http://54.196.229.70:3001/deleteitem/deleteitem',data)
         .then((response) => {
             alert(response.data);
         //update the state with the response data
@@ -131,7 +131,7 @@ class Rmenu extends Component {
                 display.push(
                     <tr>
                     <td> <img
-                    src={"http://localhost:3001/images/all/"+item.image}
+                    src={"http://54.196.229.70:3001/images/all/"+item.image}
                     id="itemimg"
                     style={{height: "60px",width:"90px", margin : "10px"}}
                     alt="Item Display"

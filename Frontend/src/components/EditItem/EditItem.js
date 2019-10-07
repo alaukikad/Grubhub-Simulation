@@ -43,7 +43,7 @@ class EditItem extends Component{
 
      //make a post request with the user data
 
-        axios.post('http://localhost:3001/getSection/getSection',data)
+        axios.post('http://54.196.229.70:3001/getSection/getSection',data)
         .then((response) => {
         //update the state with the response data
         console.log("here")
@@ -72,7 +72,7 @@ console.log(this.props.ItemID);
      const data2={
         id: this.props.ItemID
     }
-     axios.post('http://localhost:3001/getItem/getItem',data2)
+     axios.post('http://54.196.229.70:3001/getItem/getItem',data2)
      .then((response) => {
      //update the state with the response data
      //alert(response.data)
@@ -119,12 +119,12 @@ console.log(this.props.ItemID);
           }
         }
         axios
-          .post('http://localhost:3001/itemuploadimage', formData, config)
+          .post('http://54.196.229.70:3001/itemuploadimage', formData, config)
           .then(response => {
             console.log('Image uploaded')
             console.log(response.data.filename)
             this.setState({
-              oimage: "http://localhost:3001/images/all/" + response.data.filename+ ""
+              oimage: "http://54.196.229.70:3001/images/all/" + response.data.filename+ ""
             })
           })
           .catch(error => { })
@@ -157,7 +157,7 @@ alert("Please fill all Fields!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://localhost:3001/edititem/edititem',data)
+     axios.post('http://54.196.229.70:3001/edititem/edititem',data)
      .then(response => {
          
          console.log("Status Code : ",response.status);

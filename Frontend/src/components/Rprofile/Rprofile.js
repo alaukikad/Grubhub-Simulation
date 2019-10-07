@@ -49,7 +49,7 @@ class Rprofile extends Component {
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://localhost:3001/rprofile/rprofile',data)
+        axios.post('http://54.196.229.70:3001/rprofile/rprofile',data)
                 .then((response) => {
                     
                    
@@ -62,8 +62,8 @@ class Rprofile extends Component {
                 city : response.data.city,
                 zipcode : response.data.zipcode,
                 restaurant : response.data.name,
-                oimage : "http://localhost:3001/images/all/" + response.data.oimage+ "",
-                rimage : "http://localhost:3001/images/all/" + response.data.rimage+ ""
+                oimage : "http://54.196.229.70:3001/images/all/" + response.data.oimage+ "",
+                rimage : "http://54.196.229.70:3001/images/all/" + response.data.rimage+ ""
                 });
                 
             });

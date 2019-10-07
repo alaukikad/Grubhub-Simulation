@@ -68,7 +68,7 @@ class Rlogin extends Component{
           //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.post('http://localhost:3001/rlogin/rlogin',data)
+        axios.post('http://54.196.229.70:3001/rlogin/rlogin',data)
         .then(response => {
           alert(response.data);
           console.log("Status Code : ",response.data);

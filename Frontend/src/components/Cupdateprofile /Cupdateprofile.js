@@ -45,7 +45,7 @@ class Cupdateprofile extends Component {
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://localhost:3001/cprofile/cprofile',data)
+        axios.post('http://54.196.229.70:3001/cprofile/cprofile',data)
                 .then((response) => {
                 
                 this.setState({
@@ -54,7 +54,7 @@ class Cupdateprofile extends Component {
                 fullname: response.data.name,
                 contact: response.data.contact,
                 address : response.data.address,
-                oimage : "http://localhost:3001/images/all/" + response.data.image+ "" 
+                oimage : "http://54.196.229.70:3001/images/all/" + response.data.image+ "" 
                 });
 
               //  var b64encoded = btoa(String.fromCharCode.apply(null, response.data.image));
@@ -94,12 +94,12 @@ class Cupdateprofile extends Component {
           }
         }
         axios
-          .post('http://localhost:3001/cprofileuploadimage', formData, config)
+          .post('http://54.196.229.70:3001/cprofileuploadimage', formData, config)
           .then(response => {
             console.log('Image uploaded')
             console.log(response.data.filename)
             this.setState({
-              oimage: "http://localhost:3001/images/all/" + response.data.filename+ ""
+              oimage: "http://54.196.229.70:3001/images/all/" + response.data.filename+ ""
             })
           })
           .catch(error => { })
@@ -117,7 +117,7 @@ class Cupdateprofile extends Component {
 
        axios.defaults.withCredentials = true;
        //make a post request with the user data
-       axios.post('http://localhost:3001/cprofileupdate/cprofileupdate',data)
+       axios.post('http://54.196.229.70:3001/cprofileupdate/cprofileupdate',data)
        .then(response => {
        alert(response.data);
        console.log("Status Code : ",response.data);

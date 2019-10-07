@@ -35,7 +35,7 @@ class ViewFood extends Component {
                 <tr>
                 <td>
                 <img
-                        src={"http://localhost:3001/images/all/"+rest.rimage+""}
+                        src={"http://54.196.229.70:3001/images/all/"+rest.rimage+""}
                         id="restimg"
                         style={{marginLeft:"20px",height: "80px",width:"120px"}}
                         alt="Restaurant Display"/>

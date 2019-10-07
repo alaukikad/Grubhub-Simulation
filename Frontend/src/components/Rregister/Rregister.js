@@ -176,7 +176,7 @@ alert("Please fill all Fields!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://localhost:3001/rregister/rregister',data)
+     axios.post('http://54.196.229.70:3001/rregister/rregister',data)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);
@@ -202,7 +202,7 @@ alert("Please fill all Fields!");
             <div class="container">
                 <div class="login-form">
                     <div class="main-div">
-                    <form action="http://127.0.0.1:3000/rregister" method="post">
+                    <form action="http://54.196.229.70:3000/rregister" method="post">
                         <div class="panel">
                             
                             <h2>Restaurant Registration</h2>

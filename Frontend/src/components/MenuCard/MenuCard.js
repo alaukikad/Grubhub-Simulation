@@ -28,7 +28,7 @@ class MenuCard extends Component {
         }
     
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:3001/getMenu/getMenu',data)
+        axios.post('http://54.196.229.70:3001/getMenu/getMenu',data)
         .then((response) => {
         //update the state with the response data
         console.log("In get menu constructor")
@@ -36,7 +36,7 @@ class MenuCard extends Component {
         console.log(resp1)
         })
         
-        axios.post('http://localhost:3001/getSection/getSection',data)
+        axios.post('http://54.196.229.70:3001/getSection/getSection',data)
         .then((response) => {
         //update the state with the response data
         console.log("here in Sections")
@@ -75,7 +75,7 @@ checkOut=(e)=>{
     alert("No Food Added to Cart!")
     }else{
     axios.defaults.withCredentials = true;
-    axios.post('http://localhost:3001/checkOut/checkOut',data)
+    axios.post('http://54.196.229.70:3001/checkOut/checkOut',data)
     .then((response) => {
     //update the state with the response data
     alert(response.data)
@@ -113,7 +113,7 @@ checkOut=(e)=>{
                         <tr>
                             <td> 
                             <img
-                            src={"http://localhost:3001/images/all/"+item.image+""}
+                            src={"http://54.196.229.70:3001/images/all/"+item.image+""}
                             id="itemimg"
                             style={{height: "60px",width:"90px", margin : "10px"}}
                             alt="Item Display"/>

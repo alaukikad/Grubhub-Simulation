@@ -42,7 +42,7 @@ class Cprofile extends Component {
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://localhost:3001/cprofile/cprofile',data)
+        axios.post('http://54.196.229.70:3001/cprofile/cprofile',data)
                 .then((response) => {
                     
                    
@@ -51,7 +51,7 @@ class Cprofile extends Component {
                 fullname: response.data.name,
                 contact: response.data.contact,
                 address : response.data.address,
-                oimage : "http://localhost:3001/images/all/" + response.data.image+ "" 
+                oimage : "http://54.196.229.70:3001/images/all/" + response.data.image+ "" 
                 });
                 
             });
