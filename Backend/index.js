@@ -14,7 +14,7 @@ const multer = require('multer');
 var router = express.Router();
 
 //use cors to allow cross origin resource sharing
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: 'http://54.196.229.70:3000', credentials: true }));
 
 //use express session to maintain session data
 app.use(session({
