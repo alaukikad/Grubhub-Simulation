@@ -47,7 +47,7 @@ app.use(function(req, res, next) {
   });
 
 router.post('/cancelledOrder',function(req,res){
-    console.log("Inside Delivered Order");  
+    console.log("Inside Cancelled Order");  
     console.log(req.body);   
     con.query("SELECT rid from restaurants where email='"+req.body.email+"'", function(err,result1,fields){
       if(err) throw err;

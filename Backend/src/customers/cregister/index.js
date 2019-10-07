@@ -77,10 +77,10 @@ app.use(function(req, res, next) {
                               }     
                               else      
                               {       
-            console.log("I am blehh");
-                                res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
-          res.cookie("user",req.body.fullname,{maxAge: 900000, httpOnly: false, path : '/'});                     
-          res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
+           
+                               res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
+                               res.cookie("user",req.body.fullname,{maxAge: 900000, httpOnly: false, path : '/'});                     
+                               res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
           //                       res.writeHead(200, {      
           //                             "Content-Type": "text/plain"      
           //                           });

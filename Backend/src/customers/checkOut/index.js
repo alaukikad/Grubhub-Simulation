@@ -59,7 +59,7 @@ app.use(function(req, res, next) {
         if(err) throw err;
         console.log(result3);
         if(result3[0]!=null){  
-          console.log("blehhh");
+          
           res.end("You already have Items in your Cart!");
         }else{
       for(var i=0;i<q.length;i++){

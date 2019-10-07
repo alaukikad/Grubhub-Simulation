@@ -47,7 +47,7 @@ app.use(function(req, res, next) {
   });
 
   router.post('/cprofileupdate',function(req,res){
-    console.log("Inside Customer Profile");  
+    console.log("Inside Customer Profile Update");  
     console.log(req.body);   
           var sql = "UPDATE users SET name=?,address=?,contact=?,image=? WHERE email='"+req.body.pemail+"'";
           con.query(sql,[req.body.fullname,req.body.address,req.body.contact,req.body.oimage] ,function (err, result) {

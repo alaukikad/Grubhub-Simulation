@@ -4,9 +4,9 @@ chai.use(chaiHttp);
 
 var expect = chai.expect;
 
-it("Should check credentials and return status code", function(done){
+it("Customer Login - Should check credentials and return status code", function(done){
     chai.request('http://localhost:3001')
-    .post('/login')
+    .post('/login/login')
     .send({ "username": "user15@user.com", "password" : "user15"})
     .end(function (err, res) {
         expect(res).to.have.status(200);
@@ -15,20 +15,9 @@ it("Should check credentials and return status code", function(done){
     });
 })
 
-it("Should check credentials and return status code", function(done){
+it("Customer Registraion - Should check input Registration details for Customer and return status code", function(done){
     chai.request('http://localhost:3001')
-    .post('/rlogin')
-    .send({ "username": "alau@alau.com", "password" : "nachi"})
-    .end(function (err, res) {
-        expect(res).to.have.status(200);
-        expect(res).to.have.cookie('cookie');
-        done();
-    });
-})
-
-it("Should check credentials and return status code", function(done){
-    chai.request('http://localhost:3001')
-    .post('/cregister')
+    .post('/cregister/cregister')
     .send({ 
     "email" : "sarah@jones.com",
     "password" : "sarah",
@@ -42,9 +31,9 @@ it("Should check credentials and return status code", function(done){
     });
 })
 
-it("Should check credentials and return status code", function(done){
+it("Restaurant Registration - Should check input Registration details for Restaurant and return status code", function(done){
     chai.request('http://localhost:3001')
-    .post('/rregister')
+    .post('/rregister/rregister')
     .send({
         "email" : "maggie@maggie.com",
             "password" : "maggie",
@@ -61,9 +50,9 @@ it("Should check credentials and return status code", function(done){
     });
 })
 
-it("Should check credentials and return status code", function(done){
+it("Add Section - Should add Section to DB andreturn status code", function(done){
     chai.request('http://localhost:3001')
-    .post('/addsection')
+    .post('/addsection/addsection')
     .send({ 
     "email" : "alau@alau.com",
     "sectionname" : "Breakfast"
@@ -73,3 +62,17 @@ it("Should check credentials and return status code", function(done){
         done();
     });
 })
+
+
+it("Pending Order - Should check Restaurant ID and return status code", function(done){
+    chai.request('http://localhost:3001')
+    .post('/pendingOrder/pendingOrder')
+    .send({ 
+    "email" : "alau@alau.com",
+})
+    .end(function (err, res) {
+        expect(res).to.have.status(200);
+        done();
+    });
+})
+

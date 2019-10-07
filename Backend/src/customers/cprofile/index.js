@@ -47,7 +47,7 @@ app.use(function(req, res, next) {
   });
 
  router.post('/cprofile',function(req,res){
-    console.log("Inside Restaurant Profile");  
+    console.log("Inside Customer Profile");  
     console.log(req.body);
     var found=false;
         con.query("SELECT * from users where email='"+req.body.email+"'", function(err,result,fields){

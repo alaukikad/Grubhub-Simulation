@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 
 
 var con = mysql.createPool({
-  connectionLimit:20,
+connectionLimit:20,
   host: "localhost",
   user: "root",
   password: "password",
@@ -74,9 +74,10 @@ router.post('/login',function(req,res){
             req.session.user = req.body.username;
             msg="Login Successful"  
             }else{
-      //console.log("I ma here");
+      
       msg="Invalid credentials"
       }
+   
       res.end(msg);
      
   });
