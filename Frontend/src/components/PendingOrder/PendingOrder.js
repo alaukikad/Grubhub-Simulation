@@ -5,6 +5,7 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+import hostAddress from '../constants';
 
 let orderList;
 let total=[];
@@ -33,25 +34,27 @@ class PendingOrder extends Component {
         }
       
         axios.defaults.withCredentials = true;
-        axios.post('http://54.196.229.70:3001/pendingOrder/pendingOrder',data)
+        axios.post('http://'+hostAddress+':3001/pendingOrder/pendingOrder',data)
         .then((response) => {
         let mapping=response.data.map(val=>{
+            for(var i=0;i<val.orderDetails.length;i++){
             var obj1={
-            "ID": val.oid,
-            "customer":val.name,
-            "item":val.itemname,
-            "price":val.price,
-            "status":val.status,
-            "quantity": val.qty,
-            "address" : val.address
+                "ID": val._id,
+                "customer":val.uname,
+                "address" : val.uaddress,
+                "item":val.orderDetails[i].itemname,
+                "price":val.orderDetails[i].price,
+                "status":val.status,
+                "quantity": val.orderDetails[i].qty
         }
-        if(orderList.has(val.oid)){
-            var temp=orderList.get(val.oid);
+        if(orderList.has(val._id)){
+            var temp=orderList.get(val._id);
             temp.push(obj1);
-            orderList.set(val.oid,temp);
+            orderList.set(val._id,temp);
         }else{
-            orderList.set(val.oid,[obj1]);
+            orderList.set(val._id,[obj1]);
         }
+    }
         })
 
         console.log(orderList)
@@ -75,18 +78,18 @@ class PendingOrder extends Component {
         console.log("in here")
         console.log(e.target.name)  
         console.log(statusMap)
-        console.log(statusMap.get(parseInt(e.target.name,10)))
+       // console.log(statusMap.get(parseInt(e.target.name,10)))
         e.preventDefault();
         const data ={
             oid : e.target.name,
-            status : statusMap.get(parseInt(e.target.name,10))
+            status : statusMap.get(e.target.name)
         }
 
          //set the with credentials to true
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://54.196.229.70:3001/updateOrderStatus/updateOrderStatus',data)
+     axios.post('http://'+hostAddress+':3001/updateOrderStatus/updateOrderStatus',data)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);

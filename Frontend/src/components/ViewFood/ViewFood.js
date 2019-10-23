@@ -4,9 +4,11 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import MenuCard from '../MenuCard/MenuCard';
+import hostAddress from '../constants';
 
 let restID=null;
 let updateFlag=false;
+let restName=null;
 
 class ViewFood extends Component {
     constructor(props){
@@ -18,9 +20,10 @@ class ViewFood extends Component {
 
     }
    
-    viewRestaurant=(value)=>{
+    viewRestaurant=(value,name)=>{
        console.log("I am here");
        restID=value;
+       restName=name;
        updateFlag=true;
        this.setState({
 
@@ -35,7 +38,7 @@ class ViewFood extends Component {
                 <tr>
                 <td>
                 <img
-                        src={"http://54.196.229.70:3001/images/all/"+rest.rimage+""}
+                        src={"http://"+hostAddress+":3001/images/all/"+rest.rimage+""}
                         id="restimg"
                         style={{marginLeft:"20px",height: "80px",width:"120px"}}
                         alt="Restaurant Display"/>
@@ -43,7 +46,7 @@ class ViewFood extends Component {
                 <td><b><h4>{rest.name}</h4></b></td>
                 <td><b><h4>{rest.cuisine}</h4></b></td>
                 <td><b><h4>{rest.address}</h4></b></td>
-                <td style={{width:"400px"}}><a class="btn btn-primary2" onClick={this.viewRestaurant.bind(this,rest.email)}>View</a></td>
+                <td style={{width:"400px"}}><a class="btn btn-primary2" onClick={this.viewRestaurant.bind(this,rest.email,rest.name)}>View</a></td>
             </tr> 
 
             )
@@ -59,7 +62,7 @@ class ViewFood extends Component {
         }
         let getMenu=null;
         if(restID!=null){
-            getMenu=<MenuCard key='menucard' restID={restID}></MenuCard>;
+            getMenu=<MenuCard key='menucard' restID={restID} restName={restName}></MenuCard>;
             restID=null;
         } 
         else{

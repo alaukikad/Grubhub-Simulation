@@ -6,6 +6,7 @@ import {Redirect} from 'react-router';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import Rmenu from '../Rmenu/Rmenu';
+import hostAddress from '../constants';
 
 let updateFlag=false;
 
@@ -43,7 +44,7 @@ class EditItem extends Component{
 
      //make a post request with the user data
 
-        axios.post('http://54.196.229.70:3001/getSection/getSection',data)
+        axios.post('http://'+hostAddress+':3001/getSection/getSection',data)
         .then((response) => {
         //update the state with the response data
         console.log("here")
@@ -72,16 +73,16 @@ console.log(this.props.ItemID);
      const data2={
         id: this.props.ItemID
     }
-     axios.post('http://54.196.229.70:3001/getItem/getItem',data2)
+     axios.post('http://'+hostAddress+':3001/getItem/getItem',data2)
      .then((response) => {
      //update the state with the response data
      //alert(response.data)
      this.setState({
         itemname : response.data.itemname,
-        description: response.data.description,
+        description: response.data.desc,
         price : response.data.price,
         image : response.data.image,
-        section : response.data.name
+        section : response.data.sid
      });
     })
    }
@@ -119,34 +120,36 @@ console.log(this.props.ItemID);
           }
         }
         axios
-          .post('http://54.196.229.70:3001/itemuploadimage', formData, config)
+          .post('http://'+hostAddress+':3001/itemuploadimage', formData, config)
           .then(response => {
             console.log('Image uploaded')
             console.log(response.data.filename)
             this.setState({
-              oimage: "http://54.196.229.70:3001/images/all/" + response.data.filename+ ""
+              oimage: "http://"+hostAddress+":3001/images/all/" + response.data.filename+ ""
             })
           })
           .catch(error => { })
    }
     //submit Register handler to send a request to the node backend
     submitForm= (e) => {
-        var headers = new Headers();
-        var scid;
-        for(var i=0;i<this.state.secList.length;i++){
-            if(this.state.section== this.state.secList[i].value){
-             scid=this.state.secList[i].key;
-            break;
-            }
-        }
+        // var headers = new Headers();
+        // var scid;
+        // for(var i=0;i<this.state.secList.length;i++){
+        //     if(this.state.section== this.state.secList[i].value){
+        //      scid=this.state.secList[i].key;
+        //     break;
+        //     }
+        // }
         //prevent page from refresh
         e.preventDefault();
+        //alert(this.state.section)
         const data = {
             id: this.props.ItemID,
             itemname : this.state.itemname,
             description: this.state.description,
             price : this.state.price,
-            sid : scid,
+           // sid : scid,
+            sid: this.state.section,
             image : this.state.image
         }
 
@@ -157,15 +160,15 @@ alert("Please fill all Fields!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://54.196.229.70:3001/edititem/edititem',data)
+     axios.post('http://'+hostAddress+':3001/edititem/edititem',data)
      .then(response => {
-         
+         alert(response.data)
          console.log("Status Code : ",response.status);
          if(response.data.trim() == "Details Updated!"){
            console.log("Hello Edited Item");
            if(this.state.file!="")
              this.updateImage(e);
-           alert(response.data);
+          // alert(response.data);
             this.setState({
             })
          }

@@ -11,10 +11,14 @@ const bcrypt =require('bcryptjs');
 const saltRounds =10;
 var path = require('path');
 const multer = require('multer');
-var router = express.Router();
+let con=require('./db')
+var Database = require('./database');
+var Users=require('./models/Users');
+var Restaurants=require('./models/Restaurants');
+var Menu=require('./models/Menu');
 
 //use cors to allow cross origin resource sharing
-app.use(cors({ origin: 'http://54.196.229.70:3000', credentials: true }));
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 //use express session to maintain session data
 app.use(session({
@@ -25,17 +29,13 @@ app.use(session({
     activeDuration      :  5 * 60 * 1000
 }));
 
-// app.use(bodyParser.urlencoded({
-//     extended: true
-//   }));
 app.use(bodyParser.json());
-
 app.use(express.static('public'))
 
 var loginRouter = require('./src/customers/login/index');
 var rloginRouter = require('./src/restaurants/rlogin/index');
 var deleteSectionRouter = require('./src/restaurants/deleteSection/index');
-var cancelOrderRouter = require('./src/customers/cancelOrder/index')
+var cancelOrderRouter = require('./src/customers/cancelOrder/index');
 var checkOutRouter=require('./src/customers/checkOut/index')
 var confirmOrderRouter=require('./src/customers/confirmOrder/index')
 var cprofileRouter=require('./src/customers/cprofile/index')
@@ -62,6 +62,7 @@ var rprofileRouter=require("./src/restaurants/rprofile/index")
 var rprofileupdateRouter=require("./src/restaurants/rprofileupdate/index") 
 var rregisterRouter=require("./src/restaurants/rregister/index") 
 var updateOrderStatusRouter=require("./src/restaurants/updateOrderStatus/index") 
+
 
 app.use('/login',loginRouter);
 app.use('/rlogin',rloginRouter);
@@ -92,7 +93,7 @@ app.use( '/pendingOrder',pendingOrderRouter)
 app.use( '/rprofile',rprofileRouter)
 app.use( '/rprofileupdate',rprofileupdateRouter)
 app.use( '/rregister',rregisterRouter)
-app.use( '/updateOrderStatus',updateOrderStatusRouter)  
+app.use( '/updateOrderStatus',updateOrderStatusRouter) 
 
 
 const storage = multer.diskStorage({
@@ -109,14 +110,6 @@ const upload = multer({
   storage: storage
 }).single('myImage')
 
-var con = mysql.createPool({
-  connectionLimit: 10,
-  host: "database-1d.cba9kabwgk3a.us-east-1.rds.amazonaws.com",
-  user: "admin",
-  password: "password",
-  database:"grubhubapp"
-});
-
 //Allow Access Control
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -125,7 +118,7 @@ app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
     res.setHeader('Cache-Control', 'no-cache');
     next();
-  });
+  });  
 
   app.post('/cprofileuploadimage', function (req, res) {
     upload(req, res, err => {
@@ -138,29 +131,21 @@ app.use(function(req, res, next) {
        
         console.log(req.body)
         console.log(req.file)
-  
-       let  uid = req.body.uid;
-       let  filename = req.file.filename;
-  
         console.log("Filename : " + req.file.filename)
-
-        sql = "UPDATE users SET image=? where uid=?";
        
-        con.query(sql,[filename,uid], (err, result) => {
-          if (err) {
-            console.log("Error occured : " + err);
-          } else {
-            console.log("Image updated in database")
-          }
-        });
-  
+        Users.findOneAndUpdate({email : req.body.uid},{image :req.file.filename}, function(err, result) {
+          if (err) throw err;
+                console.log(result.affectedRows + " record(s) updated");
+                res.end("Details Updated!");
+              });
+
         res.writeHead(200, {
           'Content-Type': 'text/plain'
         })
         res.end(JSON.stringify(req.file))
-      }
-    })
+    }
   })
+})
 
   app.post('/rprofileuploadimage', function (req, res) {
     upload(req, res, err => {
@@ -173,22 +158,14 @@ app.use(function(req, res, next) {
        
         console.log(req.body)
         console.log(req.file)
-  
-       let  rid = req.body.rid;
-       let  filename = req.file.filename;
-  
         console.log("Filename : " + req.file.filename)
 
-        sql = "UPDATE restaurants SET oimage=? where rid=?";
-       
-        con.query(sql,[filename,rid], (err, result) => {
-          if (err) {
-            console.log("Error occured : " + err);
-          } else {
-            console.log("Image updated in database")
-          }
-        });
-  
+        Restaurants.findOneAndUpdate({email : req.body.rid},{oimage :req.file.filename}, function(err, result) {
+          if (err) throw err;
+                console.log(result.affectedRows + " record(s) updated");
+                res.end("Details Updated!");
+              });
+
         res.writeHead(200, {
           'Content-Type': 'text/plain'
         })
@@ -208,22 +185,14 @@ app.use(function(req, res, next) {
         
         console.log(req.body)
         console.log(req.file)
-  console.log("Alaukika is watching")
-       let  rid = req.body.rid;
-       let  filename = req.file.filename;
-  
-        console.log("Filename : " + req.file.filename)
+        console.log("Alaukika is watching")
+    
+        Restaurants.findOneAndUpdate({email : req.body.rid},{rimage :req.file.filename}, function(err, result) {
+          if (err) throw err;
+                console.log(result.affectedRows + " record(s) updated");
+                res.end("Details Updated!");
+              });
 
-        sql = "UPDATE restaurants SET rimage=? where rid=?";
-       
-        con.query(sql,[filename,rid], (err, result) => {
-          if (err) {
-            console.log("Error occured : " + err);
-          } else {
-            console.log("Image updated in database")
-          }
-        });
-  
         res.writeHead(200, {
           'Content-Type': 'text/plain'
         })
@@ -233,7 +202,7 @@ app.use(function(req, res, next) {
   })
  
   app.post('/itemuploadimage', function (req, res) {
-    console.log("gashdghahgdshdghhsdghgshdghsdgdhdhdsgghdhds")
+    console.log("Image Update")
     upload(req, res, err => {
       if (err) {
         res.writeHead(400, {
@@ -245,21 +214,12 @@ app.use(function(req, res, next) {
         console.log(req.body)
         console.log(req.file)
   
-       let  mid = req.body.mid;
-       let  filename = req.file.filename;
-  
-        console.log("Filename : " + req.file.filename)
+        Menu.findOneAndUpdate({_id : req.body.mid},{image :req.file.filename}, function(err, result) {
+          if (err) throw err;
+                console.log(result.affectedRows + " record(s) updated");
+                res.end("Details Updated!");
+              });
 
-        sql = "UPDATE menu SET image=? where mid=?";
-       
-        con.query(sql,[filename,mid], (err, result) => {
-          if (err) {
-            console.log("Error occured : " + err);
-          } else {
-            console.log("Image updated in database")
-          }
-        });
-  
         res.writeHead(200, {
           'Content-Type': 'text/plain'
         })
@@ -267,6 +227,147 @@ app.use(function(req, res, next) {
       }
     })
   })
+
+  // app.post('/cprofileuploadimage', function (req, res) {
+  //   upload(req, res, err => {
+  //     if (err) {
+  //       res.writeHead(400, {
+  //         'Content-Type': 'text/plain'
+  //       })
+  //       res.end('Could not upload!!')
+  //     } else {
+       
+  //       console.log(req.body)
+  //       console.log(req.file)
+  
+  //      let  uid = req.body.uid;
+  //      let  filename = req.file.filename;
+  
+  //       console.log("Filename : " + req.file.filename)
+
+  //       sql = "UPDATE users SET image=? where uid=?";
+       
+  //       con.query(sql,[filename,uid], (err, result) => {
+  //         if (err) {
+  //           console.log("Error occured : " + err);
+  //         } else {
+  //           console.log("Image updated in database")
+  //         }
+  //       });
+  
+  //       res.writeHead(200, {
+  //         'Content-Type': 'text/plain'
+  //       })
+  //       res.end(JSON.stringify(req.file))
+  //     }
+  //   })
+  // })
+
+  // app.post('/rprofileuploadimage', function (req, res) {
+  //   upload(req, res, err => {
+  //     if (err) {
+  //       res.writeHead(400, {
+  //         'Content-Type': 'text/plain'
+  //       })
+  //       res.end('Could not upload!!')
+  //     } else {
+       
+  //       console.log(req.body)
+  //       console.log(req.file)
+  
+  //      let  rid = req.body.rid;
+  //      let  filename = req.file.filename;
+  
+  //       console.log("Filename : " + req.file.filename)
+
+  //       sql = "UPDATE restaurants SET oimage=? where rid=?";
+       
+  //       con.query(sql,[filename,rid], (err, result) => {
+  //         if (err) {
+  //           console.log("Error occured : " + err);
+  //         } else {
+  //           console.log("Image updated in database")
+  //         }
+  //       });
+  
+  //       res.writeHead(200, {
+  //         'Content-Type': 'text/plain'
+  //       })
+  //       res.end(JSON.stringify(req.file))
+  //     }
+  //   })
+  // })
+
+  // app.post('/restaurantuploadimage', function (req, res) {
+  //   upload(req, res, err => {
+  //     if (err) {
+  //       res.writeHead(400, {
+  //         'Content-Type': 'text/plain'
+  //       })
+  //       res.end('Could not upload!!')
+  //     } else {
+        
+  //       console.log(req.body)
+  //       console.log(req.file)
+  // console.log("Alaukika is watching")
+  //      let  rid = req.body.rid;
+  //      let  filename = req.file.filename;
+  
+  //       console.log("Filename : " + req.file.filename)
+
+  //       sql = "UPDATE restaurants SET rimage=? where rid=?";
+       
+  //       con.query(sql,[filename,rid], (err, result) => {
+  //         if (err) {
+  //           console.log("Error occured : " + err);
+  //         } else {
+  //           console.log("Image updated in database")
+  //         }
+  //       });
+  
+  //       res.writeHead(200, {
+  //         'Content-Type': 'text/plain'
+  //       })
+  //       res.end(JSON.stringify(req.file))
+  //     }
+  //   })
+  // })
+ 
+  // app.post('/itemuploadimage', function (req, res) {
+  //   console.log("gashdghahgdshdghhsdghgshdghsdgdhdhdsgghdhds")
+  //   upload(req, res, err => {
+  //     if (err) {
+  //       res.writeHead(400, {
+  //         'Content-Type': 'text/plain'
+  //       })
+  //       res.end('Could not upload!!')
+  //     } else {
+  //       console.log('Inside upload post call')
+  //       console.log(req.body)
+  //       console.log(req.file)
+  
+  //      let  mid = req.body.mid;
+  //      let  filename = req.file.filename;
+  
+  //       console.log("Filename : " + req.file.filename)
+
+  //       sql = "UPDATE menu SET image=? where mid=?";
+       
+  //       con.query(sql,[filename,mid], (err, result) => {
+  //         if (err) {
+  //           console.log("Error occured : " + err);
+  //         } else {
+  //           console.log("Image updated in database")
+  //         }
+  //       });
+  
+  //       res.writeHead(200, {
+  //         'Content-Type': 'text/plain'
+  //       })
+  //       res.end(JSON.stringify(req.file))
+  //     }
+  //   })
+  // })
 
 //start your server on port 3001
 app.listen(3001);

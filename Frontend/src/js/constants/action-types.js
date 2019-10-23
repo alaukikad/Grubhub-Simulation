@@ -4,4 +4,5 @@ export const CSIGNUP = "CSIGNUP";
 export const CLOGIN = "CLOGIN";
 export const RUPDATE = "RUPDATE";
 export const CUPDATE = "CUPDATE";
+export const hostAddress = "localhost";
 

@@ -8,7 +8,7 @@ import 'react-dropdown/style.css';
 //import { connect } from "react-redux";
 //import { registerRestaurant } from "../../js/actions/index";
 //import store from '../../js/store/index';
- 
+import hostAddress from '../constants';
 
 //Define a Login Component
 class Rregister extends Component{
@@ -60,7 +60,7 @@ class Rregister extends Component{
      axios.defaults.withCredentials = true;
 
      //make a post request with the user data
-     axios.get('http://localhost:3001/getCuisine/getCuisine')
+     axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
              .then((response) => {
                  
              this.setState({
@@ -176,7 +176,7 @@ alert("Please fill all Fields!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://54.196.229.70:3001/rregister/rregister',data)
+     axios.post('http://'+hostAddress+':3001/rregister/rregister',data)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);
@@ -202,7 +202,7 @@ alert("Please fill all Fields!");
             <div class="container">
                 <div class="login-form">
                     <div class="main-div">
-                    <form action="http://54.196.229.70:3000/rregister" method="post">
+                    <form>
                         <div class="panel">
                             
                             <h2>Restaurant Registration</h2>

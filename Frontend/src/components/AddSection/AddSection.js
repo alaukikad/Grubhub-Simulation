@@ -5,6 +5,7 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+import hostAddress from '../constants';
 
 let updateFlag=false;
 
@@ -58,7 +59,7 @@ alert("Please fill Section Name Field!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://54.196.229.70:3001/addsection/addsection',data)
+     axios.post('http://'+hostAddress+':3001/addsection/addsection',data)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);

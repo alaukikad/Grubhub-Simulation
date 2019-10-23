@@ -3,6 +3,7 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
+import hostAddress from '../constants';
 
 let price=0;
 let restName="";
@@ -10,12 +11,16 @@ let restID=0;
 let goToOrders=false;
 let goToHome=false;
 let cartClear=false;
+let totalP=0;
 
 class Cart extends Component {
     constructor(props){
             super(props);
             this.state = {  
-                cart: []
+                cart: [],
+                email :"",
+                fullname : "",
+                address: ""
             }
             this.confirmOrder = this.confirmOrder.bind(this); 
             this.cancelOrder = this.cancelOrder.bind(this); 
@@ -24,35 +29,51 @@ class Cart extends Component {
     componentDidMount(){
         console.log(cookie.load("email"));
         console.log("Blehhh");
+        var t2="",t3="";
         const data = {
             email : cookie.load("email")
         }
         console.log(data);
         //set the with credentials to true
         axios.defaults.withCredentials = true;
+        axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data)
+                .then((response) => {     
+                t2=response.data.name,
+                t3 =response.data.address
 
-        //make a post request with the user data
-        axios.post('http://54.196.229.70:3001/getCart/getCart',data)
+                console.log(t2)
+                console.log(t3)
+
+                axios.post('http://'+hostAddress+':3001/getCart/getCart',data)
                 .then((response) => {             
                 this.setState({
-                cart : this.state.cart.concat(response.data)              
-                });
-              
-                   
+                cart : this.state.cart.concat(response.data),
+                fullname: t2,
+                address : t3              
+                });       
             });
+        })
+       
+        //make a post request with the cart data
+        
+
     }
     
     confirmOrder=(e)=>{
         console.log("Inside Confirm 1")
+       
         const data = {
             cart : this.state.cart,
             email : cookie.load('email'),
-            total : price,
-            rid : restID
+            total : totalP,
+            rid : restID,
+            rname : restName,
+            uname: this.state.fullname,
+            uaddress:this.state.address
         }
-        
+        console.log(data)
         axios.defaults.withCredentials = true;
-        axios.post('http://54.196.229.70:3001/confirmOrder/confirmOrder',data)
+        axios.post('http://'+hostAddress+':3001/confirmOrder/confirmOrder',data)
         .then((response) => {
         //update the state with the response data
          goToOrders=true;
@@ -71,7 +92,7 @@ class Cart extends Component {
         }
         
         axios.defaults.withCredentials = true;
-        axios.post('http://54.196.229.70:3001/cancelOrder/cancelOrder',data)
+        axios.post('http://'+hostAddress+':3001/cancelOrder/cancelOrder',data)
         .then((response) => {
         //update the state with the response data
         alert(response.data)
@@ -87,9 +108,9 @@ class Cart extends Component {
       
        // let redirectProf = <Li to= "/rupdateprofile"/>;
        let details = this.state.cart.map(order => {
-        restName=order.name;  
+        restName=order.rname;  
         restID=order.rid;   
-        price+=order.price;
+        totalP+=order.price;
         return(
             <tr>
                 <td>{order.itemname}</td>
@@ -139,7 +160,7 @@ class Cart extends Component {
                               <tr>
                 <td><b>Total Price:</b></td>
                 <td></td>
-                <td><b>$ {price}</b></td>
+                <td><b>$ {totalP}</b></td>
             </tr>
                             </tbody>
                         </table>

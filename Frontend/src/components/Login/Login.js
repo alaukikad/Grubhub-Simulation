@@ -7,6 +7,7 @@ import {Redirect} from 'react-router';
 import PropTypes from 'prop-types';
 //import store from '../../js/store/index';
 import axios from 'axios';
+import hostAddress from '../constants';
 
 let redirectVar = null;
 
@@ -69,7 +70,7 @@ class Login extends Component{
 //set the with credentials to true
 axios.defaults.withCredentials = true;
 //make a post request with the user data
-axios.post('http://54.196.229.70:3001/login/login',data)
+axios.post('http://'+hostAddress+':3001/login/login',data)
     .then(response => {
      alert(response.data);
         console.log("Status Code : ",response.data);
@@ -82,7 +83,6 @@ axios.post('http://54.196.229.70:3001/login/login',data)
         }
     })
     .catch(
-
         console.log("error")
     
     )

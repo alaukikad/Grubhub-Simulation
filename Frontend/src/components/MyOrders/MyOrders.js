@@ -5,6 +5,7 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import UpcomingOrder from '../UpcomingOrder/UpcomingOrder';
 import PastOrders from '../PastOrders/PastOrders'
+import hostAddress from '../constants';
 
 let orderType=null;
 
@@ -26,7 +27,7 @@ class MyOrders extends Component {
     }
     
     upcomingOrder=(value)=>{
-        console.log('upcomg order');
+        console.log('upcoming order');
         orderType="u"
         this.setState({
         })

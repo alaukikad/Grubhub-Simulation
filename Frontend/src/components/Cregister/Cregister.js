@@ -5,7 +5,7 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 //import { connect } from "react-redux";
 //import { registerUser } from "../../js/actions/index";
-
+import hostAddress from '../constants';
 
 //Define a Login Component
 class Cregister extends Component{
@@ -96,7 +96,7 @@ class Cregister extends Component{
             //set the with credentials to true
             axios.defaults.withCredentials = true;
             //make a post request with the user data
-            axios.post('http://54.196.229.70:3001/cregister/cregister',data)
+            axios.post('http://'+hostAddress+':3001/cregister/cregister',data)
             .then(response => {
             alert(response.data);
             console.log("Status Code blyi : ",response.status);
@@ -138,7 +138,7 @@ class Cregister extends Component{
             <div class="container">
                 <div class="login-form">
                     <div class="main-div">
-                    <form action="http://54.196.229.70:3000/cregister" method="post">
+                    <form>
                         <div class="panel">
                             
                             <h2>Customer Registration</h2>

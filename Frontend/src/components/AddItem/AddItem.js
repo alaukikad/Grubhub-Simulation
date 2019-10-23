@@ -5,6 +5,7 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+import hostAddress from '../constants';
 
 let updateFlag=false;
 
@@ -22,7 +23,11 @@ class AddItem extends Component{
             price : "",
             image : "",
             section : "",
-            options : []
+            options : [],
+            address : "",
+            restaurant : "",
+            cuisine : "" ,
+            rimage : ""
         }
         //Bind the handlers to this class
         
@@ -38,16 +43,21 @@ class AddItem extends Component{
      //set the with credentials to true
      axios.defaults.withCredentials = true;
 
-     //make a post request with the user data
-//      axios.post('http://localhost:3001/getSection',data)
-//      .then((response) => {
-//      //update the state with the response data
-//     // alert(response.data)
-//      this.setState({
-//          options : response.data
-//      });
-//  });
-axios.post('http://54.196.229.70:3001/getSection/getSection',data)
+     const data2 = {
+        email : cookie.load("email")
+    }
+    console.log(data);
+
+   var t1,t2,t3,t4;
+    //make a post request with the user data
+           axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data2)
+            .then((response) => {
+                t1= response.data.cuisine;
+                t2 = response.data.address;
+                t3=response.data.name;
+                t4=response.data.rimage;
+            })
+axios.post('http://'+hostAddress+':3001/getSection/getSection',data)
 .then((response) => {
 //update the state with the response data
 console.log("here")
@@ -58,7 +68,11 @@ let temp=response.data.map( sec=>{
 })
 this.setState({
         secList : response.data,
-        options : o
+        options : o,
+        restaurant : t3,
+        cuisine : t1,
+        address : t2,
+        rimage : t4
 });
 })
     }
@@ -82,13 +96,13 @@ this.setState({
     //submit Register handler to send a request to the node backend
     submitForm= (e) => {
         var headers = new Headers();
-        var scid;
-        for(var i=0;i<this.state.secList.length;i++){
-            if(this.state.section== this.state.secList[i].value){
-             scid=this.state.secList[i].key;
-            break;
-            }
-        }
+        // var scid;
+        // for(var i=0;i<this.state.secList.length;i++){
+        //     if(this.state.section== this.state.secList[i].value){
+        //      scid=this.state.secList[i].key;
+        //     break;
+        //     }
+        // }
         //prevent page from refresh
         e.preventDefault();
         const data = {
@@ -96,7 +110,12 @@ this.setState({
             itemname : this.state.itemname,
             description: this.state.description,
             price : this.state.price,
-            sid : scid
+            //sid : scid
+            sid: this.state.section,
+            name : this.state.restaurant,
+            cuisine : this.state.cuisine,
+            address : this.state.address,
+            rimage : this.state.rimage
         }
 
 if(this.itemname.value=="" || this.description.value=="" ||this.section.value=="" ||this.price.value=="" ){
@@ -106,8 +125,9 @@ alert("Please fill all Fields!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://54.196.229.70:3001/additem/additem',data)
+     axios.post('http://'+hostAddress+':3001/additem/additem',data)
      .then(response => {
+        alert(response.data)
          console.log("Status Code : ",response.status);
          if(response.data.trim =="Item Added Successfully!"){
            console.log("Hello New Item");
@@ -145,7 +165,7 @@ alert("Please fill all Fields!");
             <div>
                
                    
-                    <form action="http://54.196.229.70:3000/additem" method="post">
+                    <form>
                         <div class="panel">
                             
                             <h4>Add Item</h4>

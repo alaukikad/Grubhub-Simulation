@@ -6,6 +6,7 @@ import {Redirect} from 'react-router';
 import DeliveredOrder from '../DeliveredOrder/DeliveredOrder';
 import PendingOrder from '../PendingOrder/PendingOrder';
 import CancelledOrder from '../CancelledOrder/CancelledOrder';
+import hostAddress from '../constants';
 
 let orderType=null;
 

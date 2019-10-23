@@ -8,6 +8,7 @@ import 'react-dropdown/style.css';
 //import store from '../../js/store/index';
 //import { connect } from "react-redux";
 //import { updateRProfile } from "../../js/actions/index";
+import hostAddress from '../constants';
 
 class Rupdateprofile extends Component {
     constructor(props){
@@ -62,7 +63,7 @@ class Rupdateprofile extends Component {
 axios.defaults.withCredentials = true;
 
 //make a post request with the user data
-axios.get('http://54.196.229.70:3001/getCuisine/getCuisine')
+axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
         .then((response) => {
             
         this.setState({
@@ -79,7 +80,7 @@ axios.get('http://54.196.229.70:3001/getCuisine/getCuisine')
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://54.196.229.70:3001/rprofile/rprofile',data)
+        axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data)
                 .then((response) => {
                 this.setState({
                 rid : response.data.rid,
@@ -91,8 +92,8 @@ axios.get('http://54.196.229.70:3001/getCuisine/getCuisine')
                 cuisine : response.data.cuisine,
                 zipcode : response.data.zipcode,
                 restaurant : response.data.name,
-                oimage : "http://54.196.229.70:3001/images/all/" + response.data.oimage+ "",
-                rimage : "http://54.196.229.70:3001/images/all/" + response.data.rimage+ ""
+                oimage : "http://"+hostAddress+":3001/images/all/" + response.data.oimage+ "",
+                rimage : "http://"+hostAddress+":3001/images/all/" + response.data.rimage+ ""
                 });  
             });
     }
@@ -132,29 +133,29 @@ axios.get('http://54.196.229.70:3001/getCuisine/getCuisine')
         let formData = new FormData()
         console.log(this.state.file1.name)
         formData.append('myImage', this.state.file1, this.state.file1.name)
-        formData.append('rid', this.state.rid)
+        formData.append('rid', this.state.email)
         
         axios
-          .post('http://54.196.229.70:3001/rprofileuploadimage', formData, config)
+          .post('http://'+hostAddress+':3001/rprofileuploadimage', formData, config)
           .then(response => {
             console.log('Image uploaded')
             console.log(response.data.filename)
             this.setState({
-              oimage: "http://54.196.229.70:3001/images/all/" + response.data.filename+ ""
+              oimage: "http://"+hostAddress+":3001/images/all/" + response.data.filename+ ""
             })
        
             const formData2 = new FormData()
             console.log(this.state.file2.name)
             formData2.append('myImage', this.state.file2, this.state.file2.name)
-            formData2.append('rid', this.state.rid)
+            formData2.append('rid', this.state.email)
             
             axios
-              .post('http://54.196.229.70:3001/restaurantuploadimage', formData2, config)
+              .post('http://'+hostAddress+':3001/restaurantuploadimage', formData2, config)
               .then(response => {
                 console.log('Image uploadedfddf')
                 console.log(response.data.filename)
                 this.setState({
-                  rimage: "http://54.196.229.70:3001/images/all/" + response.data.filename+ ""
+                  rimage: "http://"+hostAddress+":3001/images/all/" + response.data.filename+ ""
                 })
               })
               .catch(error => { })
@@ -182,7 +183,7 @@ axios.get('http://54.196.229.70:3001/getCuisine/getCuisine')
        //set the with credentials to true
        axios.defaults.withCredentials = true;
        //make a post request with the user data
-       axios.post('http://54.196.229.70:3001/rprofileupdate/rprofileupdate',data)
+       axios.post('http://'+hostAddress+':3001/rprofileupdate/rprofileupdate',data)
        .then(response => {
        alert(response.data);
        console.log("Status Code : ",response.data);

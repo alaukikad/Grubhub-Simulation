@@ -6,6 +6,7 @@ import {Redirect} from 'react-router';
 import store from '../../js/store/index';
 import PropTypes from 'prop-types';
 import { connect } from "react-redux";
+import hostAddress from '../constants';
 
 class Cprofile extends Component {
     constructor(props){
@@ -42,7 +43,7 @@ class Cprofile extends Component {
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://54.196.229.70:3001/cprofile/cprofile',data)
+        axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data)
                 .then((response) => {
                     
                    
@@ -51,7 +52,7 @@ class Cprofile extends Component {
                 fullname: response.data.name,
                 contact: response.data.contact,
                 address : response.data.address,
-                oimage : "http://54.196.229.70:3001/images/all/" + response.data.image+ "" 
+                oimage : "http://"+hostAddress+":3001/images/all/" + response.data.image+ "" 
                 });
                 
             });

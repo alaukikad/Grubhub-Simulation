@@ -7,6 +7,7 @@ import {Redirect} from 'react-router';
 //import { checkRestaurant } from "../../js/actions/index";
 //import PropTypes from 'prop-types';
 //import store from '../../js/store/index';
+import hostAddress from '../constants';
 
 //Define a Login Component
 class Rlogin extends Component{
@@ -68,7 +69,7 @@ class Rlogin extends Component{
           //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.post('http://54.196.229.70:3001/rlogin/rlogin',data)
+        axios.post('http://'+hostAddress+':3001/rlogin/rlogin',data)
         .then(response => {
           alert(response.data);
           console.log("Status Code : ",response.data);
@@ -81,9 +82,6 @@ class Rlogin extends Component{
                   alert("Invalid Credentials!!")
           }  
       })
-         
-
- 
     }
 
     render(){

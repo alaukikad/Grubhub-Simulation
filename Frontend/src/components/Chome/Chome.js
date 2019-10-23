@@ -4,28 +4,17 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import SearchFood from '../SeachFood/SearchFood';
-
+import hostAddress from '../constants';
 
 class Chome extends Component {
     constructor(props){
         super(props);
         this.state = {  
         }
-    }  
-    //get the books data from backend  
-    
+    }      
 
     render(){
-        //iterate over books to create a table row
-        /*let details = this.state.books.map(book => {
-            return(
-                <tr>
-                    <td>{book.BookID}</td>
-                    <td>{book.Title}</td>
-                    <td>{book.Author}</td>
-                </tr>
-            )
-        })*/
+      
         //if not logged in go to login page
         let redirectVar = null;
        if(!cookie.load('cookie'))

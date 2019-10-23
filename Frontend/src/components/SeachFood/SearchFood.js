@@ -6,7 +6,7 @@ import {Redirect} from 'react-router';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import ViewFood from '../ViewFood/ViewFood';
-
+import hostAddress from '../constants';
 
 //Define a Login Component
 class SearchFood extends Component{
@@ -69,16 +69,18 @@ alert("Please fill Section Name Field!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://54.196.229.70:3001/searchfood/searchfood',data)
+     axios.post('http://'+hostAddress+':3001/searchfood/searchfood',data)
      .then(response => {
          this.setState({
             restaurants : response.data
          })
+    
          if(response.data==""){
              alert("Nothing to Show!:(")
          }
          console.log("Status Code : ",response.status);
          if(response.data!= null){
+            // alert(response.data)
            console.log("Hello Search Food Section");
             this.setState({
             })

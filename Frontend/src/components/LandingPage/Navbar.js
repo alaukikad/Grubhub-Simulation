@@ -2,6 +2,7 @@ import React,{Component} from 'react';
 import {Link} from 'react-router-dom';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
+import hostAddress from '../constants';
 
 //create the Navbar Component
 class Navbar extends Component {

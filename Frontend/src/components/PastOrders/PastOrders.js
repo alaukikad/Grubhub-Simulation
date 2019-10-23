@@ -3,6 +3,7 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
+import hostAddress from '../constants';
 
 let orderList;
 let total=[];
@@ -23,24 +24,26 @@ class PastOrders extends Component {
         }
       
         axios.defaults.withCredentials = true;
-        axios.post('http://54.196.229.70:3001/pastOrder/pastOrder',data)
+        axios.post('http://'+hostAddress+':3001/pastOrder/pastOrder',data)
         .then((response) => {
         let mapping=response.data.map(val=>{
+            for(var i=0;i<val.orderDetails.length;i++){
             var obj1={
-            "ID": val.oid,
-            "restaurant":val.name,
-            "item":val.itemname,
-            "price":val.price,
-            "status":val.status,
-            "quantity": val.qty
+                "ID": val._id,
+                "restaurant":val.rname,
+                "item":val.orderDetails[i].itemname,
+                "price":val.orderDetails[i].price,
+                "status":val.status,
+                "quantity": val.orderDetails[i].qty
         }
-        if(orderList.has(val.oid)){
-            var temp=orderList.get(val.oid);
+        if(orderList.has(val._id)){
+            var temp=orderList.get(val._id);
             temp.push(obj1);
-            orderList.set(val.oid,temp);
+            orderList.set(val._id,temp);
         }else{
-            orderList.set(val.oid,[obj1]);
+            orderList.set(val._id,[obj1]);
         }
+    }
         })
 
         console.log(orderList)

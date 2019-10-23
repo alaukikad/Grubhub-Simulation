@@ -3,9 +3,11 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
+import hostAddress from '../constants';
 
 let goToCart=false;
-let quant=[];
+let quant=new Map();
+
 let secList=[];
 let display;
 let resp1=[];
@@ -28,7 +30,7 @@ class MenuCard extends Component {
         }
     
         axios.defaults.withCredentials = true;
-        axios.post('http://54.196.229.70:3001/getMenu/getMenu',data)
+        axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data)
         .then((response) => {
         //update the state with the response data
         console.log("In get menu constructor")
@@ -36,7 +38,7 @@ class MenuCard extends Component {
         console.log(resp1)
         })
         
-        axios.post('http://54.196.229.70:3001/getSection/getSection',data)
+        axios.post('http://'+hostAddress+':3001/getSection/getSection',data)
         .then((response) => {
         //update the state with the response data
         console.log("here in Sections")
@@ -55,27 +57,39 @@ class MenuCard extends Component {
     console.log(this.state.menu)
     }
    
-    setQuantity=(e)=>{
+    setQuantity=(name,price,e)=>{
     console.log(e);
     console.log(e.target.value);
     console.log(e.target.name)
-    quant[e.target.name]=e.target.value;
+    quant.set(e.target.name,{
+        itemname:e.target.name,
+        qty:e.target.value,
+        price:name
+    });
+    //quant[e.target.name]=e.target.value;
     console.log(quant); 
     }
 
 checkOut=(e)=>{
     console.log("Inside Checkout1")
+    let t=[];
+    let c=-1;
+    let a=quant.forEach((v,k,i)=>{
+    t[++c]=v;
+    })
+
     const data = {
         rid : this.props.restID,
-        qty : quant,
-        uid : cookie.load('email')
+        qty : t,
+        uid : cookie.load('email'),
+        rname : this.props.restName
     }
-    console.log(quant)
+    console.log(t)
     if(quant==null){
     alert("No Food Added to Cart!")
     }else{
     axios.defaults.withCredentials = true;
-    axios.post('http://54.196.229.70:3001/checkOut/checkOut',data)
+    axios.post('http://'+hostAddress+':3001/checkOut/checkOut',data)
     .then((response) => {
     //update the state with the response data
     alert(response.data)
@@ -87,13 +101,12 @@ checkOut=(e)=>{
     }
 }
 
-
     render(){
         display=[]
         let sectionDetails= secList.map(sec => {
             console.log("in section Display")
             console.log(sec)
-            let secItems=resp1.filter(item=> item.name == sec.value)
+            let secItems=resp1.filter(item=> item.sid == sec.value)
             display.push(
                 <div>
                 <div style={{display:"Flex"}}>
@@ -113,15 +126,15 @@ checkOut=(e)=>{
                         <tr>
                             <td> 
                             <img
-                            src={"http://54.196.229.70:3001/images/all/"+item.image+""}
+                            src={"http://"+hostAddress+":3001/images/all/"+item.image+""}
                             id="itemimg"
                             style={{height: "60px",width:"90px", margin : "10px"}}
                             alt="Item Display"/>
                             </td>
                             <td><div style={{margin : "10px"}}>{item.itemname}</div></td>
-                            <td><div style={{margin : "10px"}}>{item.description}</div></td>
+                            <td><div style={{margin : "10px"}}>{item.desc}</div></td>
                             <td><div style={{margin : "10px"}}>${item.price}</div></td>
-                            <td><input type="text" name={item.mid} pattern="[0-9]*" onChange={this.setQuantity.bind(this)} style={{width:"50px"}}></input></td>
+                            <td><input type="text" name={item.itemname} pattern="[0-9]*" onChange={this.setQuantity.bind(item.itemname,item.price,this)} style={{width:"50px"}}></input></td>
                         </tr> 
                     )
                 })
@@ -154,7 +167,7 @@ checkOut=(e)=>{
                 {goForward}
                 <div style={{backgroundColor:"white",marginLeft:"2%",opacity:"80%",overflowY:"auto"}}>
                 <div>
-                   <h2 style={{color:"red"}}>Menu</h2>
+                   <h2 style={{color:"red"}}>{this.props.restName}</h2>
                    <hr></hr>
                    {display}
                     <a class="btn btn-primary2" onClick={this.checkOut.bind(this)}>Check Out</a>

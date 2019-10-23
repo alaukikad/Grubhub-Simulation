@@ -7,12 +7,14 @@ import AddItem from '../AddItem/AddItem';
 import AddSection from '../AddSection/AddSection';
 import EditItem from '../EditItem/EditItem';
 import EditSection from '../EditSection/EditSection';
+import hostAddress from '../constants';
 
 let ItemID=null;
 let getDetail=null;
 let delFlag=null;
 let secList;
 let sectionID=null;
+let prevSecName="";
 
 class Rmenu extends Component {
     constructor(props){
@@ -34,14 +36,14 @@ class Rmenu extends Component {
 
         console.log(cookie.load('email'));
         axios.defaults.withCredentials = true;
-        axios.post('http://54.196.229.70:3001/getMenu/getMenu',data)
+        axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data)
         .then((response) => {
         //update the state with the response data
         this.setState({
             menu : this.state.menu.concat(response.data) 
         });
     });
-       axios.post('http://54.196.229.70:3001/getSection/getSection',data)
+       axios.post('http://'+hostAddress+':3001/getSection/getSection',data)
         .then((response) => {
         //update the state with the response data
         console.log("here")
@@ -75,10 +77,12 @@ class Rmenu extends Component {
 
     deleteSection=(value)=>{
         const data = {
-            id : value
+            id : value,
+            rid: cookie.load('email'),
+            p : prevSecName
         }
         axios.defaults.withCredentials = true;
-        axios.post('http://54.196.229.70:3001/deleteSection/deleteSection',data)
+        axios.post('http://'+hostAddress+':3001/deleteSection/deleteSection',data)
         .then((response) => {
             alert(response.data);
         //update the state with the response data
@@ -95,7 +99,7 @@ class Rmenu extends Component {
         }
      
         axios.defaults.withCredentials = true;
-        axios.post('http://54.196.229.70:3001/deleteitem/deleteitem',data)
+        axios.post('http://'+hostAddress+':3001/deleteitem/deleteitem',data)
         .then((response) => {
             alert(response.data);
         //update the state with the response data
@@ -110,7 +114,7 @@ class Rmenu extends Component {
         let display=[]
         
         let sectionDetails= secList.forEach(sec => {
-            let secItems=this.state.menu.filter(item=> item.name == sec.value)
+            let secItems=this.state.menu.filter(item=> item.sid == sec.value)
             display.push(
                 <div>
                 <div style={{display:"Flex"}}>
@@ -131,16 +135,16 @@ class Rmenu extends Component {
                 display.push(
                     <tr>
                     <td> <img
-                    src={"http://54.196.229.70:3001/images/all/"+item.image}
+                    src={"http://"+hostAddress+":3001/images/all/"+item.image}
                     id="itemimg"
                     style={{height: "60px",width:"90px", margin : "10px"}}
                     alt="Item Display"
                     /></td>
                         <td><div style={{margin : "10px"}}>{item.itemname}</div></td>
-                        <td><div style={{margin : "10px"}}>{item.description}</div></td>
+                        <td><div style={{margin : "10px"}}>{item.desc}</div></td>
                         <td><div style={{margin : "10px"}}>${item.price}</div></td>
-                        <td><a class="glyphicon glyphicon-pencil" onClick={this.editItem.bind(this,item.mid)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
-                        <td><a class="glyphicon glyphicon-trash" onClick={this.deleteItem.bind(this,item.mid)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
+                        <td><a class="glyphicon glyphicon-pencil" onClick={this.editItem.bind(this,item._id)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
+                        <td><a class="glyphicon glyphicon-trash" onClick={this.deleteItem.bind(this,item._id)} style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></a></td>
                        
                     </tr> 
                 )

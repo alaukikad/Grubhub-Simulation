@@ -5,8 +5,10 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+import hostAddress from '../constants';
 
 let updateFlag=false;
+let prevSecName="";
 
 //Define a Login Component
 class EditSection extends Component{
@@ -30,9 +32,10 @@ class EditSection extends Component{
       //set the with credentials to true
       axios.defaults.withCredentials = true;
       //make a post request with the user data
-      axios.post('http://54.196.229.70:3001/getSectionFromID/getSectionFromID',data)
+      axios.post('http://'+hostAddress+':3001/getSectionFromID/getSectionFromID',data)
       .then((response) => {
       //update the state with the response data
+      prevSecName=response.data;
       this.setState({
           sectionname : response.data
       });
@@ -65,13 +68,15 @@ alert("Please fill Section Name Field!");
    
     const data={
         id: this.props.sectionID,
-        name : this.state.sectionname
+        name : this.state.sectionname,
+        rid: cookie.load('email'),
+        p : prevSecName
     }
      //set the with credentials to true
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://54.196.229.70:3001/editsection/editsection',data)
+     axios.post('http://'+hostAddress+':3001/editsection/editsection',data)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);

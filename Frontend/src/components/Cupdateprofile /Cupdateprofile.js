@@ -6,6 +6,7 @@ import {Redirect} from 'react-router';
 //import store from '../../js/store/index';
 //import { connect } from "react-redux";
 //import { updateCProfile } from "../../js/actions/index";
+import hostAddress from '../constants';
 
 class Cupdateprofile extends Component {
     constructor(props){
@@ -45,7 +46,7 @@ class Cupdateprofile extends Component {
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://54.196.229.70:3001/cprofile/cprofile',data)
+        axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data)
                 .then((response) => {
                 
                 this.setState({
@@ -54,7 +55,7 @@ class Cupdateprofile extends Component {
                 fullname: response.data.name,
                 contact: response.data.contact,
                 address : response.data.address,
-                oimage : "http://54.196.229.70:3001/images/all/" + response.data.image+ "" 
+                oimage : "http://"+hostAddress+":3001/images/all/" + response.data.image+ "" 
                 });
 
               //  var b64encoded = btoa(String.fromCharCode.apply(null, response.data.image));
@@ -87,19 +88,19 @@ class Cupdateprofile extends Component {
         const formData = new FormData()
         console.log(this.state.file.name)
         formData.append('myImage', this.state.file, this.state.file.name)
-        formData.append('uid', this.state.uid)
+        formData.append('uid', this.state.email)
         const config = {
           headers: {
             'content-type': 'multipart/form-data'
           }
         }
         axios
-          .post('http://54.196.229.70:3001/cprofileuploadimage', formData, config)
+          .post('http://'+hostAddress+':3001/cprofileuploadimage', formData, config)
           .then(response => {
             console.log('Image uploaded')
             console.log(response.data.filename)
             this.setState({
-              oimage: "http://54.196.229.70:3001/images/all/" + response.data.filename+ ""
+              oimage: "http://"+hostAddress+":3001/images/all/" + response.data.filename+ ""
             })
           })
           .catch(error => { })
@@ -117,7 +118,7 @@ class Cupdateprofile extends Component {
 
        axios.defaults.withCredentials = true;
        //make a post request with the user data
-       axios.post('http://54.196.229.70:3001/cprofileupdate/cprofileupdate',data)
+       axios.post('http://'+hostAddress+':3001/cprofileupdate/cprofileupdate',data)
        .then(response => {
        alert(response.data);
        console.log("Status Code : ",response.data);
