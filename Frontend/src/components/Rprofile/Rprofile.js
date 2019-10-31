@@ -48,9 +48,14 @@ class Rprofile extends Component {
 
         //set the with credentials to true
         axios.defaults.withCredentials = true;
-
+        let config = {
+            headers:{
+                'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+                'Content-Type': 'application/json'
+              }
+          }
         //make a post request with the user data
-        axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data)
+        axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data,config)
                 .then((response) => {
                     
                    

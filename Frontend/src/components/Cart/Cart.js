@@ -12,6 +12,12 @@ let goToOrders=false;
 let goToHome=false;
 let cartClear=false;
 let totalP=0;
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
 
 class Cart extends Component {
     constructor(props){
@@ -36,7 +42,7 @@ class Cart extends Component {
         console.log(data);
         //set the with credentials to true
         axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data)
+        axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data,config)
                 .then((response) => {     
                 t2=response.data.name,
                 t3 =response.data.address
@@ -44,7 +50,7 @@ class Cart extends Component {
                 console.log(t2)
                 console.log(t3)
 
-                axios.post('http://'+hostAddress+':3001/getCart/getCart',data)
+                axios.post('http://'+hostAddress+':3001/getCart/getCart',data,config)
                 .then((response) => {             
                 this.setState({
                 cart : this.state.cart.concat(response.data),
@@ -73,7 +79,7 @@ class Cart extends Component {
         }
         console.log(data)
         axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/confirmOrder/confirmOrder',data)
+        axios.post('http://'+hostAddress+':3001/confirmOrder/confirmOrder',data,config)
         .then((response) => {
         //update the state with the response data
          goToOrders=true;
@@ -92,7 +98,7 @@ class Cart extends Component {
         }
         
         axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/cancelOrder/cancelOrder',data)
+        axios.post('http://'+hostAddress+':3001/cancelOrder/cancelOrder',data,config)
         .then((response) => {
         //update the state with the response data
         alert(response.data)

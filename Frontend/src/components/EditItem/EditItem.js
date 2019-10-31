@@ -9,6 +9,12 @@ import Rmenu from '../Rmenu/Rmenu';
 import hostAddress from '../constants';
 
 let updateFlag=false;
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
 
 //Define a Login Component
 class EditItem extends Component{
@@ -44,7 +50,7 @@ class EditItem extends Component{
 
      //make a post request with the user data
 
-        axios.post('http://'+hostAddress+':3001/getSection/getSection',data)
+        axios.post('http://'+hostAddress+':3001/getSection/getSection',data,config)
         .then((response) => {
         //update the state with the response data
         console.log("here")
@@ -73,7 +79,7 @@ console.log(this.props.ItemID);
      const data2={
         id: this.props.ItemID
     }
-     axios.post('http://'+hostAddress+':3001/getItem/getItem',data2)
+     axios.post('http://'+hostAddress+':3001/getItem/getItem',data2,config)
      .then((response) => {
      //update the state with the response data
      //alert(response.data)
@@ -160,7 +166,7 @@ alert("Please fill all Fields!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://'+hostAddress+':3001/edititem/edititem',data)
+     axios.post('http://'+hostAddress+':3001/edititem/edititem',data,config)
      .then(response => {
          alert(response.data)
          console.log("Status Code : ",response.status);

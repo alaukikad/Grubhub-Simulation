@@ -4,7 +4,13 @@ let con=require('../../../db')
 const bcrypt =require('bcryptjs');
 const saltRounds =10;
 var Users=require('../../../models/Users');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var config = require('../../../config/settings');
 
+//router.use(requireAuth);
+
+require('../../../config/passport')(passport);
 
 router.post('/cregister',function(req,res){
   var found=false;
@@ -43,7 +49,12 @@ router.post('/cregister',function(req,res){
                                 console.log("alaukika:P");
                                 console.log(error);
                                 msg="error";
-                                res.end(msg);
+
+                              var pkg={
+                                  resmsg: msg
+                                }
+
+                                res.end(JSON.stringify(pkg));
                             }     
                             else      
                             {       
@@ -53,7 +64,22 @@ router.post('/cregister',function(req,res){
                              res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
                                            
                             msg="User Added Successfully!";
-                            res.end(msg);
+
+                            var token={
+                              email: req.body.email,
+                              user: "customer"
+                            }
+                             
+                             var signed_token = jwt.sign(token, config.secret, {
+                                   expiresIn: 86400 // in seconds
+                               });
+                         
+                              var pkg={
+                                resmsg: msg,
+                                token : signed_token
+                              } 
+                               res.end(JSON.stringify(pkg));
+                    
                             }       
                         });       
                     });

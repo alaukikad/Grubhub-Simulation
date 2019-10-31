@@ -2,8 +2,16 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../db');
 var Menu=require('../../models/Menu');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
-  router.post('/getitem',function(req,res){
+//router.use(requireAuth);
+
+require('../../config/passport')(passport);
+
+
+  router.post('/getitem',requireAuth,function(req,res){
     console.log("Inside Get Item ");  
     console.log(req.body);   
 

@@ -8,6 +8,12 @@ import 'react-dropdown/style.css';
 import hostAddress from '../constants';
 
 let updateFlag=false;
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
 
 //Define a Login Component
 class AddItem extends Component{
@@ -46,18 +52,19 @@ class AddItem extends Component{
      const data2 = {
         email : cookie.load("email")
     }
+    
     console.log(data);
 
    var t1,t2,t3,t4;
     //make a post request with the user data
-           axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data2)
+           axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data2,config)
             .then((response) => {
                 t1= response.data.cuisine;
                 t2 = response.data.address;
                 t3=response.data.name;
                 t4=response.data.rimage;
             })
-axios.post('http://'+hostAddress+':3001/getSection/getSection',data)
+axios.post('http://'+hostAddress+':3001/getSection/getSection',data,config)
 .then((response) => {
 //update the state with the response data
 console.log("here")
@@ -125,7 +132,7 @@ alert("Please fill all Fields!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://'+hostAddress+':3001/additem/additem',data)
+     axios.post('http://'+hostAddress+':3001/additem/additem',data,config)
      .then(response => {
         alert(response.data)
          console.log("Status Code : ",response.status);

@@ -2,8 +2,15 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../../db')
 var Orders=require('../../../models/Orders')
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
-router.post('/cancelledOrder',function(req,res){
+//router.use(requireAuth);
+
+require('../../../config/passport')(passport);
+
+router.post('/cancelledOrder',requireAuth,function(req,res){
     console.log("Inside Cancelled Order");  
     console.log(req.body);   
     Orders.find({rid:req.body.email,status:"Cancelled"},function(err,result){

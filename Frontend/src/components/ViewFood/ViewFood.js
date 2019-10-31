@@ -10,6 +10,7 @@ let restID=null;
 let updateFlag=false;
 let restName=null;
 
+
 class ViewFood extends Component {
     constructor(props){
             super(props); 

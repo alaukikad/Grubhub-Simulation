@@ -12,7 +12,11 @@ class Navbar extends Component {
     }
     
     handleLogout = () => {
-        cookie.remove("cookie", { path: '/' })
+        cookie.remove("cookie", { path: '/' });
+        cookie.remove("user",{ path: '/' });
+        cookie.remove("email", { path: '/' });
+        //localStorage.setItem("jwtToken",response.data.token)
+        localStorage.removeItem("jwtToken");
     }
     render(){
         //if Cookie is set render Logout Button

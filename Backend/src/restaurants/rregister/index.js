@@ -4,6 +4,13 @@ let con=require('../../../db')
 const bcrypt =require('bcryptjs');
 const saltRounds =10;
 var Restaurants=require('../../../models/Restaurants');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var config = require('../../../config/settings');
+
+//router.use(requireAuth);
+
+require('../../../config/passport')(passport);
 
   router.post('/rregister',function(req,res){
     var found=false;
@@ -40,14 +47,30 @@ var Restaurants=require('../../../models/Restaurants');
                               if (error){
                                   console.log(error);
                                   msg="error";
-                                  res.end(msg);
+                                  var pkg={
+                                    resmsg: msg
+                                  }
+                                  res.end(JSON.stringify(pkg));
                               }else {
                                 res.cookie('cookie',"restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
                                 res.cookie("user",req.body.restaurant,{maxAge: 900000, httpOnly: false, path : '/'});                      
                                 res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
                                 console.log("Howdyyy");
                                 msg="Restaurant Added Successfully!" ;  
-                                res.end(msg);            
+                                var token={
+                                  email: req.body.email,
+                                  user: "customer"
+                                 }
+           
+                                var signed_token = jwt.sign(token, config.secret, {
+                                    expiresIn: 86400 // in seconds
+                                 });
+       
+                               var pkg={
+                               resmsg: msg,
+                               token : signed_token
+                                } 
+                                res.end(JSON.stringify(pkg));          
                                 }
                           });
                       });

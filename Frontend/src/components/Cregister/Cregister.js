@@ -98,10 +98,11 @@ class Cregister extends Component{
             //make a post request with the user data
             axios.post('http://'+hostAddress+':3001/cregister/cregister',data)
             .then(response => {
-            alert(response.data);
+            alert(response.data.resmsg);
             console.log("Status Code blyi : ",response.status);
-            if(response.data.trim() == "User Added Successfully!"){
+            if(response.data.resmsg.trim() == "User Added Successfully!"){
             console.log("Hello New User!");
+            localStorage.setItem("jwtToken",response.data.token);
             this.setState({
               authFlag : true
             })

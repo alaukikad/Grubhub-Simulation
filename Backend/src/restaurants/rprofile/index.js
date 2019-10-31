@@ -2,8 +2,15 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../../db')
 var Restaurants=require('../../../models/Restaurants');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
-  router.post('/rprofile',function(req,res){
+//router.use(requireAuth);
+
+require('../../../config/passport')(passport);
+
+  router.post('/rprofile',requireAuth,function(req,res){
     console.log("Inside Restaurant Profile");  
     console.log(req.body);
     var found=false;

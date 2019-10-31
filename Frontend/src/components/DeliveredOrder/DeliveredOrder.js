@@ -8,6 +8,12 @@ import hostAddress from '../constants';
 let orderList;
 let total=[];
 let c=-1;
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
 
 class DeliveredOrder extends Component {
     constructor(props){
@@ -22,7 +28,7 @@ class DeliveredOrder extends Component {
         }
       
         axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/deliveredOrder/deliveredOrder',data)
+        axios.post('http://'+hostAddress+':3001/deliveredOrder/deliveredOrder',data,config)
         .then((response) => {
         let mapping=response.data.map(val=>{
             for(var i=0;i<val.orderDetails.length;i++){

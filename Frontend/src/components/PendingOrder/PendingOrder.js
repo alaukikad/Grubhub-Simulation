@@ -13,6 +13,12 @@ let c=-1;
 let editMode=false;
 let statusMap;
 let updateFlag=false;
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
 
 
 class PendingOrder extends Component {
@@ -34,7 +40,7 @@ class PendingOrder extends Component {
         }
       
         axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/pendingOrder/pendingOrder',data)
+        axios.post('http://'+hostAddress+':3001/pendingOrder/pendingOrder',data,config)
         .then((response) => {
         let mapping=response.data.map(val=>{
             for(var i=0;i<val.orderDetails.length;i++){
@@ -89,7 +95,7 @@ class PendingOrder extends Component {
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://'+hostAddress+':3001/updateOrderStatus/updateOrderStatus',data)
+     axios.post('http://'+hostAddress+':3001/updateOrderStatus/updateOrderStatus',data,config)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);

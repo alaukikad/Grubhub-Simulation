@@ -8,6 +8,13 @@ import {Redirect} from 'react-router';
 //import { updateCProfile } from "../../js/actions/index";
 import hostAddress from '../constants';
 
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
+
 class Cupdateprofile extends Component {
     constructor(props){
             super(props);
@@ -46,7 +53,7 @@ class Cupdateprofile extends Component {
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data)
+        axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data,config)
                 .then((response) => {
                 
                 this.setState({
@@ -95,7 +102,7 @@ class Cupdateprofile extends Component {
           }
         }
         axios
-          .post('http://'+hostAddress+':3001/cprofileuploadimage', formData, config)
+          .post('http://'+hostAddress+':3001/cprofileuploadimage', formData)
           .then(response => {
             console.log('Image uploaded')
             console.log(response.data.filename)
@@ -118,7 +125,7 @@ class Cupdateprofile extends Component {
 
        axios.defaults.withCredentials = true;
        //make a post request with the user data
-       axios.post('http://'+hostAddress+':3001/cprofileupdate/cprofileupdate',data)
+       axios.post('http://'+hostAddress+':3001/cprofileupdate/cprofileupdate',data,config)
        .then(response => {
        alert(response.data);
        console.log("Status Code : ",response.data);

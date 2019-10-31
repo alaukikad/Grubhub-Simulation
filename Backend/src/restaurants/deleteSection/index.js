@@ -3,9 +3,15 @@ var router = express.Router();
 let con=require('../../../db')
 var Sections=require('../../../models/Sections');
 var Menu=require('../../../models/Menu');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
+//router.use(requireAuth);
 
-    router.post('/deleteSection',function(req,res){
+require('../../../config/passport')(passport);
+
+    router.post('/deleteSection',requireAuth,function(req,res){
       console.log("Inside Delete Selection ");  
       console.log(req.body);
       var msg="";

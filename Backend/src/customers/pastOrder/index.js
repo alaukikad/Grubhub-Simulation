@@ -2,8 +2,15 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../../db')
 var Orders=require('../../../models/Orders');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
-router.post('/pastOrder',function(req,res){
+//router.use(requireAuth);
+
+require('../../../config/passport')(passport);
+
+router.post('/pastOrder',requireAuth,function(req,res){
   console.log("Inside Past Order");  
   console.log(req.body);   
   Orders.find({uid:req.body.email,status:{$in :["Delivered","Cancelled"]}},function(err,result){

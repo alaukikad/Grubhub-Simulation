@@ -38,12 +38,20 @@ class Cprofile extends Component {
         const data = {
             email : cookie.load("email")
         }
+
+        let config = {
+            headers:{
+                'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+                'Content-Type': 'application/json'
+              }
+          }
         console.log(data);
+        console.log(config);
         //set the with credentials to true
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data)
+        axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data,config)
                 .then((response) => {
                     
                    

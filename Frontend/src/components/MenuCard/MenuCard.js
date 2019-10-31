@@ -5,6 +5,13 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import hostAddress from '../constants';
 
+
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
 let goToCart=false;
 let quant=new Map();
 
@@ -30,7 +37,7 @@ class MenuCard extends Component {
         }
     
         axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data)
+        axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data,config)
         .then((response) => {
         //update the state with the response data
         console.log("In get menu constructor")
@@ -38,7 +45,7 @@ class MenuCard extends Component {
         console.log(resp1)
         })
         
-        axios.post('http://'+hostAddress+':3001/getSection/getSection',data)
+        axios.post('http://'+hostAddress+':3001/getSection/getSection',data,config)
         .then((response) => {
         //update the state with the response data
         console.log("here in Sections")
@@ -89,7 +96,7 @@ checkOut=(e)=>{
     alert("No Food Added to Cart!")
     }else{
     axios.defaults.withCredentials = true;
-    axios.post('http://'+hostAddress+':3001/checkOut/checkOut',data)
+    axios.post('http://'+hostAddress+':3001/checkOut/checkOut',data,config)
     .then((response) => {
     //update the state with the response data
     alert(response.data)

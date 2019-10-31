@@ -2,8 +2,15 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../db');
 var Menu=require('../../models/Menu');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
- router.post('/getMenu',function(req,res){
+//router.use(requireAuth);
+
+require('../../config/passport')(passport);
+
+ router.post('/getMenu',requireAuth,function(req,res){
     console.log("Inside Menu ");  
     console.log(req.body.email);
         

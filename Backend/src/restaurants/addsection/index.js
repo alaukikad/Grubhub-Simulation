@@ -2,8 +2,15 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../../db')
 var Sections=require('../../../models/Sections');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
-router.post('/addsection',function(req,res){
+//router.use(requireAuth);
+
+require('../../../config/passport')(passport);
+
+router.post('/addsection',requireAuth,function(req,res){
     var msg="";
     var found=false;
     var section=Sections({

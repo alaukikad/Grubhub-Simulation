@@ -15,6 +15,12 @@ let delFlag=null;
 let secList;
 let sectionID=null;
 let prevSecName="";
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
 
 class Rmenu extends Component {
     constructor(props){
@@ -36,14 +42,14 @@ class Rmenu extends Component {
 
         console.log(cookie.load('email'));
         axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data)
+        axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data,config)
         .then((response) => {
         //update the state with the response data
         this.setState({
             menu : this.state.menu.concat(response.data) 
         });
     });
-       axios.post('http://'+hostAddress+':3001/getSection/getSection',data)
+       axios.post('http://'+hostAddress+':3001/getSection/getSection',data,config)
         .then((response) => {
         //update the state with the response data
         console.log("here")
@@ -82,7 +88,7 @@ class Rmenu extends Component {
             p : prevSecName
         }
         axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/deleteSection/deleteSection',data)
+        axios.post('http://'+hostAddress+':3001/deleteSection/deleteSection',data,config)
         .then((response) => {
             alert(response.data);
         //update the state with the response data
@@ -99,7 +105,7 @@ class Rmenu extends Component {
         }
      
         axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/deleteitem/deleteitem',data)
+        axios.post('http://'+hostAddress+':3001/deleteitem/deleteitem',data,config)
         .then((response) => {
             alert(response.data);
         //update the state with the response data

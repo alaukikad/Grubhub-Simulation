@@ -178,10 +178,11 @@ alert("Please fill all Fields!");
  
      axios.post('http://'+hostAddress+':3001/rregister/rregister',data)
      .then(response => {
-         alert(response.data);
+         alert(response.data.resmsg);
          console.log("Status Code : ",response.status);
-         if(response.data.trim() == "Restaurant Added Successfully!"){
+         if(response.data.resmsg.trim() == "Restaurant Added Successfully!"){
            console.log("Hello New Restaurant");
+           localStorage.setItem("jwtToken",response.data.token);
             this.setState({
                 authFlag: true
             })

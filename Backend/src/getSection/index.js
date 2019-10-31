@@ -2,8 +2,15 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../db');
 var Sections=require('../../models/Sections');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
-router.post('/getSection',function(req,res){
+//router.use(requireAuth);
+
+require('../../config/passport')(passport);
+
+router.post('/getSection',requireAuth,function(req,res){
   console.log("Inside Section ");  
  
   console.log(req.body.email);

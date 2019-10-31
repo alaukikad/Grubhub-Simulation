@@ -3,8 +3,15 @@ var router = express.Router();
 let con=require('../../../db')
 var Restaurants=require('../../../models/Restaurants');
 var Menu=require('../../../models/Menu');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
-router.post('/rprofileupdate',function(req,res){
+//router.use(requireAuth);
+
+require('../../../config/passport')(passport);
+
+router.post('/rprofileupdate',requireAuth,function(req,res){
   console.log("Inside Restaurant Profile1");  
   console.log(req.body);   
   Restaurants.findOneAndUpdate({email : req.body.pemail}, 

@@ -4,6 +4,12 @@ let con=require('../../../db');
 const bcrypt =require('bcryptjs');
 const saltRounds =10;
 var Restaurants=require('../../../models/Restaurants');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var config = require('../../../config/settings');
+
+// Bring in defined Passport Strategy
+require('../../../config/passport')(passport);
 
 router.post('/rlogin',function(req,res){
     var found=false;
@@ -40,7 +46,21 @@ router.post('/rlogin',function(req,res){
              //console.log("I ma here");
              msg="Invalid credentials"
               }
-             res.end(msg)});
+              var token={
+                email: req.body.username,
+                user: "restaurant"
+              }
+               
+               var signed_token = jwt.sign(token, config.secret, {
+                     expiresIn: 86400 // in seconds
+                 });
+           
+                var pkg={
+                  resmsg: msg,
+                  token : signed_token
+                } 
+                 res.end(JSON.stringify(pkg));
+             });
           })
       })
 

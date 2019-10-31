@@ -10,6 +10,13 @@ import 'react-dropdown/style.css';
 //import { updateRProfile } from "../../js/actions/index";
 import hostAddress from '../constants';
 
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
+
 class Rupdateprofile extends Component {
     constructor(props){
             super(props);
@@ -80,7 +87,7 @@ axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data)
+        axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data,config)
                 .then((response) => {
                 this.setState({
                 rid : response.data.rid,
@@ -136,7 +143,7 @@ axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
         formData.append('rid', this.state.email)
         
         axios
-          .post('http://'+hostAddress+':3001/rprofileuploadimage', formData, config)
+          .post('http://'+hostAddress+':3001/rprofileuploadimage', formData)
           .then(response => {
             console.log('Image uploaded')
             console.log(response.data.filename)
@@ -150,7 +157,7 @@ axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
             formData2.append('rid', this.state.email)
             
             axios
-              .post('http://'+hostAddress+':3001/restaurantuploadimage', formData2, config)
+              .post('http://'+hostAddress+':3001/restaurantuploadimage', formData2)
               .then(response => {
                 console.log('Image uploadedfddf')
                 console.log(response.data.filename)
@@ -183,7 +190,7 @@ axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
        //set the with credentials to true
        axios.defaults.withCredentials = true;
        //make a post request with the user data
-       axios.post('http://'+hostAddress+':3001/rprofileupdate/rprofileupdate',data)
+       axios.post('http://'+hostAddress+':3001/rprofileupdate/rprofileupdate',data,config)
        .then(response => {
        alert(response.data);
        console.log("Status Code : ",response.data);

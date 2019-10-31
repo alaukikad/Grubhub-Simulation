@@ -8,7 +8,13 @@ import hostAddress from '../constants';
 let orderList;
 let total=[];
 let c=-1;
-
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
+  
 class UpcomingOrder extends Component {
     constructor(props){
             super(props);
@@ -22,7 +28,7 @@ class UpcomingOrder extends Component {
         }
       
         axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/upcomingOrder/upcomingOrder',data)
+        axios.post('http://'+hostAddress+':3001/upcomingOrder/upcomingOrder',data, config)
         .then((response) => {
         console.log(response.data);
         var l=0;

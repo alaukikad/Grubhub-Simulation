@@ -8,7 +8,12 @@ import 'react-dropdown/style.css';
 import hostAddress from '../constants';
 
 let updateFlag=false;
-
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
 //Define a Login Component
 class AddSection extends Component{
     //call the constructor method
@@ -59,7 +64,7 @@ alert("Please fill Section Name Field!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://'+hostAddress+':3001/addsection/addsection',data)
+     axios.post('http://'+hostAddress+':3001/addsection/addsection',data,config)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);

@@ -2,8 +2,15 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../../db')
 var Users=require('../../../models/Users');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
-router.post('/cprofileupdate',function(req,res){
+//router.use(requireAuth);
+
+require('../../../config/passport')(passport);
+
+router.post('/cprofileupdate',requireAuth,function(req,res){
   
   console.log("Inside Customer Profile Update");  
   console.log(req.body);   

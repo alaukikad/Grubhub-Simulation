@@ -72,11 +72,12 @@ axios.defaults.withCredentials = true;
 //make a post request with the user data
 axios.post('http://'+hostAddress+':3001/login/login',data)
     .then(response => {
-     alert(response.data);
+     alert(response.data.msg);
         console.log("Status Code : ",response.data);
-         if(response.data.trim() == "Login Successful"){
+         if(response.data.msg.trim() == "Login Successful"){
             console.log("Hello peps");
             console.log(cookie.load('cookie'));
+            localStorage.setItem("jwtToken",response.data.token)
             this.setState({
             authFlag : true
             })
@@ -86,9 +87,6 @@ axios.post('http://'+hostAddress+':3001/login/login',data)
         console.log("error")
     
     )
-
-      
-
        
     }
 
@@ -97,7 +95,6 @@ axios.post('http://'+hostAddress+':3001/login/login',data)
         let redirectVar=null;
         if(cookie.load('cookie')){
             console.log('haha');
-
             redirectVar = <Redirect to= "/chome"/>
         }
         return(

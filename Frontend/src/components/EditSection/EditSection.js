@@ -9,6 +9,12 @@ import hostAddress from '../constants';
 
 let updateFlag=false;
 let prevSecName="";
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
 
 //Define a Login Component
 class EditSection extends Component{
@@ -32,7 +38,7 @@ class EditSection extends Component{
       //set the with credentials to true
       axios.defaults.withCredentials = true;
       //make a post request with the user data
-      axios.post('http://'+hostAddress+':3001/getSectionFromID/getSectionFromID',data)
+      axios.post('http://'+hostAddress+':3001/getSectionFromID/getSectionFromID',data,config)
       .then((response) => {
       //update the state with the response data
       prevSecName=response.data;
@@ -76,7 +82,7 @@ alert("Please fill Section Name Field!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://'+hostAddress+':3001/editsection/editsection',data)
+     axios.post('http://'+hostAddress+':3001/editsection/editsection',data,config)
      .then(response => {
          alert(response.data);
          console.log("Status Code : ",response.status);

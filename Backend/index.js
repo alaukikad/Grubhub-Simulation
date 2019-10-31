@@ -16,6 +16,10 @@ var Database = require('./database');
 var Users=require('./models/Users');
 var Restaurants=require('./models/Restaurants');
 var Menu=require('./models/Menu');
+var config = require('./config/settings');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
 //use cors to allow cross origin resource sharing
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
@@ -31,6 +35,11 @@ app.use(session({
 
 app.use(bodyParser.json());
 app.use(express.static('public'))
+
+
+app.use(passport.initialize());
+// Bring in defined Passport Strategy
+require('./config/passport')(passport);
 
 var loginRouter = require('./src/customers/login/index');
 var rloginRouter = require('./src/restaurants/rlogin/index');
@@ -90,7 +99,7 @@ app.use('/deliveredOrder',deliveredOrderRouter)
 app.use( '/edititem',edititemRouter)
 app.use( '/editsection',editsectionRouter)
 app.use( '/pendingOrder',pendingOrderRouter)
-app.use( '/rprofile',rprofileRouter)
+app.use( '/rprofile',requireAuth,rprofileRouter)
 app.use( '/rprofileupdate',rprofileupdateRouter)
 app.use( '/rregister',rregisterRouter)
 app.use( '/updateOrderStatus',updateOrderStatusRouter) 

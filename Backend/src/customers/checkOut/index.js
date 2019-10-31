@@ -3,8 +3,15 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../../db')
 var OrderDetails=require('../../../models/OrderDetails');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
- router.post('/checkOut',function(req,res){
+//router.use(requireAuth);
+
+require('../../../config/passport')(passport);
+
+ router.post('/checkOut',requireAuth,function(req,res){
     console.log("Inside CheckOut Item ");  
     console.log(req.body);
     let p=[];

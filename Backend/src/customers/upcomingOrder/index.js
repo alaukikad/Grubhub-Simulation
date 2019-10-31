@@ -2,8 +2,15 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../../db')
 var Orders=require('../../../models/Orders');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
-  router.post('/upcomingOrder',function(req,res){
+//router.use(requireAuth);
+
+require('../../../config/passport')(passport);
+
+  router.post('/upcomingOrder',requireAuth,function(req,res){
     console.log("Inside Upcoming Order");  
     console.log(req.body);   
     Orders.find({uid:req.body.email,status:{$in :["Placed","Preparing","Ready"]}},function(err,result){

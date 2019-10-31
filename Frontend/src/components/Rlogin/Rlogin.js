@@ -68,13 +68,21 @@ class Rlogin extends Component{
 
           //set the with credentials to true
         axios.defaults.withCredentials = true;
+
+        let config = {
+            headers:{
+                'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+                'Content-Type': 'application/json'
+              }
+          }
         //make a post request with the user data
-        axios.post('http://'+hostAddress+':3001/rlogin/rlogin',data)
+        axios.post('http://'+hostAddress+':3001/rlogin/rlogin',data,config)
         .then(response => {
-          alert(response.data);
+          alert(response.data.resmsg);
           console.log("Status Code : ",response.data);
-          if(response.data.trim() == "Login Successful"){
+          if(response.data.resmsg.trim() == "Login Successful"){
               console.log("Hello peps I'm in R login reducer");
+              localStorage.setItem("jwtToken",response.data.token)
               this.setState({
                   authFlag: true 
               })

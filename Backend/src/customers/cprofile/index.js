@@ -3,9 +3,15 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../../db')
 var Users=require('../../../models/Users');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
+//router.use(requireAuth);
 
-router.post('/cprofile',function(req,res){
+require('../../../config/passport')(passport);
+
+router.post('/cprofile',requireAuth,function(req,res){
     console.log("Inside Customer Profile");  
     console.log(req.body);
     var found=false;

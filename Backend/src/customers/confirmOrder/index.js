@@ -3,9 +3,15 @@ var router = express.Router();
 let con=require('../../../db')
 var OrderDetails=require('../../../models/OrderDetails');
 var Orders= require('../../../models/Orders');
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
 
+//router.use(requireAuth);
 
- router.post('/confirmOrder',function(req,res){
+require('../../../config/passport')(passport);
+
+ router.post('/confirmOrder',requireAuth,function(req,res){
     console.log("Inside Confirm Order");  
     console.log(req.body);   
     var temp=[];

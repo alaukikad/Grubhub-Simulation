@@ -7,7 +7,13 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import ViewFood from '../ViewFood/ViewFood';
 import hostAddress from '../constants';
-
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
+  
 //Define a Login Component
 class SearchFood extends Component{
     //call the constructor method
@@ -69,7 +75,7 @@ alert("Please fill Section Name Field!");
      axios.defaults.withCredentials = true;
      //make a post request with the user data
  
-     axios.post('http://'+hostAddress+':3001/searchfood/searchfood',data)
+     axios.post('http://'+hostAddress+':3001/searchfood/searchfood',data,config)
      .then(response => {
          this.setState({
             restaurants : response.data

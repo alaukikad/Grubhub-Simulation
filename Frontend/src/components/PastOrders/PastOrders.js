@@ -8,6 +8,12 @@ import hostAddress from '../constants';
 let orderList;
 let total=[];
 let c=-1;
+let config = {
+    headers:{
+        'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        'Content-Type': 'application/json'
+      }
+  }
 
 class PastOrders extends Component {
     constructor(props){
@@ -24,7 +30,7 @@ class PastOrders extends Component {
         }
       
         axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/pastOrder/pastOrder',data)
+        axios.post('http://'+hostAddress+':3001/pastOrder/pastOrder',data,config)
         .then((response) => {
         let mapping=response.data.map(val=>{
             for(var i=0;i<val.orderDetails.length;i++){

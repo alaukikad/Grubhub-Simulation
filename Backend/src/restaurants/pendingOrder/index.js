@@ -2,8 +2,15 @@ var express = require('express');
 var router = express.Router();
 let con=require('../../../db')
 var Orders=require('../../../models/Orders');
- 
-  router.post('/pendingOrder',function(req,res){
+var jwt = require('jsonwebtoken');
+var passport = require('passport');
+var requireAuth = passport.authenticate('jwt', {session: false});
+
+//router.use(requireAuth);
+
+require('../../../config/passport')(passport);
+
+  router.post('/pendingOrder',requireAuth,function(req,res){
     console.log("Inside Pending Order");  
     console.log(req.body);   
     
