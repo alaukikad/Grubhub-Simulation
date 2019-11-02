@@ -20,7 +20,7 @@ var config = require('./config/settings');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
-
+var kafka=require('./kafka/client');
 //use cors to allow cross origin resource sharing
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 

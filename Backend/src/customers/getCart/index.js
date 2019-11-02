@@ -5,6 +5,7 @@ var OrderDetails=require('../../../models/OrderDetails');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
+var kafka = require('../../../kafka/client');
 
 //router.use(requireAuth);
 
@@ -13,14 +14,23 @@ require('../../../config/passport')(passport);
  router.post('/getCart',requireAuth,function(req,res){
     console.log("Inside Cart");  
     console.log(req.body);
-    
-    OrderDetails.find({uid:req.body.email, status:"Cart"},function(err,result){
-      if(err) throw err;
-      res.writeHead(200,{
-        'Content-Type' : 'application/json'
-    });
-        console.log("Menu : ",JSON.stringify(result));
-        res.end(JSON.stringify(result));
+       
+    let body = req.body;
+    console.log("Inside API of Get Cart", body)
+kafka.make_request('get_cart', body, function(err,result){
+  console.log(result); 
+  if (err){
+        res.send("Errorrr!!")
+    }else{
+        res.send(result);
+    }
+    // OrderDetails.find({uid:req.body.email, status:"Cart"},function(err,result){
+    //   if(err) throw err;
+    //   res.writeHead(200,{
+    //     'Content-Type' : 'application/json'
+    // });
+    //     console.log("Menu : ",JSON.stringify(result));
+    //     res.end(JSON.stringify(result));
     })
       
     })

@@ -7,91 +7,98 @@ var Users=require('../../../models/Users');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var config = require('../../../config/settings');
+var kafka = require('../../../kafka/client');
 
 //router.use(requireAuth);
 
 require('../../../config/passport')(passport);
 
 router.post('/cregister',function(req,res){
-  var found=false;
-  var msg="";
- 
-  var user=Users({
-    name:req.body.fullname,
-    email:req.body.email,
-    contact:req.body.contact,
-    address:req.body.address
-  })
-
-  Users.find({  }, function(err, result) {
-    if (err) throw err;
-    console.log(result);
-    console.log(req.body.email)
-    
-    for(var i=0;i<result.length;i++){
-       if(req.body.email==result[i].email){
-            found=true;
-            break;
-          }
-        }
-       console.log(found);
-      if(found){
-        msg="Email Already in Use!"
-        res.end(msg);
+  let body = req.body;
+  console.log("Inside API of C register", body)
+  kafka.make_request('cregister', body, function(err,result){
+    console.log(result); 
+    if (err){
+          res.send("Errorrr!!")
       }else{
-        bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-                        user.password=hash;
-                            
-                        user.save(function(error, results) 
-                        {
-                            if (error) 
-                            {
-                                console.log("alaukika:P");
-                                console.log(error);
-                                msg="error";
+        res.send(result);
+      }
+  // var user=Users({
+  //   name:req.body.fullname,
+  //   email:req.body.email,
+  //   contact:req.body.contact,
+  //   address:req.body.address
+  // })
 
-                              var pkg={
-                                  resmsg: msg
-                                }
+  // Users.find({  }, function(err, result) {
+  //   if (err) throw err;
+  //   console.log(result);
+  //   console.log(req.body.email)
+    
+  //   for(var i=0;i<result.length;i++){
+  //      if(req.body.email==result[i].email){
+  //           found=true;
+  //           break;
+  //         }
+  //       }
+  //      console.log(found);
+  //     if(found){
+  //       msg="Email Already in Use!"
+  //       res.end(msg);
+  //     }else{
+  //       bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+  //                       user.password=hash;
+  //                           
+  //                       user.save(function(error, results) 
+  //                       {
+  //                           if (error) 
+  //                           {
+  //                               console.log("alaukika:P");
+  //                               console.log(error);
+  //                               msg="error";
 
-                                res.end(JSON.stringify(pkg));
-                            }     
-                            else      
-                            {       
+  //                             var pkg={
+  //                                 resmsg: msg
+  //                               }
+
+  //                               res.end(JSON.stringify(pkg));
+  //                           }     
+  //                           else      
+  //                           {       
          
-                             res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
-                             res.cookie("user",req.body.fullname,{maxAge: 900000, httpOnly: false, path : '/'});                     
-                             res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
-                                           
-                            msg="User Added Successfully!";
+  //                            res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
+  //                            res.cookie("user",req.body.fullname,{maxAge: 900000, httpOnly: false, path : '/'});                     
+  //                            res.cookie("email",req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
+  //                                          
+  //                           msg="User Added Successfully!";
 
-                            var token={
-                              email: req.body.email,
-                              user: "customer"
-                            }
+  //                           var token={
+  //                             email: req.body.email,
+  //                             user: "customer"
+  //                           }
                              
-                             var signed_token = jwt.sign(token, config.secret, {
-                                   expiresIn: 86400 // in seconds
-                               });
+  //                            var signed_token = jwt.sign(token, config.secret, {
+  //                                  expiresIn: 86400 // in seconds
+  //                              });
                          
-                              var pkg={
-                                resmsg: msg,
-                                token : signed_token
-                              } 
-                               res.end(JSON.stringify(pkg));
+  //                             var pkg={
+  //                               resmsg: msg,
+  //                               token : signed_token
+  //                             } 
+  //                              res.end(JSON.stringify(pkg));
                     
-                            }       
-                        });       
-                    });
+  //                           }       
+  //                       });       
+  //                   });
         
        
-        }
+      //  }
 
 });
-      con.query("SELECT email from users", function(err,result,fields){
-       if(err) throw err;
+      // con.query("SELECT email from users", function(err,result,fields){
+      //  if(err) throw err;
        
-      });  
+      // });  
   });
 
 //  router.post('/cregister',function(req,res){

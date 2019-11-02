@@ -5,6 +5,7 @@ var Orders=require('../../../models/Orders');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
+var kafka = require('../../../kafka/client');
 
 //router.use(requireAuth);
 
@@ -12,11 +13,21 @@ require('../../../config/passport')(passport);
 
 router.post('/pastOrder',requireAuth,function(req,res){
   console.log("Inside Past Order");  
-  console.log(req.body);   
-  Orders.find({uid:req.body.email,status:{$in :["Delivered","Cancelled"]}},function(err,result){
-    if(err) throw err;
+  console.log(req.body);  
+     
+  let body = req.body;
+  console.log("Inside API of Past Order", body)
+  kafka.make_request('past_order', body, function(err,result){
+    console.log(result); 
+    if (err){
+        res.send("Errorrr!!")
+     }else{
+        res.send(result);
+    } 
+  // Orders.find({uid:req.body.email,status:{$in :["Delivered","Cancelled"]}},function(err,result){
+  //   if(err) throw err;
 
-    res.end(JSON.stringify(result));
+  //   res.end(JSON.stringify(result));
   })   
 })
 

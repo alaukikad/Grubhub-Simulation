@@ -2,42 +2,19 @@ import { RLOGIN,RSIGNUP,CLOGIN,CSIGNUP, RUPDATE, CUPDATE  } from "../constants/a
 import axios from 'axios';
 
 const initialState = {
+  cloginMsg:null,
   username :"",
   password :""
 };
-// function rootReducer(state = initialState, action) {
-//   if (action.type === ADD_BOOK) {
-//     state.books.push(action.payload);
-//   }
-//   return state;
-// }
+
 function rootReducer(state = initialState, action) {
     if (action.type === CLOGIN) {
-      console.log("processing in reducer")
-       //set the with credentials to true
-       axios.defaults.withCredentials = true;
-       //make a post request with the user data
-       axios.post('http://localhost:3001/login',action.payload)
-           .then(response => {
-            alert(response.data);
-               console.log("Status Code : ",response.data);
-                if(response.data.trim() == "Login Successful"){
-                   console.log("Hello peps");
-                   localStorage.setItem("user",action.payload.username);
-                   console.log(Object.assign({},state,{
-                    username : action.payload.username,
-                    password : action.payload.password
-                  }))
-               }
-           })
+      console.log("processing in CLOGIN reducer");
            return Object.assign({},state,{
-            username : action.payload.username,
-            password : action.payload.password
+            username : action.data.username,
+            user : action.data.name,
+            cloginMsg : action.data.msg
           })
-         /*  .catch(response=>{
-               alert("Some error!!")
-
-           });*/
     }
     if (action.type === RLOGIN) {
         console.log("processing in reducer")
@@ -84,7 +61,6 @@ function rootReducer(state = initialState, action) {
           address : action.payload.address
         })
         }
-
 
         if(action.type === RUPDATE){
           console.log("processing in reducer")

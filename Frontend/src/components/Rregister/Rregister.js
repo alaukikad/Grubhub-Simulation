@@ -182,6 +182,9 @@ alert("Please fill all Fields!");
          console.log("Status Code : ",response.status);
          if(response.data.resmsg.trim() == "Restaurant Added Successfully!"){
            console.log("Hello New Restaurant");
+           cookie.save("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
+           cookie.save("user",response.data.name,{maxAge: 900000, httpOnly: false, path : '/'});
+           cookie.save("email",this.state.email,{maxAge: 900000, httpOnly: false, path : '/'});
            localStorage.setItem("jwtToken",response.data.token);
             this.setState({
                 authFlag: true

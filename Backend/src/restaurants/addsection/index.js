@@ -5,47 +5,62 @@ var Sections=require('../../../models/Sections');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
+var kafka = require('../../../kafka/client');
 
 //router.use(requireAuth);
 
 require('../../../config/passport')(passport);
 
 router.post('/addsection',requireAuth,function(req,res){
-    var msg="";
-    var found=false;
-    var section=Sections({
-      name:req.body.sectionname,
-      rid:req.body.email
-    }) 
+  console.log("Inside Add Section ");  
+  console.log(req.body); 
+  
+let body = req.body;
+console.log("Inside API of Add Section", body)
+kafka.make_request('add_section', body, function(err,result){
+console.log(result); 
+if (err){
+      res.send("Errorrr!!")
+  }else{
+      res.send(result);
+  }
+});
 
-    Sections.find({rid:req.body.email}, function(err,result,fields){
-      if(err) throw err;
-      console.log(result);
-       for(var i=0;i<result.length;i++){
-         if(req.body.sectionname==result[i].name){
-           found=true;
-           break;
-         }
-       }
-      console.log(found);
-     if(found){
-       msg="Section Already Exists!"
-       res.end(msg);
-     }else{
-      section.save(function(error, results){
+    // var msg="";
+    // var found=false;
+    // var section=Sections({
+    //   name:req.body.sectionname,
+    //   rid:req.body.email
+    // }) 
+
+    // Sections.find({rid:req.body.email}, function(err,result,fields){
+    //   if(err) throw err;
+    //   console.log(result);
+    //    for(var i=0;i<result.length;i++){
+    //      if(req.body.sectionname==result[i].name){
+    //        found=true;
+    //        break;
+    //      }
+    //    }
+    //   console.log(found);
+    //  if(found){
+    //    msg="Section Already Exists!"
+    //    res.end(msg);
+    //  }else{
+    //   section.save(function(error, results){
              
-          if (error){
-                 console.log(error);
-                 msg="Could Not Add Section! :(";
-                 res.end(msg);
-              }else {
-                console.log("Addededded");
-                msg="Section Added Successfully!" ;  
-                res.end(msg);            
-              }
-            })
-          }
-          })
+    //       if (error){
+    //              console.log(error);
+    //              msg="Could Not Add Section! :(";
+    //              res.end(msg);
+    //           }else {
+    //             console.log("Addededded");
+    //             msg="Section Added Successfully!" ;  
+    //             res.end(msg);            
+    //           }
+    //         })
+    //       }
+    //       })
   })  
 
   // router.post('/addsection',function(req,res){

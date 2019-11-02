@@ -6,6 +6,7 @@ var Menu=require('../../../models/Menu');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
+var kafka = require('../../../kafka/client');
 
 //router.use(requireAuth);
 
@@ -14,22 +15,31 @@ require('../../../config/passport')(passport);
     router.post('/deleteSection',requireAuth,function(req,res){
       console.log("Inside Delete Selection ");  
       console.log(req.body);
-      var msg="";
+      let body = req.body;
+console.log("Inside API of Delete Section ", body)
+kafka.make_request('delete_section', body, function(err,result){
+console.log(result); 
+if (err){
+      res.send("Errorrr!!")
+  }else{
+      res.send(result);
+  }
+});
 
-      Sections.findOneAndDelete({_id : req.body.id},
-        function (err, result) {
-      if (err) throw err;
+      // Sections.findOneAndDelete({_id : req.body.id},
+      //   function (err, result) {
+      // if (err) throw err;
 
-      Menu.deleteMany({rid:req.body.rid, sid:req.body.p},function (err, result) {
-        if (err) throw err;
-      })
+      // Menu.deleteMany({rid:req.body.rid, sid:req.body.p},function (err, result) {
+      //   if (err) throw err;
+      // })
 
-          res.writeHead(200,{
-            'Content-Type' : 'application/json'
-          });
+      //     res.writeHead(200,{
+      //       'Content-Type' : 'application/json'
+      //     });
   
-          res.end("Section Deleted");
-        });
+      //     res.end("Section Deleted");
+      //   });
         });
 
 

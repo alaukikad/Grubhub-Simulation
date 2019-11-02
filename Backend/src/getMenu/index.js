@@ -5,6 +5,7 @@ var Menu=require('../../models/Menu');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
+var kafka = require('../../kafka/client');
 
 //router.use(requireAuth);
 
@@ -14,15 +15,26 @@ require('../../config/passport')(passport);
     console.log("Inside Menu ");  
     console.log(req.body.email);
         
-    Menu.find({email:req.body.email}, function(err,result,fields){
-            if(err) throw err;
+    let body = req.body;
+  console.log("Inside API of get Menu ", body)
+  kafka.make_request('get_menu', body, function(err,result){
+  console.log(result); 
+  if (err){
+        res.send("Errorrr!!")
+    }else{
+        res.send(result);
+    }
+  });
 
-        res.writeHead(200,{
-            'Content-Type' : 'application/json'
-        });
-    console.log(result);
-    res.end(JSON.stringify(result));
-          })
+    // Menu.find({email:req.body.email}, function(err,result,fields){
+    //         if(err) throw err;
+
+    //     res.writeHead(200,{
+    //         'Content-Type' : 'application/json'
+    //     });
+    // console.log(result);
+    // res.end(JSON.stringify(result));
+    //       })
     
     })
     

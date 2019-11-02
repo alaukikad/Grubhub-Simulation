@@ -5,27 +5,37 @@ var Users=require('../../../models/Users');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
+var kafka = require('../../../kafka/client');
 
 //router.use(requireAuth);
 
 require('../../../config/passport')(passport);
 
 router.post('/cprofileupdate',requireAuth,function(req,res){
-  
   console.log("Inside Customer Profile Update");  
   console.log(req.body);   
-  Users.findOneAndUpdate({email : req.body.pemail}, 
-    {
-    name : req.body.fullname,
-    address:req.body.address,
-    contact :req.body.contact,
-    email :req.body.email
-  },
-    function(err, result) {
-     if (err) throw err;
+     
+let body = req.body;
+console.log("Inside API of Cprofile Update", body)
+kafka.make_request('cprofile_update', body, function(err,result){
+  console.log(result); 
+  if (err){
+        res.send("Errorrr!!")
+    }else{
+        res.send(result);
+    }
+  // Users.findOneAndUpdate({email : req.body.pemail}, 
+  //   {
+  //   name : req.body.fullname,
+  //   address:req.body.address,
+  //   contact :req.body.contact,
+  //   email :req.body.email
+  // },
+  //   function(err, result) {
+  //    if (err) throw err;
  
-    console.log(result.affectedRows + " record(s) updated");
-    res.end("Details Updated!");
+  //   console.log(result.affectedRows + " record(s) updated");
+  //   res.end("Details Updated!");
     });
 })
   // router.post('/cprofileupdate',function(req,res){

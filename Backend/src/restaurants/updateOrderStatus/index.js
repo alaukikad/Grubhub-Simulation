@@ -5,6 +5,7 @@ var Orders=require('../../../models/Orders');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
+var kafka = require('../../../kafka/client');
 
 //router.use(requireAuth);
 
@@ -13,12 +14,21 @@ require('../../../config/passport')(passport);
   router.post('/updateOrderStatus',requireAuth,function(req,res){
     console.log("Inside Update Order Status");  
     console.log(req.body);   
-    
-    Orders.findOneAndUpdate({_id:req.body.oid},{status:req.body.status},function(err,result){
-          if(err) throw err;
+    let body = req.body;
+    console.log("Inside API of Update Order Status", body)
+    kafka.make_request('update_order_status', body, function(err,result){
+      console.log(result); 
+      if (err){
+        res.send("Errorrr!!")
+      }else{
+        res.send(result);
+       }
+});
+    // Orders.findOneAndUpdate({_id:req.body.oid},{status:req.body.status},function(err,result){
+    //       if(err) throw err;
 
-          res.end("Status Updated!");
-        })
+    //       res.end("Status Updated!");
+    //     })
   })
 
   // router.post('/updateOrderStatus',function(req,res){

@@ -102,6 +102,9 @@ class Cregister extends Component{
             console.log("Status Code blyi : ",response.status);
             if(response.data.resmsg.trim() == "User Added Successfully!"){
             console.log("Hello New User!");
+            cookie.save("cookie","customer",{maxAge: 900000, httpOnly: false, path : '/'});
+            cookie.save("user",this.state.fullname,{maxAge: 900000, httpOnly: false, path : '/'});
+            cookie.save("email",this.state.email,{maxAge: 900000, httpOnly: false, path : '/'});
             localStorage.setItem("jwtToken",response.data.token);
             this.setState({
               authFlag : true

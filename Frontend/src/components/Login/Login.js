@@ -2,12 +2,11 @@ import React, {Component} from 'react';
 import '../../App.css';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-//import { connect } from "react-redux";
-//import { checkUser } from "../../js/actions/index";
-import PropTypes from 'prop-types';
-//import store from '../../js/store/index';
-import axios from 'axios';
-import hostAddress from '../constants';
+import { connect } from "react-redux";
+import { checkUser } from "../../js/actions";
+
+//import axios from 'axios';
+//import hostAddress from '../constants';
 
 let redirectVar = null;
 
@@ -56,37 +55,49 @@ class Login extends Component{
             username : this.state.username,
             password : this.state.password
         }
-        /*this.props.checkUser(data);
-        store.subscribe(() => {
-            // When state will be updated(in our case, when items will be fetched), 
-            // we will update local component state and force component to rerender 
-            // with new data.
-            console.log(cookie.load('cookie'));
-            console.log(this.props.propData);
-            this.setState({
-              username: store.getState().username
-            });
-          });*/
+        this.props.checkUser(data);
+        // store.subscribe(() => {
+        //     // When state will be updated(in our case, when items will be fetched), 
+        //     // we will update local component state and force component to rerender 
+        //     // with new data.
+        //     console.log(cookie.load('cookie'));
+        //     console.log(this.props.propData);
+        //     this.setState({
+        //       username: store.getState().username
+        //     });
+        //   });
+if(this.props.msg!=null){
+    alert(this.props.msg);
+
+if(this.props.msg=="Login Successful"){
+    cookie.save("cookie","customer",{maxAge: 900000, httpOnly: false, path : '/'});
+    cookie.save("user",this.props.user,{maxAge: 900000, httpOnly: false, path : '/'});
+    cookie.save("email",this.state.username,{maxAge: 900000, httpOnly: false, path : '/'});
+    this.setState({       
+    });
+}
+}
+
 //set the with credentials to true
-axios.defaults.withCredentials = true;
-//make a post request with the user data
-axios.post('http://'+hostAddress+':3001/login/login',data)
-    .then(response => {
-     alert(response.data.msg);
-        console.log("Status Code : ",response.data);
-         if(response.data.msg.trim() == "Login Successful"){
-            console.log("Hello peps");
-            console.log(cookie.load('cookie'));
-            localStorage.setItem("jwtToken",response.data.token)
-            this.setState({
-            authFlag : true
-            })
-        }
-    })
-    .catch(
-        console.log("error")
+// axios.defaults.withCredentials = true;
+// //make a post request with the user data
+// axios.post('http://'+hostAddress+':3001/login/login',data)
+//     .then(response => {
+//      alert(response.data.msg);
+//         console.log("Status Code : ",response.data);
+//          if(response.data.msg.trim() == "Login Successful"){
+//             console.log("Hello peps");
+//             console.log(cookie.load('cookie'));
+//             localStorage.setItem("jwtToken",response.data.token)
+//             this.setState({
+//             authFlag : true
+//             })
+//         }
+//     })
+//     .catch(
+//         console.log("error")
     
-    )
+//     )
        
     }
 
@@ -127,22 +138,20 @@ axios.post('http://'+hostAddress+':3001/login/login',data)
     }
 }
 //export Login Component
-export default Login;
+//export default Login;
 
-// function mapDispatchToProps(dispatch) {
-//     return {
-//       checkUser: user => dispatch(checkUser(user))
-//     };
-//   }
+function mapDispatchToProps(dispatch) {
+    return {
+      checkUser: user => dispatch(checkUser(user))
+    };
+  }
   
-//   function mapStateToProps(state,propData) {
-//     return {
-//       propData: state.username
-//     };
-//   }
-  
-//   Login.propTypes = {
-//     checkUser: PropTypes.func.isRequired
-//   };
-//   const LoginForm = connect(mapStateToProps, mapDispatchToProps)(Login);
-//   export default LoginForm;
+  function mapStateToProps(store) {
+    return {
+      msg: store.cloginMsg,
+      user : store.user
+    };
+  }
+ 
+  const LoginForm = connect(mapStateToProps, mapDispatchToProps)(Login);
+  export default LoginForm;

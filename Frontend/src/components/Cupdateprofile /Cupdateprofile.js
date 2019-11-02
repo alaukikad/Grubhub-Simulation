@@ -96,7 +96,7 @@ class Cupdateprofile extends Component {
         console.log(this.state.file.name)
         formData.append('myImage', this.state.file, this.state.file.name)
         formData.append('uid', this.state.email)
-        const config = {
+        const config2 = {
           headers: {
             'content-type': 'multipart/form-data'
           }
@@ -113,6 +113,7 @@ class Cupdateprofile extends Component {
           .catch(error => { })
 
         e.preventDefault();
+
         const data = {
             pemail :cookie.load("email"),
             email : this.state.email,
@@ -122,8 +123,8 @@ class Cupdateprofile extends Component {
         }
 
        // this.props.updateCProfile(data);
-
-       axios.defaults.withCredentials = true;
+console.log(" I am here in cprofile update")
+    
        //make a post request with the user data
        axios.post('http://'+hostAddress+':3001/cprofileupdate/cprofileupdate',data,config)
        .then(response => {

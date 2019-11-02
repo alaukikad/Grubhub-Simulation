@@ -6,6 +6,7 @@ var Orders= require('../../../models/Orders');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
+var kafka = require('../../../kafka/client');
 
 //router.use(requireAuth);
 
@@ -14,26 +15,36 @@ require('../../../config/passport')(passport);
  router.post('/confirmOrder',requireAuth,function(req,res){
     console.log("Inside Confirm Order");  
     console.log(req.body);   
-    var temp=[];
+    let body = req.body;
+    console.log("Inside API of Confirm Order", body)
+    kafka.make_request('confirm_order', body, function(err,result){
+      console.log(result); 
+      if (err){
+            res.send("Errorrr!!")
+        }else{
+            res.send(result);
+        }
+      })
+//     var temp=[];
     
-    var order=Orders({
-      price: req.body.total,
-      uid:req.body.email,
-      status:"Placed", 
-      rid:req.body.rid,
-      uname:req.body.uname,
-      uaddress:req.body.uaddress,
-      rname:req.body.rname,
-      orderDetails : req.body.cart
-    })  
-    order.save(function(error, results){
-      if (error) throw error
-    })
+//     var order=Orders({
+//       price: req.body.total,
+//       uid:req.body.email,
+//       status:"Placed", 
+//       rid:req.body.rid,
+//       uname:req.body.uname,
+//       uaddress:req.body.uaddress,
+//       rname:req.body.rname,
+//       orderDetails : req.body.cart
+//     })  
+//     order.save(function(error, results){
+//       if (error) throw error
+//     })
     
-OrderDetails.updateMany({uid:req.body.email, status:"Cart"},{status:"Ordered"},function(err){
-  if (err) throw err;
-})
-res.end("Order Placed!")
+// OrderDetails.updateMany({uid:req.body.email, status:"Cart"},{status:"Ordered"},function(err){
+//   if (err) throw err;
+// })
+// res.end("Order Placed!")
   })
 
   // router.post('/confirmOrder',function(req,res){

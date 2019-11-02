@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import rootReducer from "../reducers/index";
-import { emptyUser } from "../middleware/index";
+import thunk from 'redux-thunk';
 
 // const store = createStore(rootReducer,
 //     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
@@ -9,9 +9,10 @@ import { emptyUser } from "../middleware/index";
     // let rr;
     const store = createStore(
       rootReducer,
-      storeEnhancers(applyMiddleware(emptyUser))
+      storeEnhancers(applyMiddleware(thunk))
     );
     // console.log("store");
     // console.log(rr);
     
 export default store;
+

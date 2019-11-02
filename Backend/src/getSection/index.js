@@ -5,6 +5,7 @@ var Sections=require('../../models/Sections');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
+var kafka = require('../../kafka/client');
 
 //router.use(requireAuth);
 
@@ -13,23 +14,30 @@ require('../../config/passport')(passport);
 router.post('/getSection',requireAuth,function(req,res){
   console.log("Inside Section ");  
  
-  console.log(req.body.email);
-      
-       Sections.find({rid:req.body.email}, function(err,result,fields){
-          if(err) throw err;
-         
-          let a=[]
-          for(var i=0;i<result.length;i++){
-            a.push({"key" : result[i]._id,"value" :result[i].name} )
-          }
-
-      res.writeHead(200,{
-          'Content-Type' : 'application/json'
-      });
-  
-  res.end(JSON.stringify(a));
-      
+  //console.log(req.body.email);
+  let body = req.body;
+  console.log("Inside API of get Section ", body)
+  kafka.make_request('get_section', body, function(err,result){
+  console.log(result); 
+  if (err){
+        res.send("Errorrr!!")
+    }else{
+        res.send(result);
+    }
   });
+  //      Sections.find({rid:req.body.email}, function(err,result,fields){
+  //         if(err) throw err;
+         
+  //         let a=[]
+  //         for(var i=0;i<result.length;i++){
+  //           a.push({"key" : result[i]._id,"value" :result[i].name} )
+  //         }
+
+  //     res.writeHead(200,{
+  //         'Content-Type' : 'application/json'
+  //     });
+  // res.end(JSON.stringify(a));  
+  //});
   })
 
   // router.post('/getSection',function(req,res){

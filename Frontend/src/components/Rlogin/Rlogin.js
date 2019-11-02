@@ -81,7 +81,10 @@ class Rlogin extends Component{
           alert(response.data.resmsg);
           console.log("Status Code : ",response.data);
           if(response.data.resmsg.trim() == "Login Successful"){
-              console.log("Hello peps I'm in R login reducer");
+              console.log("Hello peps I'm in R login logged in");
+              cookie.save("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
+              cookie.save("user",response.data.name,{maxAge: 900000, httpOnly: false, path : '/'});
+              cookie.save("email",this.state.username,{maxAge: 900000, httpOnly: false, path : '/'});
               localStorage.setItem("jwtToken",response.data.token)
               this.setState({
                   authFlag: true 

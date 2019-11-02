@@ -5,6 +5,7 @@ var Orders=require('../../../models/Orders');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
+var kafka = require('../../../kafka/client');
 
 //router.use(requireAuth);
 
@@ -13,10 +14,21 @@ require('../../../config/passport')(passport);
   router.post('/upcomingOrder',requireAuth,function(req,res){
     console.log("Inside Upcoming Order");  
     console.log(req.body);   
-    Orders.find({uid:req.body.email,status:{$in :["Placed","Preparing","Ready"]}},function(err,result){
-      if(err) throw err;
+       
+let body = req.body;
+console.log("Inside API of Upcoming Order", body)
+kafka.make_request('upcoming_order', body, function(err,result){
+  console.log(result); 
+  if (err){
+        res.send("Errorrr!!")
+    }else{
+        res.send(result);
+    }
+    
+    // Orders.find({uid:req.body.email,status:{$in :["Placed","Preparing","Ready"]}},function(err,result){
+    //   if(err) throw err;
 
-      res.end(JSON.stringify(result));
+    //   res.end(JSON.stringify(result));
     })   
   })
 

@@ -5,6 +5,7 @@ var Menu=require('../../../models/Menu');
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
+var kafka = require('../../../kafka/client');
 
 //router.use(requireAuth);
 
@@ -14,15 +15,26 @@ require('../../../config/passport')(passport);
     console.log("Inside Delete Item ");  
     console.log(req.body);
 
-        Menu.findOneAndDelete({_id : req.body.id},function(err,result,fields){
-          if(err) throw err;
-         
-        res.writeHead(200,{
-          'Content-Type' : 'application/json'
-        });
+    let body = req.body;
+    console.log("Inside API of Delete Item", body)
+    kafka.make_request('delete_item', body, function(err,result){
+    console.log(result); 
+    if (err){
+          res.send("Errorrr!!")
+      }else{
+          res.send(result);
+      }
+    });
 
-        res.end("Item Deleted");
-      });
+      //   Menu.findOneAndDelete({_id : req.body.id},function(err,result,fields){
+      //     if(err) throw err;
+         
+      //   res.writeHead(200,{
+      //     'Content-Type' : 'application/json'
+      //   });
+
+      //   res.end("Item Deleted");
+      // });
     })
 
     // router.post('/deleteitem',function(req,res){

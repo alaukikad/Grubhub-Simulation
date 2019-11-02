@@ -10,7 +10,7 @@ import 'react-dropdown/style.css';
 //import { updateRProfile } from "../../js/actions/index";
 import hostAddress from '../constants';
 
-let config = {
+let config2 = {
     headers:{
         'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
         'Content-Type': 'application/json'
@@ -87,7 +87,7 @@ axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
         axios.defaults.withCredentials = true;
 
         //make a post request with the user data
-        axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data,config)
+        axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data,config2)
                 .then((response) => {
                 this.setState({
                 rid : response.data.rid,
@@ -190,7 +190,7 @@ axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
        //set the with credentials to true
        axios.defaults.withCredentials = true;
        //make a post request with the user data
-       axios.post('http://'+hostAddress+':3001/rprofileupdate/rprofileupdate',data,config)
+       axios.post('http://'+hostAddress+':3001/rprofileupdate/rprofileupdate',data,config2)
        .then(response => {
        alert(response.data);
        console.log("Status Code : ",response.data);
