@@ -4,6 +4,9 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import hostAddress from '../constants';
+import {getMenu} from '../../js/actions/menu';
+import {checkOut} from '../../js/actions/search';
+import { connect } from "react-redux";
 
 
 let config = {
@@ -12,6 +15,7 @@ let config = {
         'Content-Type': 'application/json'
       }
   }
+
 let goToCart=false;
 let quant=new Map();
 
@@ -36,15 +40,24 @@ class MenuCard extends Component {
             email : this.props.restID
         }
     
-        axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data,config)
-        .then((response) => {
-        //update the state with the response data
-        console.log("In get menu constructor")
-        resp1=response.data
-        console.log(resp1)
-        })
-        
+        // axios.defaults.withCredentials = true;
+        // axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data,config)
+        // .then((response) => {
+        // //update the state with the response data
+        // console.log("In get menu constructor")
+        // resp1=response.data
+        // console.log(resp1)
+        // this.props.getSection(data);
+        // console.log(this.props.sectionList)
+        // if(this.props.sectionList!=null){
+        //     secList=this.props.sectionList;
+        //     console.log("secList",secList)
+            
+        // }
+        // })
+        this.props.getMenu(data);
+
+
         axios.post('http://'+hostAddress+':3001/getSection/getSection',data,config)
         .then((response) => {
         //update the state with the response data
@@ -52,19 +65,19 @@ class MenuCard extends Component {
         console.log(response.data)
         secList=response.data;
         console.log(secList)
-        console.log(resp1)
-        this.setState({
-            menu : this.state.menu.concat(resp1) 
-        });
+        //console.log(resp1)
+        // this.setState({
+        //     menu : this.state.menu.concat(resp1) 
+        // });
         })
-    console.log("i am ahiyaaa")
-    console.log(resp1);
+    // console.log("i am ahiyaaa")
+    // console.log(resp1);
     
-    console.log("In menu")
-    console.log(this.state.menu)
+    // console.log("In menu")
+   // console.log(this.state.menu)
     }
    
-    setQuantity=(name,price,e)=>{
+setQuantity=(name,price,e)=>{
     console.log(e);
     console.log(e.target.value);
     console.log(e.target.name)
@@ -95,16 +108,24 @@ checkOut=(e)=>{
     if(quant==null){
     alert("No Food Added to Cart!")
     }else{
-    axios.defaults.withCredentials = true;
-    axios.post('http://'+hostAddress+':3001/checkOut/checkOut',data,config)
-    .then((response) => {
-    //update the state with the response data
-    alert(response.data)
+    // axios.defaults.withCredentials = true;
+    // axios.post('http://'+hostAddress+':3001/checkOut/checkOut',data,config)
+    // .then((response) => {
+    // //update the state with the response data
+
+    this.props.checkOut(data);
+    if(this.props.checkoutMsg!=null){
+    alert(this.props.checkoutMsg);
     goToCart=true;
     this.setState({   
     });
+    }
+    // alert(response.data)
+    // goToCart=true;
+    // this.setState({   
+    // });
     console.log("Inside Checkout2")
-});
+//});
     }
 }
 
@@ -113,7 +134,7 @@ checkOut=(e)=>{
         let sectionDetails= secList.map(sec => {
             console.log("in section Display")
             console.log(sec)
-            let secItems=resp1.filter(item=> item.sid == sec.value)
+            let secItems=this.props.menu.filter(item=> item.sid == sec.value)
             display.push(
                 <div>
                 <div style={{display:"Flex"}}>
@@ -184,6 +205,23 @@ checkOut=(e)=>{
         )}
 }
 //export Home Component
-export default MenuCard;
+//export default MenuCard;
 
+
+function mapDispatchToProps(dispatch) {
+    return {
+        getMenu: user => dispatch(getMenu(user)),
+        checkOut : user=>dispatch(checkOut(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      menu: store.menu,
+      checkoutMsg : store.checkoutMsg
+    };
+  }
+ 
+  const MenuCardC = connect(mapStateToProps, mapDispatchToProps)(MenuCard);
+  export default MenuCardC;
 

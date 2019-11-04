@@ -5,6 +5,7 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import MenuCard from '../MenuCard/MenuCard';
 import hostAddress from '../constants';
+import { connect } from "react-redux";
 
 let restID=null;
 let updateFlag=false;
@@ -34,7 +35,7 @@ class ViewFood extends Component {
 
     render(){
         
-        let restaurantdetails = this.props.restaurants.map(rest =>  {
+        let restaurantdetails = this.props.search.map(rest =>  {
             return(
                 <tr>
                 <td>
@@ -94,6 +95,15 @@ class ViewFood extends Component {
         )}
 }
 //export Home Component
-export default ViewFood;
+//export default ViewFood;
+
+function mapStateToProps(store) {
+    return {
+      search: store.searchedRestaurant
+    };
+  }
+ 
+  const ViewFoodC = connect(mapStateToProps, null)(ViewFood);
+  export default ViewFoodC;
 
 

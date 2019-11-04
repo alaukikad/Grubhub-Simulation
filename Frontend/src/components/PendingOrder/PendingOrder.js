@@ -6,6 +6,8 @@ import {Redirect} from 'react-router';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import hostAddress from '../constants';
+import {pendingOrder} from '../../js/actions/orders';
+import { connect } from "react-redux";
 
 let orderList;
 let total=[];
@@ -38,11 +40,12 @@ class PendingOrder extends Component {
         const data = {
             email : cookie.load('email')
         }
-      
-        axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/pendingOrder/pendingOrder',data,config)
-        .then((response) => {
-        let mapping=response.data.map(val=>{
+        this.props.pendingOrder(data);
+        // axios.defaults.withCredentials = true;
+        // axios.post('http://'+hostAddress+':3001/pendingOrder/pendingOrder',data,config)
+        // .then((response) => {
+            if(this.props.order!=null){
+        let mapping=this.props.order.map(val=>{
             for(var i=0;i<val.orderDetails.length;i++){
             var obj1={
                 "ID": val._id,
@@ -60,14 +63,17 @@ class PendingOrder extends Component {
         }else{
             orderList.set(val._id,[obj1]);
         }
-    }
-        })
+      }
+     
+    })
 
         console.log(orderList)
         this.setState({
         })
-    });
+  //  });
     }
+    } 
+
 
     statusChangeHandler = (value,e) => {
         //console.log(value.value);
@@ -206,4 +212,20 @@ total[++c]=0
     }
 }
 
-export default PendingOrder;
+//export default PendingOrder;
+
+
+function mapDispatchToProps(dispatch) {
+    return {
+        pendingOrder: user => dispatch(pendingOrder(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      order: store.pendingOrder
+    };
+  }
+ 
+  const PendingOrderC = connect(mapStateToProps, mapDispatchToProps)(PendingOrder);
+  export default PendingOrderC;

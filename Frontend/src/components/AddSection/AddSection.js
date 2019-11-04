@@ -7,6 +7,10 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import hostAddress from '../constants';
 
+import {addSection} from '../../js/actions/menu';
+import { connect } from "react-redux";
+
+
 let updateFlag=false;
 let config = {
     headers:{
@@ -60,22 +64,29 @@ if(this.sectionname.value=="" ){
 alert("Please fill Section Name Field!");
 }else{
    
-     //set the with credentials to true
-     axios.defaults.withCredentials = true;
-     //make a post request with the user data
- 
-     axios.post('http://'+hostAddress+':3001/addsection/addsection',data,config)
-     .then(response => {
-         alert(response.data);
-         console.log("Status Code : ",response.status);
-         if(response.data.trim() == "Section Added Successfully!"){
-           console.log("Hello New Section");
-           updateFlag=true;
+    //  //set the with credentials to true
+    //  axios.defaults.withCredentials = true;
+    //  //make a post request with the user data
+    //  axios.post('http://'+hostAddress+':3001/addsection/addsection',data,config)
+    //  .then(response => {
+    //      alert(response.data);
+    //      console.log("Status Code : ",response.status);
+    //      if(response.data.trim() == "Section Added Successfully!"){
+    //        console.log("Hello New Section");
+    //        updateFlag=true;
+    //         this.setState({
+    //         })
+    //      }
+         
+    //  })
+
+    this.props.addSection(data);
+    if(this.props.addSectionMsg!=null){
+        alert(this.props.addSectionMsg);
+        updateFlag=true;
             this.setState({
             })
-         }
-         
-     })
+    }
         }
     }
 
@@ -117,4 +128,19 @@ alert("Please fill Section Name Field!");
 }
 
 
-export default AddSection;
+//export default AddSection;
+
+function mapDispatchToProps(dispatch) {
+    return {
+        addSection : user => dispatch(addSection(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      addSectionMsg: store.addSectionMsg
+    };
+  }
+ 
+  const AddSectionC = connect(mapStateToProps, mapDispatchToProps)(AddSection);
+  export default AddSectionC;

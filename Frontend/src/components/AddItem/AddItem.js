@@ -7,6 +7,9 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import hostAddress from '../constants';
 
+import {addItem} from '../../js/actions/menu';
+import { connect } from "react-redux";
+
 let updateFlag=false;
 let config = {
     headers:{
@@ -128,24 +131,32 @@ this.setState({
 if(this.itemname.value=="" || this.description.value=="" ||this.section.value=="" ||this.price.value=="" ){
 alert("Please fill all Fields!");
 }else{
-     //set the with credentials to true
-     axios.defaults.withCredentials = true;
-     //make a post request with the user data
+    //  //set the with credentials to true
+    //  axios.defaults.withCredentials = true;
+    //  //make a post request with the user data
  
-     axios.post('http://'+hostAddress+':3001/additem/additem',data,config)
-     .then(response => {
-        alert(response.data)
-         console.log("Status Code : ",response.status);
-         if(response.data.trim =="Item Added Successfully!"){
-           console.log("Hello New Item");
-           alert("Item Added Successfully!");
-            this.setState({   
+    //  axios.post('http://'+hostAddress+':3001/additem/additem',data,config)
+    //  .then(response => {
+    //     alert(response.data)
+    //      console.log("Status Code : ",response.status);
+    //      if(response.data.trim =="Item Added Successfully!"){
+    //        console.log("Hello New Item");
+    //        alert("Item Added Successfully!");
+    //         this.setState({   
+    //         })
+    //      }
+    //      updateFlag=true;
+    //      this.setState({   
+    //     })
+    //  })
+
+     this.props.addItem(data);
+    if(this.props.addItemMsg!=null){
+        alert(this.props.addItemMsg);
+        updateFlag=true;
+            this.setState({
             })
-         }
-         updateFlag=true;
-         this.setState({   
-        })
-     })
+    }
         }
     }
 
@@ -203,5 +214,19 @@ alert("Please fill all Fields!");
     }
 }
 
+// export default AddItem;
 
-export default AddItem;
+function mapDispatchToProps(dispatch) {
+    return {
+        addItem : user => dispatch(addItem(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      addItemMsg: store.addItemMsg
+    };
+  }
+ 
+  const AddItemC = connect(mapStateToProps, mapDispatchToProps)(AddItem);
+  export default AddItemC;

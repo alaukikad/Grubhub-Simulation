@@ -4,7 +4,8 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import hostAddress from '../constants';
-
+import {cancelledOrder} from '../../js/actions/orders';
+import { connect } from "react-redux";
 
 let orderList;
 let total=[];
@@ -27,11 +28,13 @@ class CancelledOrder extends Component {
         const data = {
             email : cookie.load('email')
         }
-      
-        axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/cancelledOrder/cancelledOrder',data,config)
-        .then((response) => {
-        let mapping=response.data.map(val=>{
+
+        this.props.cancelledOrder(data);
+        // axios.defaults.withCredentials = true;
+        // axios.post('http://'+hostAddress+':3001/cancelledOrder/cancelledOrder',data,config)
+        // .then((response) => {
+            if(this.props.order!=null){
+        let mapping=this.props.order.map(val=>{
         for(var i=0;i<val.orderDetails.length;i++){
             var obj1={
             "ID": val._id,
@@ -55,7 +58,8 @@ class CancelledOrder extends Component {
         console.log(orderList)
         this.setState({
         })
-    });
+      }
+  //  });
     }
 
 
@@ -141,4 +145,20 @@ total[++c]=0
     }
 }
 
-export default CancelledOrder;
+// export default CancelledOrder;
+
+
+function mapDispatchToProps(dispatch) {
+    return {
+        cancelledOrder: user => dispatch(cancelledOrder(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      order: store.cancelledOrder
+    };
+  }
+ 
+  const CancelledOrderC = connect(mapStateToProps, mapDispatchToProps)(CancelledOrder);
+  export default CancelledOrderC;

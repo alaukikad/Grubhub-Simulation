@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import '../../App.css';
-import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import hostAddress from '../constants';
+// import hostAddress from '../constants';
+// import axios from 'axios';
+import {delieveredOrder} from '../../js/actions/orders';
+import { connect } from "react-redux";
 
 let orderList;
 let total=[];
@@ -26,11 +28,14 @@ class DeliveredOrder extends Component {
         const data = {
             email : cookie.load('email')
         }
-      
-        axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/deliveredOrder/deliveredOrder',data,config)
-        .then((response) => {
-        let mapping=response.data.map(val=>{
+        
+        // axios.defaults.withCredentials = true;
+        // axios.post('http://'+hostAddress+':3001/deliveredOrder/deliveredOrder',data,config)
+        // .then((response) => {
+        this.props.delieveredOrder(data);
+       
+        if(this.props.order!=null){
+        let mapping= this.props.order.map(val=>{
             for(var i=0;i<val.orderDetails.length;i++){
             var obj1={
                 "ID": val._id,
@@ -49,12 +54,13 @@ class DeliveredOrder extends Component {
             orderList.set(val._id,[obj1]);
         }
     }
-        })
+       })
 
         console.log(orderList)
         this.setState({
         })
-    });
+    }
+   // });
     }
 
 
@@ -140,4 +146,20 @@ total[++c]=0
     }
 }
 
-export default DeliveredOrder;
+//export default DeliveredOrder;
+
+
+function mapDispatchToProps(dispatch) {
+    return {
+        delieveredOrder: user => dispatch(delieveredOrder(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      order: store.deliveredOrder
+    };
+  }
+ 
+  const DeliveredOrderC = connect(mapStateToProps, mapDispatchToProps)(DeliveredOrder);
+  export default DeliveredOrderC;

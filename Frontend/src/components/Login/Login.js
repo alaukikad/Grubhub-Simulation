@@ -29,7 +29,6 @@ class Login extends Component{
     }
     //Call the Will Mount to set the auth Flag to false
     componentWillMount(){
-        
         this.setState({
             authFlag : false
         })

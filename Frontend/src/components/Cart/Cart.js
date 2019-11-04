@@ -4,6 +4,9 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import hostAddress from '../constants';
+import {confirmOrder,cancelOrder} from '../../js/actions/search';
+import { connect } from "react-redux";
+
 
 let price=0;
 let restName="";
@@ -77,16 +80,28 @@ class Cart extends Component {
             uname: this.state.fullname,
             uaddress:this.state.address
         }
-        console.log(data)
-        axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/confirmOrder/confirmOrder',data,config)
-        .then((response) => {
-        //update the state with the response data
-         goToOrders=true;
-        this.setState({   
-        });
-        console.log("Inside Confirm")
-    });
+
+        this.props.confirmOrder(data);
+        alert("Order Placed!");
+        goToHome=true;
+        this.setState({});
+        if(this.props.confirmOrderMsg!=null){
+            //alert(this.props.confirmOrderMsg)
+            // goToHome=true;
+            // cartClear=true;
+            this.setState({   
+            });
+        }
+    //     console.log(data)
+    //     axios.defaults.withCredentials = true;
+    //     axios.post('http://'+hostAddress+':3001/confirmOrder/confirmOrder',data,config)
+    //     .then((response) => {
+    //     //update the state with the response data
+    //      goToOrders=true;
+    //     this.setState({   
+    //     });
+    //     console.log("Inside Confirm")
+    // });
     }
 
     cancelOrder=(e)=>{
@@ -97,17 +112,27 @@ class Cart extends Component {
             rid : restID
         }
         
-        axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/cancelOrder/cancelOrder',data,config)
-        .then((response) => {
-        //update the state with the response data
-        alert(response.data)
-         goToHome=true;
-         cartClear=true;
-        this.setState({   
-        });
+        // axios.defaults.withCredentials = true;
+        // axios.post('http://'+hostAddress+':3001/cancelOrder/cancelOrder',data,config)
+        // .then((response) => {
+        // //update the state with the response data
+        // alert(response.data)
+        this.props.cancelOrder(data);
+        alert("Cart Cleared!")
+            goToHome=true;
+            cartClear=true;
+            this.setState({   
+            });
+        if(this.props.cancelOrderMsg!=null){
+            // alert(this.props.cancelOrderMsg)
+            // goToHome=true;
+            // cartClear=true;
+            this.setState({   
+            });
+}
+         
         console.log("Inside cancel")
-    });
+   // });
     }
 
     render(){
@@ -183,4 +208,22 @@ class Cart extends Component {
     }
 }
 
-export default Cart;
+//export default Cart;
+
+
+function mapDispatchToProps(dispatch) {
+    return {
+        confirmOrder: user => dispatch(confirmOrder(user)),
+        cancelOrder: user => dispatch(cancelOrder(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      confirmOrderMsg: store.confirmOrderMsg,
+      cancelOrderMsg: store.cancelOrderMsg
+    };
+  }
+ 
+  const CartC = connect(mapStateToProps, mapDispatchToProps)(Cart);
+  export default CartC;

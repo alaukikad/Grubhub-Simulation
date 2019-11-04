@@ -9,6 +9,10 @@ import EditItem from '../EditItem/EditItem';
 import EditSection from '../EditSection/EditSection';
 import hostAddress from '../constants';
 
+import {getMenu,deleteItem,deleteSection} from '../../js/actions/menu';
+import { connect } from "react-redux";
+
+
 let ItemID=null;
 let getDetail=null;
 let delFlag=null;
@@ -39,16 +43,16 @@ class Rmenu extends Component {
         const data = {
             email : cookie.load('email')
         }
-
-        console.log(cookie.load('email'));
-        axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data,config)
-        .then((response) => {
-        //update the state with the response data
-        this.setState({
-            menu : this.state.menu.concat(response.data) 
-        });
-    });
+        this.props.getMenu(data);
+    //     console.log(cookie.load('email'));
+    //     axios.defaults.withCredentials = true;
+    //     axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data,config)
+    //     .then((response) => {
+    //     //update the state with the response data
+    //     this.setState({
+    //         menu : this.state.menu.concat(response.data) 
+    //     });
+    // });
        axios.post('http://'+hostAddress+':3001/getSection/getSection',data,config)
         .then((response) => {
         //update the state with the response data
@@ -87,15 +91,18 @@ class Rmenu extends Component {
             rid: cookie.load('email'),
             p : prevSecName
         }
-        axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/deleteSection/deleteSection',data,config)
-        .then((response) => {
-            alert(response.data);
+        this.props.deleteSection(data);
+        alert("Section Deleted!!");
+        delFlag=true;
+        // axios.defaults.withCredentials = true;
+        // axios.post('http://'+hostAddress+':3001/deleteSection/deleteSection',data,config)
+        // .then((response) => {
+        //     alert(response.data);
         //update the state with the response data
         this.setState({       
         });
-    });
-        delFlag=true;
+   // });
+        
     }
 
 
@@ -104,23 +111,30 @@ class Rmenu extends Component {
             id : value
         }
      
-        axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/deleteitem/deleteitem',data,config)
-        .then((response) => {
-            alert(response.data);
-        //update the state with the response data
-        this.setState({       
-        });
-    });
-
-        delFlag=true;
+    //     axios.defaults.withCredentials = true;
+    //     axios.post('http://'+hostAddress+':3001/deleteitem/deleteitem',data,config)
+    //     .then((response) => {
+    //         alert(response.data);
+    //     //update the state with the response data
+    //     this.setState({       
+    //     });
+    // });
+     this.props.deleteItem(data);
+     alert("Item Deleted!!");
+     delFlag=true;
+       this.setState({       
+       });
+       
     }
 
     render(){
         let display=[]
         
         let sectionDetails= secList.forEach(sec => {
-            let secItems=this.state.menu.filter(item=> item.sid == sec.value)
+         //  setTimeout(() => {
+               
+           
+            let secItems=this.props.menu.filter(item=> item.sid == sec.value)
             display.push(
                 <div>
                 <div style={{display:"Flex"}}>
@@ -154,8 +168,10 @@ class Rmenu extends Component {
                        
                     </tr> 
                 )
-            })     
+            })   
+        //}, 200);  
         })
+   
 
         display.push(
             <div>
@@ -211,6 +227,25 @@ class Rmenu extends Component {
         )}
 }
 //export Home Component
-export default Rmenu;
+//export default Rmenu;
+
+
+function mapDispatchToProps(dispatch) {
+    return {
+        getMenu: user => dispatch(getMenu(user)),
+        deleteSection : user => dispatch(deleteSection(user)),
+        deleteItem : user => dispatch(deleteItem(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      menu: store.menu
+    };
+  }
+ 
+  const RmenuC = connect(mapStateToProps, mapDispatchToProps)(Rmenu);
+  export default RmenuC;
+
 
 

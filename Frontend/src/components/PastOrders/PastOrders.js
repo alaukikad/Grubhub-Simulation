@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import '../../App.css';
-import axios from 'axios';
+// import axios from 'axios';
+// import hostAddress from '../constants';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import hostAddress from '../constants';
+import {pastOrder} from '../../js/actions/orders';
+import { connect } from "react-redux";
 
 let orderList;
 let total=[];
@@ -29,10 +31,13 @@ class PastOrders extends Component {
             email : cookie.load('email')
         }
       
-        axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/pastOrder/pastOrder',data,config)
-        .then((response) => {
-        let mapping=response.data.map(val=>{
+        // axios.defaults.withCredentials = true;
+        // axios.post('http://'+hostAddress+':3001/pastOrder/pastOrder',data,config)
+        // .then((response) => {
+            this.props.pastOrder(data);
+
+        if(this.props.order!=null){
+        let mapping=this.props.order.map(val=>{
             for(var i=0;i<val.orderDetails.length;i++){
             var obj1={
                 "ID": val._id,
@@ -55,7 +60,8 @@ class PastOrders extends Component {
         console.log(orderList)
         this.setState({
         })
-    });
+    }
+  //  });
     }
 
 
@@ -142,4 +148,19 @@ total[++c]=0
     }
 }
 
-export default PastOrders;
+//export default PastOrders;
+
+function mapDispatchToProps(dispatch) {
+    return {
+        pastOrder: user => dispatch(pastOrder(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      order: store.pastOrder
+    };
+  }
+ 
+  const PastOrdersC = connect(mapStateToProps, mapDispatchToProps)(PastOrders);
+  export default PastOrdersC;

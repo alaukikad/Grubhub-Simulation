@@ -5,8 +5,8 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-//import { connect } from "react-redux";
-//import { registerRestaurant } from "../../js/actions/index";
+import { connect } from "react-redux";
+import { registerRestaurant } from "../../js/actions/index";
 //import store from '../../js/store/index';
 import hostAddress from '../constants';
 
@@ -159,7 +159,19 @@ class Rregister extends Component{
 if(this.restaurant.value=="" || this.email.value=="" ||this.fullname.value=="" ||this.contact.value=="" ||this.address.value==""||this.city.value=="" ||this.password.value=="" ||this.zipcode.value==""  ){
 alert("Please fill all Fields!");
 }else{
-    // this.props.registerRestaurant(data);
+    this.props.registerRestaurant(data);
+    if(this.props.msg!=null){
+        alert(this.props.msg);
+    
+    if(this.props.msg=="Restaurant Added Successfully!"){
+        console.log("Hello New Restaurant");
+        cookie.save("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
+        cookie.save("user",this.props.user,{maxAge: 900000, httpOnly: false, path : '/'});
+        cookie.save("email",this.state.email,{maxAge: 900000, httpOnly: false, path : '/'});
+        this.setState({       
+        });
+    }
+}
     // store.subscribe(() => {
     //     // When state will be updated(in our case, when items will be fetched), 
     //     // we will update local component state and force component to rerender 
@@ -173,24 +185,24 @@ alert("Please fill all Fields!");
 
 
      //set the with credentials to true
-     axios.defaults.withCredentials = true;
-     //make a post request with the user data
+    //  axios.defaults.withCredentials = true;
+    //  //make a post request with the user data
  
-     axios.post('http://'+hostAddress+':3001/rregister/rregister',data)
-     .then(response => {
-         alert(response.data.resmsg);
-         console.log("Status Code : ",response.status);
-         if(response.data.resmsg.trim() == "Restaurant Added Successfully!"){
-           console.log("Hello New Restaurant");
-           cookie.save("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
-           cookie.save("user",response.data.name,{maxAge: 900000, httpOnly: false, path : '/'});
-           cookie.save("email",this.state.email,{maxAge: 900000, httpOnly: false, path : '/'});
-           localStorage.setItem("jwtToken",response.data.token);
-            this.setState({
-                authFlag: true
-            })
-         }
-     })
+    //  axios.post('http://'+hostAddress+':3001/rregister/rregister',data)
+    //  .then(response => {
+    //      alert(response.data.resmsg);
+    //      console.log("Status Code : ",response.status);
+    //      if(response.data.resmsg.trim() == "Restaurant Added Successfully!"){
+    //        console.log("Hello New Restaurant");
+    //        cookie.save("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
+    //        cookie.save("user",response.data.name,{maxAge: 900000, httpOnly: false, path : '/'});
+    //        cookie.save("email",this.state.email,{maxAge: 900000, httpOnly: false, path : '/'});
+    //        localStorage.setItem("jwtToken",response.data.token);
+    //         this.setState({
+    //             authFlag: true
+    //         })
+    //      }
+    //  })
         }
     }
 
@@ -255,18 +267,19 @@ alert("Please fill all Fields!");
 }
 
 
-// function mapDispatchToProps(dispatch) {
-//     return {
-//       registerRestaurant: user => dispatch(registerRestaurant(user))
-//     };
-//   }
-//   function mapStateToProps(state,propData) {
-//     return {
-//       propData: state.username
-//     };
-//   }
+function mapDispatchToProps(dispatch) {
+    return {
+      registerRestaurant: user => dispatch(registerRestaurant(user))
+    };
+  }
+  function mapStateToProps(store) {
+    return {
+      msg: store.rSignupMsg,
+      user : store.restaurant
+    };
+  }
 
-//   const RegisterRest = connect(mapStateToProps, mapDispatchToProps)(Rregister);
-//   export default RegisterRest;
+  const RegisterRest = connect(mapStateToProps, mapDispatchToProps)(Rregister);
+  export default RegisterRest;
 
-export default Rregister;
+//export default Rregister;

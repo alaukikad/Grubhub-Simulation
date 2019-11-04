@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import '../../App.css';
-import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-//import { connect } from "react-redux";
-//import { registerUser } from "../../js/actions/index";
-import hostAddress from '../constants';
+import { connect } from "react-redux";
+import { registerUser } from "../../js/actions/index";
+// import hostAddress from '../constants';
+// import axios from 'axios';
 
 //Define a Login Component
 class Cregister extends Component{
@@ -91,26 +91,37 @@ class Cregister extends Component{
             alert("Please fill all Fields!");
             }else{
 
-
-
-            //set the with credentials to true
-            axios.defaults.withCredentials = true;
-            //make a post request with the user data
-            axios.post('http://'+hostAddress+':3001/cregister/cregister',data)
-            .then(response => {
-            alert(response.data.resmsg);
-            console.log("Status Code blyi : ",response.status);
-            if(response.data.resmsg.trim() == "User Added Successfully!"){
-            console.log("Hello New User!");
-            cookie.save("cookie","customer",{maxAge: 900000, httpOnly: false, path : '/'});
-            cookie.save("user",this.state.fullname,{maxAge: 900000, httpOnly: false, path : '/'});
-            cookie.save("email",this.state.email,{maxAge: 900000, httpOnly: false, path : '/'});
-            localStorage.setItem("jwtToken",response.data.token);
-            this.setState({
-              authFlag : true
-            })
+                this.props.registerUser(data);
+                if(this.props.msg!=null){
+                    alert(this.props.msg);
+                
+                if(this.props.msg=="User Added Successfully!"){
+                    console.log("Hello New CUSTOMER");
+                    cookie.save("cookie","customer",{maxAge: 900000, httpOnly: false, path : '/'});
+                    cookie.save("user",this.state.fullname,{maxAge: 900000, httpOnly: false, path : '/'});
+                    cookie.save("email",this.state.email,{maxAge: 900000, httpOnly: false, path : '/'});
+                    this.setState({       
+                    });
+                }
             }
-        })
+            // //set the with credentials to true
+            // axios.defaults.withCredentials = true;
+            // //make a post request with the user data
+            // axios.post('http://'+hostAddress+':3001/cregister/cregister',data)
+            // .then(response => {
+            // alert(response.data.resmsg);
+            // console.log("Status Code blyi : ",response.status);
+            // if(response.data.resmsg.trim() == "User Added Successfully!"){
+            // console.log("Hello New User!");
+            // cookie.save("cookie","customer",{maxAge: 900000, httpOnly: false, path : '/'});
+            // cookie.save("user",this.state.fullname,{maxAge: 900000, httpOnly: false, path : '/'});
+            // cookie.save("email",this.state.email,{maxAge: 900000, httpOnly: false, path : '/'});
+            // localStorage.setItem("jwtToken",response.data.token);
+            // this.setState({
+            //   authFlag : true
+            // })
+            // }
+            //  })
             // this.props.registerUser(data);
 
             // store.subscribe(() => {
@@ -178,17 +189,18 @@ class Cregister extends Component{
     }
 }
 
-// function mapDispatchToProps(dispatch) {
-//     return {
-//       registerUser: user => dispatch(registerUser(user))
-//     };
-//   }
-//   function mapStateToProps(state,propData) {
-//     return {
-//       propData: state.username
-//     };
-//   }
-//   const RegisterForm = connect(mapStateToProps, mapDispatchToProps)(Cregister);
-//   export default RegisterForm;
+function mapDispatchToProps(dispatch) {
+    return {
+      registerUser: user => dispatch(registerUser(user))
+    };
+  }
+  function mapStateToProps(store) {
+    return {
+        msg: store.rSignupMsg,
+        user : store.fullname
+    };
+  }
+  const RegisterForm = connect(mapStateToProps, mapDispatchToProps)(Cregister);
+  export default RegisterForm;
 
-export default Cregister;
+//export default Cregister;

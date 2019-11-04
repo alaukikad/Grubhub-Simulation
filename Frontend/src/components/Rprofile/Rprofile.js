@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import '../../App.css';
-import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import store from '../../js/store/index';
-import PropTypes from 'prop-types';
+import {getRestaurantData} from '../../js/actions/index';
 import { connect } from "react-redux";
-import hostAddress from '../constants';
+//import hostAddress from '../constants';
+//import axios from 'axios'
 
 class Rprofile extends Component {
     constructor(props){
@@ -44,35 +43,36 @@ class Rprofile extends Component {
             email : cookie.load("email")
         }
         console.log(data);
+        
+        this.props.getRestaurantData(data);
 
-
-        //set the with credentials to true
-        axios.defaults.withCredentials = true;
-        let config = {
-            headers:{
-                'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
-                'Content-Type': 'application/json'
-              }
-          }
-        //make a post request with the user data
-        axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data,config)
-                .then((response) => {
+        // //set the with credentials to true
+        // axios.defaults.withCredentials = true;
+        // let config = {
+        //     headers:{
+        //         'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        //         'Content-Type': 'application/json'
+        //       }
+        //   }
+        // //make a post request with the user data
+        // axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data,config)
+        //         .then((response) => {
                     
                    
-                this.setState({
-                cuisine : response.data.cuisine,
-                email : response.data.email,
-                fullname: response.data.oname,
-                contact: response.data.contact,
-                address : response.data.address,
-                city : response.data.city,
-                zipcode : response.data.zipcode,
-                restaurant : response.data.name,
-                oimage : "http://"+hostAddress+":3001/images/all/" + response.data.oimage+ "",
-                rimage : "http://"+hostAddress+":3001/images/all/" + response.data.rimage+ ""
-                });
+        //         this.setState({
+        //         cuisine : response.data.cuisine,
+        //         email : response.data.email,
+        //         fullname: response.data.oname,
+        //         contact: response.data.contact,
+        //         address : response.data.address,
+        //         city : response.data.city,
+        //         zipcode : response.data.zipcode,
+        //         restaurant : response.data.name,
+        //         oimage : "http://"+hostAddress+":3001/images/all/" + response.data.oimage+ "",
+        //         rimage : "http://"+hostAddress+":3001/images/all/" + response.data.rimage+ ""
+        //         });
                 
-            });
+        //     });
     }
     
 
@@ -97,13 +97,13 @@ class Rprofile extends Component {
                 <div class="container split left div-left" style={{ width:"30%"}}>
                 {/* <div class="container" style={{backgroundColor:"white", borderRadius:"12px",height : "300px", width : "220px"}}> */}
                 <img
-                src={this.state.rimage}
+                src={this.props.rimage}
                 id="dp"
                 style={{border:"10px solid black" ,marginBottom:"10%",borderColor: "white" ,WebkitBorderRadius: "25%" , height : "200px", width : "200px"}}
                 alt="User Display"
                  />
                 <img
-                src={this.state.oimage}
+                src={this.props.oimage}
                 id="dp"
                 style={{border:"10px solid black" ,marginBottom:"10%",borderColor: "white" ,WebkitBorderRadius: "25%" , height : "200px", width : "200px"}}
                 alt="User Display"
@@ -120,35 +120,35 @@ class Rprofile extends Component {
                                
                                 <tr>
                                     <td>Restaurant Name</td>
-                                    <td>{this.state.restaurant}</td>
+                                    <td>{this.props.restaurant}</td>
                                 </tr>
                                 <tr>
                                     <td>Owner Name</td>
-                                    <td>{this.state.fullname}</td>
+                                    <td>{this.props.fullname}</td>
                                 </tr>
                                 <tr>
                                     <td>Cuisine</td>
-                                    <td>{this.state.cuisine}</td>
+                                    <td>{this.props.cuisine}</td>
                                 </tr>
                                 <tr>
                                     <td>Address</td>
-                                    <td>{this.state.address}</td>
+                                    <td>{this.props.address}</td>
                                 </tr>
                                 <tr>
                                     <td>City</td>
-                                    <td>{this.state.city}</td>
+                                    <td>{this.props.city}</td>
                                 </tr>
                                 <tr>
                                     <td>Zipcode</td>
-                                    <td>{this.state.zipcode}</td>
+                                    <td>{this.props.zipcode}</td>
                                 </tr>
                                 <tr>
                                     <td>Contact </td>
-                                    <td>{this.state.contact}</td>
+                                    <td>{this.props.contact}</td>
                                 </tr>
                                 <tr>
                                     <td>Email </td>
-                                    <td>{this.state.email}</td>
+                                    <td>{this.props.email}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -160,14 +160,28 @@ class Rprofile extends Component {
     }
 }
 
+function mapDispatchToProps(dispatch) {
+    return {
+      getRestaurantData: user => dispatch(getRestaurantData(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      cuisine : store.cuisine,
+      email : store.email,
+      fullname: store.fullname,
+      contact: store.contact,
+      address : store.address,
+      city : store.city,
+      zipcode : store.zipcode,
+      restaurant : store.restaurant,
+      oimage : store.oimage,
+      rimage : store.rimage
+    };
+  }
 
-//   function mapStateToProps(state,propData) {
-//     return {
-//       propData: state.username
-//     };
-//   }
-
-//   const RProfile = connect(mapStateToProps, null)(Rprofile);
-//   export default RProfile;
+  const RProfile = connect(mapStateToProps, mapDispatchToProps)(Rprofile);
+  export default RProfile;
 // //export Home Component
-export default Rprofile;
+// export default Rprofile;

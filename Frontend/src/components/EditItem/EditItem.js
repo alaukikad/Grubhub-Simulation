@@ -8,6 +8,11 @@ import 'react-dropdown/style.css';
 import Rmenu from '../Rmenu/Rmenu';
 import hostAddress from '../constants';
 
+
+import {editItem} from '../../js/actions/menu';
+import { connect } from "react-redux";
+
+
 let updateFlag=false;
 let config = {
     headers:{
@@ -162,26 +167,35 @@ console.log(this.props.ItemID);
 if(this.itemname.value=="" || this.description.value=="" ||this.section.value=="" ||this.price.value=="" ){
 alert("Please fill all Fields!");
 }else{
-     //set the with credentials to true
-     axios.defaults.withCredentials = true;
-     //make a post request with the user data
+    //  //set the with credentials to true
+    //  axios.defaults.withCredentials = true;
+    //  //make a post request with the user data
  
-     axios.post('http://'+hostAddress+':3001/edititem/edititem',data,config)
-     .then(response => {
-         alert(response.data)
-         console.log("Status Code : ",response.status);
-         if(response.data.trim() == "Details Updated!"){
-           console.log("Hello Edited Item");
-           if(this.state.file!="")
-             this.updateImage(e);
-          // alert(response.data);
-            this.setState({
-            })
-         }
-         console.log("Updated Flag");
-         updateFlag=true;
-         this.setState({})
+    //  axios.post('http://'+hostAddress+':3001/edititem/edititem',data,config)
+    //  .then(response => {
+    //      alert(response.data)
+    //      console.log("Status Code : ",response.status);
+    //      if(response.data.trim() == "Details Updated!"){
+    //        console.log("Hello Edited Item");
+    //        if(this.state.file!="")
+    //          this.updateImage(e);
+    //       // alert(response.data);
+    //         this.setState({
+    //         })
+    //      }
+    //      console.log("Updated Flag");
+    //      if(this.state.file!="")
+    //          this.updateImage(e);
+    //      updateFlag=true;
+    //      this.setState({})
+    //  })
+
+     this.props.editItem(data);
+     alert("Item Updated!")
+     updateFlag=true;
+     this.setState({
      })
+         //}
         }
     }
 
@@ -238,4 +252,13 @@ alert("Please fill all Fields!");
     }
 }
 
-export default EditItem;
+//export default EditItem;
+
+function mapDispatchToProps(dispatch) {
+    return {
+        editItem: user => dispatch(editItem(user))
+    };
+  }
+  
+  const EditItemC = connect(null, mapDispatchToProps)(EditItem);
+  export default EditItemC;

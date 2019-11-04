@@ -7,6 +7,10 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import hostAddress from '../constants';
 
+
+import {editSection} from '../../js/actions/menu';
+import { connect } from "react-redux";
+
 let updateFlag=false;
 let prevSecName="";
 let config = {
@@ -78,22 +82,26 @@ alert("Please fill Section Name Field!");
         rid: cookie.load('email'),
         p : prevSecName
     }
-     //set the with credentials to true
-     axios.defaults.withCredentials = true;
-     //make a post request with the user data
- 
-     axios.post('http://'+hostAddress+':3001/editsection/editsection',data,config)
-     .then(response => {
-         alert(response.data);
-         console.log("Status Code : ",response.status);
-         if(response.data.trim() == "Section Updated!"){
-           console.log("Hello Updated Section");
-           updateFlag=true;
-            this.setState({
-            })
-         }
+    //  //set the with credentials to true
+    //  axios.defaults.withCredentials = true;
+    //  //make a post request with the user data
+    //  axios.post('http://'+hostAddress+':3001/editsection/editsection',data,config)
+    //  .then(response => {
+    //      alert(response.data);
+    //      console.log("Status Code : ",response.status);
+    //      if(response.data.trim() == "Section Updated!"){
+    //        console.log("Hello Updated Section");
+    //        updateFlag=true;
+    //         this.setState({
+    //         })
+    //      }
          
-     })
+    //  })
+    this.props.editSection(data);
+    alert("Section Updated!")
+    updateFlag=true;
+    this.setState({
+    })
         }
     }
 
@@ -132,4 +140,13 @@ alert("Please fill Section Name Field!");
     }
 }
 
-export default EditSection;
+//export default EditSection;
+
+function mapDispatchToProps(dispatch) {
+    return {
+        editSection : user => dispatch(editSection(user))
+    };
+  }
+  
+  const EditSectionC = connect(null, mapDispatchToProps)(EditSection);
+  export default EditSectionC;

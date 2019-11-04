@@ -6,8 +6,9 @@ import {Redirect} from 'react-router';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 //import store from '../../js/store/index';
-//import { connect } from "react-redux";
-//import { updateRProfile } from "../../js/actions/index";
+import { connect } from "react-redux";
+import { updateRProfile } from "../../js/actions/index";
+import {getRestaurantData} from '../../js/actions/index';
 import hostAddress from '../constants';
 
 let config2 = {
@@ -83,6 +84,22 @@ axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
         const data = {
             email : cookie.load("email")
         }
+
+        //this.props.getRestaurantData(data);
+        // this.setState({
+        //             rid : this.props.rid,
+        //             email: this.props.email,
+        //             fullname: this.props.oname,
+        //             contact: this.props.contact,
+        //             address : this.props.address,
+        //             city : this.props.city,
+        //             cuisine : this.props.cuisine,
+        //             zipcode : this.props.zipcode,
+        //             restaurant : this.props.name,
+        //             oimage : this.props.oimage,
+        //             rimage : this.props.rimage
+        //         });  
+
         //set the with credentials to true
         axios.defaults.withCredentials = true;
 
@@ -185,9 +202,11 @@ axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
             cuisine : this.state.cuisine   
         }
 
-       // this.props.updateRProfile(data);
-       console.log("processing in reducer")
-       //set the with credentials to true
+       //this.props.updateRProfile(data);
+       if(this.props.msg!=null)
+       alert(this.props.msg);
+      console.log("processing in reducer")
+      //set the with credentials to true
        axios.defaults.withCredentials = true;
        //make a post request with the user data
        axios.post('http://'+hostAddress+':3001/rprofileupdate/rprofileupdate',data,config2)
@@ -215,7 +234,6 @@ axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
             <div>
                 {redirectVar}
                 
-                   
                 <div class="container split left div-left" style={{ width:"30%"}}>
                 {/* <div class="container" style={{backgroundColor:"white", borderRadius:"12px",height : "300px", width : "220px"}}> */}
                 <img
@@ -294,15 +312,26 @@ axios.get('http://'+hostAddress+':3001/getCuisine/getCuisine')
 export default Rupdateprofile;
 
 
-// function mapStateToProps(state,propData) {
+// function mapDispatchToProps(dispatch) {
 //     return {
-//       propData: state.username
+//         updateRProfile: user => dispatch(updateRProfile(user)),
+//         getRestaurantData: user => dispatch(getRestaurantData(user))
 //     };
 //   }
-
-//   function mapDispatchToProps(dispatch) {
+  
+//   function mapStateToProps(store) {
 //     return {
-//       updateRProfile: user => dispatch(updateRProfile(user))
+//       cuisine : store.cuisine,
+//       email : store.email,
+//       fullname: store.fullname,
+//       contact: store.contact,
+//       address : store.address,
+//       city : store.city,
+//       zipcode : store.zipcode,
+//       restaurant : store.restaurant,
+//       oimage : store.oimage,
+//       rimage : store.rimage,
+//       msg:store.updateMsg
 //     };
 //   }
 

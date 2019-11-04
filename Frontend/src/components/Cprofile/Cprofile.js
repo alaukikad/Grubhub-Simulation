@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import '../../App.css';
-import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import store from '../../js/store/index';
-import PropTypes from 'prop-types';
 import { connect } from "react-redux";
-import hostAddress from '../constants';
+import {getUserData} from '../../js/actions/index';
+// import hostAddress from '../constants';
+// import axios from 'axios';
 
 class Cprofile extends Component {
     constructor(props){
@@ -39,31 +38,26 @@ class Cprofile extends Component {
             email : cookie.load("email")
         }
 
-        let config = {
-            headers:{
-                'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
-                'Content-Type': 'application/json'
-              }
-          }
         console.log(data);
-        console.log(config);
-        //set the with credentials to true
-        axios.defaults.withCredentials = true;
+        this.props.getUserData(data);
+        // console.log(config);
+        // //set the with credentials to true
+        // axios.defaults.withCredentials = true;
 
-        //make a post request with the user data
-        axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data,config)
-                .then((response) => {
+        // //make a post request with the user data
+        // axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data,config)
+        //         .then((response) => {
                     
                    
-                this.setState({
-                email : response.data.email,
-                fullname: response.data.name,
-                contact: response.data.contact,
-                address : response.data.address,
-                oimage : "http://"+hostAddress+":3001/images/all/" + response.data.image+ "" 
-                });
+        //         this.setState({
+        //         email : response.data.email,
+        //         fullname: response.data.name,
+        //         contact: response.data.contact,
+        //         address : response.data.address,
+        //         oimage : "http://"+hostAddress+":3001/images/all/" + response.data.image+ "" 
+        //         });
                 
-            });
+        //     });
     }
     
 
@@ -87,7 +81,7 @@ class Cprofile extends Component {
                  
                            
                    <img
-                src={this.state.oimage}
+                src={this.props.oimage}
                 id="dp"
                 style={{border:"10px solid black" ,marginBottom:"10%",borderColor: "white" ,WebkitBorderRadius: "25%" , height : "200px", width : "200px"}}
                 alt="User Display"
@@ -103,20 +97,20 @@ class Cprofile extends Component {
                                
                                 <tr>
                                     <td>Full Name</td>
-                                    <td>{this.state.fullname}</td>
+                                    <td>{this.props.fullname}</td>
                                 </tr>
                                 <tr>
                                     <td>Address</td>
-                                    <td>{this.state.address}</td>
+                                    <td>{this.props.address}</td>
                                 </tr>
                             
                                 <tr>
                                     <td>Contact </td>
-                                    <td>{this.state.contact}</td>
+                                    <td>{this.props.contact}</td>
                                 </tr>
                                 <tr>
                                     <td>Email </td>
-                                    <td>{this.state.email}</td>
+                                    <td>{this.props.email}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -128,14 +122,22 @@ class Cprofile extends Component {
     }
 }
 
+function mapDispatchToProps(dispatch) {
+    return {
+      getUserData: user => dispatch(getUserData(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      email : store.email,
+      fullname: store.fullname,
+      contact: store.contact,
+      address : store.address,
+      oimage : store.oimage
+    };
+  }
 
-//   function mapStateToProps(state,propData) {
-//     return {
-//       propData: state.username
-//     };
-//   }
+  const CProfile = connect(mapStateToProps, mapDispatchToProps)(Cprofile);
 
-//   const CProfile = connect(mapStateToProps, null)(Cprofile);
-//   export default CProfile;
-//export Home Component
-export default Cprofile;
+export default CProfile;

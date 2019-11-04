@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
 import '../../App.css';
-import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-//import { connect } from "react-redux";
-//import { checkRestaurant } from "../../js/actions/index";
-//import PropTypes from 'prop-types';
-//import store from '../../js/store/index';
-import hostAddress from '../constants';
+import { connect } from "react-redux";
+import { checkRestaurant } from "../../js/actions";
+//import axios from 'axios';
+//import hostAddress from '../constants';
 
 //Define a Login Component
 class Rlogin extends Component{
@@ -54,45 +52,46 @@ class Rlogin extends Component{
             password : this.state.password
         }
 
-      /*  this.props.checkRestaurant(data);
-        store.subscribe(() => {
-            // When state will be updated(in our case, when items will be fetched), 
-            // we will update local component state and force component to rerender 
-            // with new data.
-            console.log(cookie.load('cookie'));
-            console.log(this.props.propData);
-            this.setState({
-              username: store.getState().username
+        this.props.checkRestaurant(data);
+        if(this.props.msg!=null){
+            alert(this.props.msg);
+        
+        if(this.props.msg=="Login Successful"){
+            cookie.save("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
+            cookie.save("user",this.props.user,{maxAge: 900000, httpOnly: false, path : '/'});
+            cookie.save("email",this.state.username,{maxAge: 900000, httpOnly: false, path : '/'});
+            this.setState({       
             });
-          });*/
+        }
+    }
+        //   //set the with credentials to true
+        // axios.defaults.withCredentials = true;
 
-          //set the with credentials to true
-        axios.defaults.withCredentials = true;
-
-        let config = {
-            headers:{
-                'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
-                'Content-Type': 'application/json'
-              }
-          }
+        // let config = {
+        //     headers:{
+        //         'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
+        //         'Content-Type': 'application/json'
+        //       }
+        //   }
         //make a post request with the user data
-        axios.post('http://'+hostAddress+':3001/rlogin/rlogin',data,config)
-        .then(response => {
-          alert(response.data.resmsg);
-          console.log("Status Code : ",response.data);
-          if(response.data.resmsg.trim() == "Login Successful"){
-              console.log("Hello peps I'm in R login logged in");
-              cookie.save("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
-              cookie.save("user",response.data.name,{maxAge: 900000, httpOnly: false, path : '/'});
-              cookie.save("email",this.state.username,{maxAge: 900000, httpOnly: false, path : '/'});
-              localStorage.setItem("jwtToken",response.data.token)
-              this.setState({
-                  authFlag: true 
-              })
-          }else{
-                  alert("Invalid Credentials!!")
-          }  
-      })
+    //     axios.post('http://'+hostAddress+':3001/rlogin/rlogin',data,config)
+    //     .then(response => {
+    //       alert(response.data.resmsg);
+    //       console.log("Status Code : ",response.data);
+    //       if(response.data.resmsg.trim() == "Login Successful"){
+    //           console.log("Hello peps I'm in R login logged in");
+    //           cookie.save("cookie","restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
+    //           cookie.save("user",response.data.name,{maxAge: 900000, httpOnly: false, path : '/'});
+    //           cookie.save("email",this.state.username,{maxAge: 900000, httpOnly: false, path : '/'});
+    //           localStorage.setItem("jwtToken",response.data.token)
+    //           this.setState({
+    //               authFlag: true 
+    //           })
+    //       }else{
+    //               alert("Invalid Credentials!!")
+    //       }  
+    //   })
+    
     }
 
     render(){
@@ -130,21 +129,19 @@ class Rlogin extends Component{
     }
 }
 
-// function mapDispatchToProps(dispatch) {
-//     return {
-//       checkRestaurant: user => dispatch(checkRestaurant(user))
-//     };
-//   }
+function mapDispatchToProps(dispatch) {
+    return {
+      checkRestaurant: user => dispatch(checkRestaurant(user))
+    };
+  }
 
-//   function mapStateToProps(state,propData) {
-//     return {
-//       propData: state.username
-//     };
-//   }
+  function mapStateToProps(store) {
+    return {
+        msg: store.rloginMsg,
+        user : store.user
+    }
+  }
 
-// Rlogin.propTypes = {
-//     checkRestaurant: PropTypes.func.isRequired
-//   };
 
- // const RLoginForm = connect(mapStateToProps, mapDispatchToProps)(Rlogin);
-  export default Rlogin;
+ const RLoginForm = connect(mapStateToProps, mapDispatchToProps)(Rlogin);
+  export default RLoginForm;

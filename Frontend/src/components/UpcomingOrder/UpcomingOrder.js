@@ -4,6 +4,8 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import hostAddress from '../constants';
+import {upcomingOrder} from '../../js/actions/orders';
+import { connect } from "react-redux";
 
 let orderList;
 let total=[];
@@ -27,12 +29,15 @@ class UpcomingOrder extends Component {
             email : cookie.load('email')
         }
       
-        axios.defaults.withCredentials = true;
-        axios.post('http://'+hostAddress+':3001/upcomingOrder/upcomingOrder',data, config)
-        .then((response) => {
-        console.log(response.data);
+        this.props.upcomingOrder(data);
+        // axios.defaults.withCredentials = true;
+        // axios.post('http://'+hostAddress+':3001/upcomingOrder/upcomingOrder',data, config)
+        // .then((response) => {
+        
+        
         var l=0;
-        let mapping=response.data.map(val=>{
+        if(this.props.order!=null){
+        let mapping=this.props.order.map(val=>{
             console.log(val)
            for(var i=0;i<val.orderDetails.length;i++){
             var obj1={
@@ -52,12 +57,13 @@ class UpcomingOrder extends Component {
         }
        }
         })
-
+    
         console.log(orderList)
         this.setState({
         })
-    });
+   // });
     }
+}
 
 
     render(){
@@ -141,4 +147,19 @@ total[++c]=0
     }
 }
 
-export default UpcomingOrder;
+//export default UpcomingOrder;
+
+function mapDispatchToProps(dispatch) {
+    return {
+        upcomingOrder: user => dispatch(upcomingOrder(user))
+    };
+  }
+  
+  function mapStateToProps(store) {
+    return {
+      order: store.upcomingOrder
+    };
+  }
+ 
+  const UpcomingOrderC = connect(mapStateToProps, mapDispatchToProps)(UpcomingOrder);
+  export default UpcomingOrderC;
