@@ -79,52 +79,57 @@ class PastOrders extends Component {
        let details = orderList.forEach ( (v,k,order) => {
            console.log(order);
            console.log(" Yahahhahahahs")
-           console.log(k)
-           console.log(v)
-           let det=v.forEach(det=>{
-            total[c]+=det.price
-            console.log(det);
-            addData.push(
-                <tr class="card">
-                <td>{det["item"]}</td>
-                <td></td>
-                <td>{det.quantity}</td>
-                <td>${det.price}</td>
-                </tr>
-            )
-            })
+console.log(k)
+console.log(v)
 
-display.push(
-<div class="card" style={{width:" 40rem", border:"2px solid grey", margin:"5px", padding:"8px"}}>
-  <div class="card-body">
-    <h4 class="card-title"><b>Restaurant: {v[0].restaurant}</b></h4>
-    <h5 class="card-title">Status : {v[0].status}</h5>
-    <table class="table">
-    <tr style={{backgroundColor:"red", color: "white", marginTop: "10px"}}>
-    <td>Item Name</td>
-    <td></td>
-    <td>Item Quantity</td>
-    <td>Item Price</td>
-    </tr>
-    <tbody>
-          {det}
-          {addData}               
-    </tbody>
-    </table>
-  
-    <div>
-    <hr></hr>
-    <pre>
-    <b> Total Amount : $ {total[c]} </b>
-    </pre>
-    <hr></hr>
-    </div>  
-  </div>
-</div>
-)
-total[++c]=0;  
-addData=[];           
 
+total[++c]=0
+ display.push(<div>
+               <br></br>
+              <div><h4>Restaurant : {v[0].restaurant}</h4></div>
+              <div> <b>Status :  {v[0].status}</b></div>
+              <hr></hr>
+              <div>
+                  <table class="table">
+                      <thead style={{backgroundColor:"red", height :"20px", color: "white", margin: "10px"}}>
+                          <th>Item Name</th>
+                          <th>Item Quantity</th>
+                          <th>Item Price</th>
+                      </thead>
+                      <tbody>
+                         
+                      </tbody>
+                      </table>
+              </div>
+          </div>) 
+
+                 
+    v.forEach(det=>{
+    total[c]+=det.price
+    console.log(det);
+    display.push(
+    
+        <table>
+        <td><div style={{marginRight:"40px"}}>{det["item"]}</div></td>
+         <td> </td>
+        <td><div style={{marginRight:"50px",marginLeft:"40px"}}>{det.quantity}</div></td>
+        <td> </td> 
+        <td><div style={{marginLeft:"80px"}}>${det.price}</div></td>
+        </table>
+   
+
+   
+    )
+    })
+
+        display.push(<div>
+            <hr></hr>
+            <pre>
+            <b> Total Amount : $ {total[c]} </b>
+            </pre>
+            <hr></hr>
+        </div>  
+        )
        }
     )        
         return(
@@ -133,7 +138,6 @@ addData=[];
                 
                 <div class="container" style={{backgroundColor:"white", width:"60%",opacity:"80%"}}>
                         <h3>Past Orders</h3>
-                        <hr></hr>
                         
                       {details}
                       {display}

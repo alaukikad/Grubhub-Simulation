@@ -185,71 +185,62 @@ class PendingOrder extends Component {
            console.log(" Yahahhahahaccchs")
     console.log(k)
     console.log(v)
-
-// let showStatus=null;
-// if(!editMode){
-//    showStatus=<div> <b>Status :{v[0].status}</b> <button onClick={this.getEdit} class="glyphicon glyphicon-pencil" style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></button></div>
-// }else{
-//    showStatus=<div><Dropdown options={this.state.options} name={v[0].ID}   name="status" onChange={this.statusChangeHandler(this)} placeholder="Status"/><button class="glyphicon glyphicon-floppy-disk" style={{padding:"5px", margin:"5px", borderRadius:"12px"}}></button></div>
-// }
-
-total[++c]=0
- display.push(<div>
-               <br></br>
-              <div><h4>Customer : {v[0].customer}</h4></div>
-              <div> <b>Status :{v[0].status}</b>
-              <button class="btn btn-primary7" name={v[0].uid} style={{float:"right"}} onClick={this.showMsg}>Message</button>
-              </div>
-              <div style={{padding: "10px", margin :"5px"}}>
-              {msgDisplay}
-              </div>
-              <div> Address :{v[0].address}</div>
-             <div style={{display:"flex", margin: "10px"}}>
+    let det=v.forEach(det=>{
+        total[c]+=det.price
+        console.log(det);
+        addData.push(
+            <tr class="card">
+            <td>{det["item"]}</td>
+            <td></td>
+            <td>{det.quantity}</td>
+            <td>${det.price}</td>
+            </tr>
+        )
+        })
+        display.push(
+            <div class="card" style={{width:" 40rem", border:"2px solid grey", margin:"5px", padding:"8px"}}>
+              <div class="card-body">
+                <h4 class="card-title"><b>Customer : {v[0].customer}</b></h4>
+                <div>
+                <h5 class="card-title">Status : {v[0].status}</h5>
+                <button class="btn btn-primary7" name={v[0].rid}  onClick={this.showMsg}>Message</button>
+                      <div style={{padding: "10px", margin :"5px"}}>
+                      {msgDisplay}
+                      </div>
+                      </div>
+                      <div> Address :{v[0].address}</div>
+                 <div style={{display:"flex", margin: "10px"}}>
                 
                  <Dropdown options={this.state.options} name="status" onChange={this.statusChangeHandler.bind(this,v[0].ID)} placeholder="Update Status" value={v[0].status}/>
                  <button class="btn btn-primary4" onClick={this.updateStatus} name={v[0].ID} style={{padding:"5px", margin:"5px", borderRadius:"8px"}}>Update</button>
             </div>
-            
-              <hr></hr>
-              <div>
-                  <table class="table">
-                      <thead style={{backgroundColor:"red", height :"20px", color: "white", margin: "10px"}}>
-                          <th>Item Name</th>
-                          <th>Item Quantity</th>
-                          <th>Item Price</th>
-                      </thead>
-                      <tbody>
-                         
-                      </tbody>
-                      </table>
+                <table class="table">
+                <tr style={{backgroundColor:"red", color: "white", marginTop: "10px"}}>
+                <td>Item Name</td>
+                <td></td>
+                <td>Item Quantity</td>
+                <td>Item Price</td>
+                </tr>
+                <tbody>
+                      {det}
+                      {addData}               
+                </tbody>
+                </table>
+             
+                <div>
+                <hr></hr>
+                <pre>
+                <b> Total Amount : $ {total[c]} </b>
+                </pre>
+                <hr></hr>
+                </div>  
               </div>
-          </div>) 
-
-                 
-    v.forEach(det=>{
-    total[c]+=det.price
-    console.log(det);
-    display.push(
+            </div>
+            ) 
+        
     
-    <table>
-    <td><div style={{marginRight:"40px"}}>{det["item"]}</div></td>
-     <td> </td>
-    <td><div style={{marginRight:"50px",marginLeft:"40px"}}>{det.quantity}</div></td>
-    <td> </td> 
-    <td><div style={{marginLeft:"80px"}}>${det.price}</div></td>
-    </table>
-   
-    )
-    })
-
-        display.push(<div>
-            <hr></hr>
-            <pre>
-            <b> Total Amount : $ {total[c]} </b>
-            </pre>
-            <hr></hr>
-        </div>  
-        )
+total[++c]=0;  
+addData=[]; 
        }
     )        
         return(
@@ -258,7 +249,7 @@ total[++c]=0
                
                 <div class="container" style={{backgroundColor:"white", width:"60%",opacity:"80%"}}>
                         <h3>Pending Orders</h3>
-                        
+                        <hr></hr>
                       {details}
                       {display}
                 </div> 
