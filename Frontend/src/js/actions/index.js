@@ -24,13 +24,13 @@ axios.post('http://'+hostAddress+':3001/login/login',payload)
          if(response.data.msg.trim() == "Login Successful"){
             console.log("Hello peps");
             localStorage.setItem("jwtToken",response.data.token)
-            data ={
-              msg : response.data.msg.trim(),
-              name: response.data.name,
-              username : payload.username
-            }
-            dispatch({ type: CLOGIN, data })
         }
+        data ={
+          msg : response.data.msg.trim(),
+          name: response.data.name,
+          username : payload.username
+        }
+        dispatch({ type: CLOGIN, data })
     })
     }
 }
@@ -49,13 +49,13 @@ export function checkRestaurant(payload) {
           if(response.data.resmsg.trim() == "Login Successful"){
               console.log("Hello peps I'm in R login logged in");
                localStorage.setItem("jwtToken",response.data.token)
-               data ={
-                msg : response.data.resmsg.trim(),
-                name: response.data.name,
-                username : payload.username
-              }
-              dispatch({ type: RLOGIN, data })
           }
+          data ={
+            msg : response.data.resmsg.trim(),
+            name: response.data.name,
+            username : payload.username
+          }
+          dispatch({ type: RLOGIN, data })
       })
   }
 }

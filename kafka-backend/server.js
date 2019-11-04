@@ -32,6 +32,9 @@ var Rregister=require('./services/rregister');
 var SearchFood=require('./services/searchFood');
 var UpcomingOrder=require('./services/upcomingOrder');
 var UpdateOrderStatus=require('./services/updateOrderStatus');
+var SendMessage=require('./services/sendMessage');
+var GetMessage=require('./services/getMessage');
+var GetSentMessage=require('./services/getSentMessage');
 
 function handleTopicRequest(topic_name,fname){
     //var topic_name = 'root_topic';
@@ -96,3 +99,6 @@ handleTopicRequest("rregister",Rregister);
 handleTopicRequest("search_food",SearchFood);
 handleTopicRequest("upcoming_order",UpcomingOrder);
 handleTopicRequest("update_order_status",UpdateOrderStatus);
+handleTopicRequest("send_message",SendMessage);
+handleTopicRequest("get_message",GetMessage);
+handleTopicRequest("get_sent_message",GetSentMessage);

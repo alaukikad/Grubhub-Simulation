@@ -14,7 +14,7 @@ import Cupdateprofile from './Cupdateprofile /Cupdateprofile'
 import Rmenu from './Rmenu/Rmenu';
 import Cart from './Cart/Cart';
 import MyOrders from './MyOrders/MyOrders'
-
+import MyMessages from './MyMessages/MyMessages'
 
 //Create a Main Component
 class Main extends Component {
@@ -36,6 +36,7 @@ class Main extends Component {
               <Route path="/rmenu" component={Rmenu}/>
               <Route path="/cart" component={Cart}/>
               <Route path="/myOrders" component={MyOrders}/>
+              <Route path="/message" component={MyMessages}/>
             </div>
         )
     }

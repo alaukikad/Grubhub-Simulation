@@ -6,8 +6,11 @@ import {Redirect} from 'react-router';
 import hostAddress from '../constants';
 import {upcomingOrder} from '../../js/actions/orders';
 import { connect } from "react-redux";
+// import Popup from "reactjs-popup";
+// import Content from "./Content.js";
 
 let orderList;
+let msgSend=null;
 let total=[];
 let c=-1;
 let config = {
@@ -20,9 +23,54 @@ let config = {
 class UpcomingOrder extends Component {
     constructor(props){
             super(props);
+            this.state={
+                message : ""
+            }
             orderList=new Map();
+            this.showMsg= this.showMsg.bind(this);
+            this.onMessageChangeHandler= this.onMessageChangeHandler.bind(this);
+            this.sendMessage= this.sendMessage.bind(this);
+            this.cancelMessage= this.cancelMessage.bind(this);
     }  
    
+    sendMessage=(e)=>{
+        if(this.state.message!=""){
+             const data={
+                 receiver : msgSend,
+                 sender : cookie.load('email'),
+                 body:this.state.message
+             }
+            axios.defaults.withCredentials = true;
+            axios.post('http://'+hostAddress+':3001/sendMessage/sendMessage',data,config)
+            .then(response => {    
+            console.log(response)
+            alert(response.data);
+            msgSend=null;
+        })    
+    }else{
+        alert(" Please enter Message!");
+    }
+    }
+
+    cancelMessage=(e)=>{
+        msgSend=null;
+        this.setState({
+        })
+    }
+
+    showMsg=(e)=>{
+        msgSend= e.target.name;
+        this.setState({
+        })
+    }
+    
+    onMessageChangeHandler = (e) => {
+        this.setState({
+            message : e.target.value
+        })
+    }
+
+
     componentDidMount(){
         console.log("I am here")
         const data = {
@@ -43,6 +91,7 @@ class UpcomingOrder extends Component {
             var obj1={
             "ID": val._id,
             "restaurant":val.rname,
+            "rid":val.rid,
             "item":val.orderDetails[i].itemname,
             "price":val.orderDetails[i].price,
             "status":val.status,
@@ -66,6 +115,7 @@ class UpcomingOrder extends Component {
 }
 
 
+
     render(){
     
     let redirectVar = null;
@@ -75,6 +125,19 @@ class UpcomingOrder extends Component {
     if(cookie.load('cookie')=="restaurant"){
         redirectVar = <Redirect to= "/login"/>
     }
+
+    let msgDisplay=null;
+    if(msgSend!=null){
+      msgDisplay=<div>
+          <form>
+              <input type="text" onChange={this.onMessageChangeHandler} style={{ height :"40px"}} placeholder="Type Your Text Here"></input>
+              <button class="btn btn-primary6" onClick={this.sendMessage} style={{ margin :"5px"}}>Send</button>
+              <button class="btn btn-primary5" onClick={this.cancelMessage} style={{margin :"5px"}}>Cancel</button>
+          </form>
+      </div>
+    }
+  
+    
     let display=[];
     let addData=[];
        let details = orderList.forEach ( (v,k,order) => {
@@ -88,7 +151,13 @@ total[++c]=0
  display.push(<div>
                <br></br>
               <div><h4>Restaurant : {v[0].restaurant}</h4></div>
-              <div> <b>Status :  {v[0].status}</b></div>
+              <div> <b>Status :  {v[0].status}</b> 
+              <button class="btn btn-primary7" name={v[0].rid} style={{float:"right"}} onClick={this.showMsg}>Message</button>
+              <div style={{padding: "10px", margin :"5px"}}>
+              {msgDisplay}
+              </div>
+           
+              </div>     
               <hr></hr>
               <div>
                   <table class="table">
@@ -110,13 +179,13 @@ total[++c]=0
     console.log(det);
     display.push(
     
-        <table>
+        <tr>
         <td><div style={{marginRight:"40px", display:"flex"}}>{det["item"]}</div></td>
         <td> </td>
         <td><div style={{marginRight:"50px", display:"flex",marginLeft:"40px"}}>{det.quantity}</div></td>
         <td> </td> 
         <td><div style={{marginLeft:"80px", display:"flex"}}>${det.price}</div></td>
-        </table>
+        </tr>
    
     )
     })

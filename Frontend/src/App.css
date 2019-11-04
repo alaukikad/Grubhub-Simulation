@@ -72,6 +72,34 @@
   height: 30%;
 
 }
+
+.btn.btn-primary5 {
+  background: red none repeat scroll 0 0;
+  border-color: red;
+  color: #ffffff;
+  font-size: 14px;
+  width: 20%;
+  height: 10%;
+}
+
+.btn.btn-primary6 {
+  background: green none repeat scroll 0 0;
+  border-color: green;
+  color: #ffffff;
+  font-size: 14px;
+  width: 20%;
+  height: 10%;
+}
+
+.btn.btn-primary7 {
+  background: grey none repeat scroll 0 0;
+  border-color: grey;
+  color: #ffffff;
+  font-size: 14px;
+  width: 20%;
+  height: 10%;
+}
+
 .forgot {
   text-align: left; margin-bottom:30px;
 }
@@ -155,3 +183,42 @@
     margin-right: 5%;
     border-radius:12px;
     }
+
+
+.modal {
+  font-size: 12px;
+}
+.modal > .header {
+  width: 300px;
+  height: 100px;
+  border-bottom: 1px solid gray;
+  font-size: 18px;
+  text-align: center;
+  padding: 5px;
+}
+.modal > .content {
+  width: 300px;
+  height: 400px;
+  padding: 10px 5px;
+}
+.modal > .actions {
+  margin: auto;
+}
+.modal > .actions {
+  width: 300px;
+  padding: 10px 5px;
+  text-align: center;
+}
+.modal > .close {
+  cursor: pointer;
+  position: absolute;
+  display: block;
+  padding: 2px 5px;
+  line-height: 20px;
+  right: -10px;
+  top: -10px;
+  font-size: 24px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #cfcece;
+}

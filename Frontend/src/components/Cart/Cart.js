@@ -47,7 +47,7 @@ class Cart extends Component {
         axios.defaults.withCredentials = true;
         axios.post('http://'+hostAddress+':3001/cprofile/cprofile',data,config)
                 .then((response) => {     
-                t2=response.data.name,
+                t2=response.data.name;
                 t3 =response.data.address
 
                 console.log(t2)

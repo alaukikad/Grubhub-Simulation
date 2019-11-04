@@ -9,6 +9,7 @@ import hostAddress from '../constants';
 import {pendingOrder} from '../../js/actions/orders';
 import { connect } from "react-redux";
 
+let msgSend=null;
 let orderList;
 let total=[];
 let c=-1;
@@ -33,6 +34,10 @@ class PendingOrder extends Component {
             }       
             this.statusChangeHandler= this.statusChangeHandler.bind(this);
             this.updateStatus= this.updateStatus.bind(this);
+            this.showMsg= this.showMsg.bind(this);
+            this.onMessageChangeHandler= this.onMessageChangeHandler.bind(this);
+            this.sendMessage= this.sendMessage.bind(this);
+            this.cancelMessage= this.cancelMessage.bind(this);
     }  
    
     componentDidMount(){
@@ -50,6 +55,7 @@ class PendingOrder extends Component {
             var obj1={
                 "ID": val._id,
                 "customer":val.uname,
+                "uid":val.uid,
                 "address" : val.uaddress,
                 "item":val.orderDetails[i].itemname,
                 "price":val.orderDetails[i].price,
@@ -74,7 +80,42 @@ class PendingOrder extends Component {
     }
     } 
 
+    sendMessage=(e)=>{
+        if(this.state.message!=""){
+             const data={
+                 receiver : msgSend,
+                 sender : cookie.load('email'),
+                 body:this.state.message
+             }
+            axios.defaults.withCredentials = true;
+            axios.post('http://'+hostAddress+':3001/sendMessage/sendMessage',data,config)
+            .then(response => {    
+            console.log(response)
+            alert(response.data);
+            msgSend=null;
+        })    
+    }else{
+        alert(" Please enter Message!");
+    }
+    }
 
+    cancelMessage=(e)=>{
+        msgSend=null;
+        this.setState({
+        })
+    }
+
+    showMsg=(e)=>{
+        msgSend= e.target.name;
+        this.setState({
+        })
+    }
+    
+    onMessageChangeHandler = (e) => {
+        this.setState({
+            message : e.target.value
+        })
+    }
     statusChangeHandler = (value,e) => {
         //console.log(value.value);
         console.log("I am here in change")
@@ -123,6 +164,16 @@ class PendingOrder extends Component {
     if(cookie.load('cookie')=="customer"){
         redirectVar = <Redirect to= "/rlogin"/>
     }
+    let msgDisplay=null;
+    if(msgSend!=null){
+      msgDisplay=<div>
+          <form>
+              <input type="text" onChange={this.onMessageChangeHandler} style={{ height :"40px"}} placeholder="Type Your Text Here"></input>
+              <button class="btn btn-primary6" onClick={this.sendMessage} style={{ margin :"5px"}}>Send</button>
+              <button class="btn btn-primary5" onClick={this.cancelMessage} style={{margin :"5px"}}>Cancel</button>
+          </form>
+      </div>
+    }
     if(updateFlag){
         updateFlag=false;
         redirectVar =<Redirect to= "/rhome"/>
@@ -146,7 +197,12 @@ total[++c]=0
  display.push(<div>
                <br></br>
               <div><h4>Customer : {v[0].customer}</h4></div>
-              <div> <b>Status :{v[0].status}</b></div>
+              <div> <b>Status :{v[0].status}</b>
+              <button class="btn btn-primary7" name={v[0].uid} style={{float:"right"}} onClick={this.showMsg}>Message</button>
+              </div>
+              <div style={{padding: "10px", margin :"5px"}}>
+              {msgDisplay}
+              </div>
               <div> Address :{v[0].address}</div>
              <div style={{display:"flex", margin: "10px"}}>
                 

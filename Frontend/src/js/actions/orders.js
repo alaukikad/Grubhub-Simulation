@@ -12,6 +12,7 @@ let config = {
 
 export function delieveredOrder(payload) {
   console.log("dispatching the action for delivered orders")
+
   let data = {};
   return(dispatch)=>{
     axios.defaults.withCredentials = true;
@@ -28,6 +29,7 @@ export function delieveredOrder(payload) {
 
 export function upcomingOrder(payload) {
   console.log("dispatching the action for upcoming orders")
+  console.log(config)
   let data = {};
   return(dispatch)=>{
     axios.defaults.withCredentials = true;

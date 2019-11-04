@@ -43,16 +43,16 @@ class Rmenu extends Component {
         const data = {
             email : cookie.load('email')
         }
-        this.props.getMenu(data);
-    //     console.log(cookie.load('email'));
-    //     axios.defaults.withCredentials = true;
-    //     axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data,config)
-    //     .then((response) => {
-    //     //update the state with the response data
-    //     this.setState({
-    //         menu : this.state.menu.concat(response.data) 
-    //     });
-    // });
+      //  this.props.getMenu(data);
+        console.log(cookie.load('email'));
+        axios.defaults.withCredentials = true;
+        axios.post('http://'+hostAddress+':3001/getMenu/getMenu',data,config)
+        .then((response) => {
+        //update the state with the response data
+        this.setState({
+            menu : this.state.menu.concat(response.data) 
+        });
+    });
        axios.post('http://'+hostAddress+':3001/getSection/getSection',data,config)
         .then((response) => {
         //update the state with the response data
@@ -133,8 +133,9 @@ class Rmenu extends Component {
         let sectionDetails= secList.forEach(sec => {
          //  setTimeout(() => {
                
-           
-            let secItems=this.props.menu.filter(item=> item.sid == sec.value)
+            let itemdetails=null;
+            let secItems=this.state.menu.filter(item=> item.sid == sec.value)
+            
             display.push(
                 <div>
                 <div style={{display:"Flex"}}>
@@ -150,7 +151,7 @@ class Rmenu extends Component {
                     </tbody>
                     </table>
                 </div>)
-            let itemdetails = secItems.map(item =>  {
+               itemdetails = secItems.map(item =>  {
                 console.log(item.image)
                 display.push(
                     <tr>
@@ -168,7 +169,7 @@ class Rmenu extends Component {
                        
                     </tr> 
                 )
-            })   
+            }) 
         //}, 200);  
         })
    
@@ -232,19 +233,19 @@ class Rmenu extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getMenu: user => dispatch(getMenu(user)),
+      //  getMenu: user => dispatch(getMenu(user)),
         deleteSection : user => dispatch(deleteSection(user)),
         deleteItem : user => dispatch(deleteItem(user))
     };
   }
   
-  function mapStateToProps(store) {
-    return {
-      menu: store.menu
-    };
-  }
+//   function mapStateToProps(store) {
+//     return {
+//       menu: store.menu
+//     };
+//   }
  
-  const RmenuC = connect(mapStateToProps, mapDispatchToProps)(Rmenu);
+  const RmenuC = connect(null, mapDispatchToProps)(Rmenu);
   export default RmenuC;
 
 

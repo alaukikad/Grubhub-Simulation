@@ -30,6 +30,7 @@ class Navbar extends Component {
             navLogin = (
                 
                 <ul class="nav navbar-nav navbar-right">
+                    <li><Link to="/message" ><span class="glyphicon glyphicon-envelope"></span>Messages</Link></li>
                     <li><Link to="/cart" ><span class="glyphicon glyphicon-shopping-cart"></span>Cart</Link></li>
                     <li><Link to="/myOrders" ><span class="glyphicon glyphicon-list-alt"></span>Orders</Link></li>
                         <li><Link to="/cprofile" ><span class="glyphicon glyphicon-user"></span>{cookie.load('user')}</Link></li>
@@ -40,6 +41,7 @@ class Navbar extends Component {
             console.log("Able to read cookie");
             navLogin = (
                 <ul class="nav navbar-nav navbar-right">
+                    <li><Link to="/message" ><span class="glyphicon glyphicon-envelope"></span>Messages</Link></li>
                     <li><Link to="/rmenu" ><span class="	glyphicon glyphicon-list-alt"></span>Menu</Link></li>
                     <li><Link to="/rprofile" ><span class="glyphicon glyphicon-user"></span>{cookie.load('user')}</Link></li>
                     <li><Link to="/rlogin" onClick = {this.handleLogout}><span class="glyphicon glyphicon-log-in"></span>Logout</Link></li>

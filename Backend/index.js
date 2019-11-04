@@ -71,7 +71,9 @@ var rprofileRouter=require("./src/restaurants/rprofile/index")
 var rprofileupdateRouter=require("./src/restaurants/rprofileupdate/index") 
 var rregisterRouter=require("./src/restaurants/rregister/index") 
 var updateOrderStatusRouter=require("./src/restaurants/updateOrderStatus/index") 
-
+var sendMessageRouter=require('./src/sendMessage')
+var getMessageRouter=require('./src/getMessage')
+var getSentMessageRouter=require('./src/getSentMessage')
 
 app.use('/login',loginRouter);
 app.use('/rlogin',rloginRouter);
@@ -86,7 +88,7 @@ app.use('/getCart',getCartRouter)
 app.use('/pastOrder',pastOrderRouter)
 app.use( '/searchFood',searchFoodRouter)
 app.use( '/upcomingOrder',upcomingOrderRouter)
-app.use('/getCuisine',getCuisineRouter)
+app.use( '/getCuisine',getCuisineRouter)
 app.use( '/getitem',getitemRouter)
 app.use( '/getMenu',getMenuRouter)
 app.use( '/getSection',getSectionRouter)
@@ -95,7 +97,7 @@ app.use( '/additem',additemRouter)
 app.use( '/addsection',addsectionRouter)
 app.use( '/cancelledOrder',cancelledOrderRouter)
 app.use( '/deleteitem',deleteitemRouter)
-app.use('/deliveredOrder',deliveredOrderRouter)
+app.use( '/deliveredOrder',deliveredOrderRouter)
 app.use( '/edititem',edititemRouter)
 app.use( '/editsection',editsectionRouter)
 app.use( '/pendingOrder',pendingOrderRouter)
@@ -103,6 +105,9 @@ app.use( '/rprofile',requireAuth,rprofileRouter)
 app.use( '/rprofileupdate',rprofileupdateRouter)
 app.use( '/rregister',rregisterRouter)
 app.use( '/updateOrderStatus',updateOrderStatusRouter) 
+app.use( '/sendMessage',sendMessageRouter)
+app.use( '/getMessage',getMessageRouter)
+app.use( '/getSentMessage',getSentMessageRouter)
 
 
 const storage = multer.diskStorage({
