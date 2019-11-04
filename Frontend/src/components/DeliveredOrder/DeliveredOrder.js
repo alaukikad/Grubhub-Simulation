@@ -6,10 +6,12 @@ import {Redirect} from 'react-router';
 // import axios from 'axios';
 import {delieveredOrder} from '../../js/actions/orders';
 import { connect } from "react-redux";
+import ReactPaginate from "react-paginate";
 
 let orderList;
 let total=[];
 let c=-1;
+let arr = [];
 let config = {
     headers:{
         'Authorization': "Bearer " + localStorage.getItem("jwtToken"),
@@ -21,6 +23,15 @@ class DeliveredOrder extends Component {
     constructor(props){
             super(props);
             orderList=new Map();
+            this.state = {
+                //for pagination
+                paginated_orders: null,
+                results_per_page: 2,
+                num_pages: 0,
+                status: [],
+                inc: []
+              };
+              this.handlePageClick = this.handlePageClick.bind(this);
     }  
    
     componentDidMount(){
@@ -51,18 +62,41 @@ class DeliveredOrder extends Component {
             temp.push(obj1);
             orderList.set(val._id,temp);
         }else{
+            arr.push(val._id);
             orderList.set(val._id,[obj1]);
         }
     }
        })
 
-        console.log(orderList)
-        this.setState({
-        })
+       let currArr = arr.slice(0, this.state.results_per_page);
+       let currentOrders2 = new Map();
+       currArr.forEach(i => {
+         currentOrders2.set(i, orderList.get(i));
+       });
+       console.log("Hellooooo", currentOrders2);
+       const pages = Math.ceil(
+         arr.length  / this.state.results_per_page
+       );
+       this.setState({
+         num_pages: pages,
+         paginated_orders: currentOrders2
+       });
     }
    // });
     }
-
+    handlePageClick(data) {
+        console.log(data.selected);
+        let page_number = data.selected;
+        let offset = Math.ceil(page_number * this.state.results_per_page);
+        let currArr = arr.slice(offset, offset + this.state.results_per_page);
+        let currentOrders2 = new Map();
+        currArr.forEach(i => {
+          currentOrders2.set(i, orderList.get(i));
+        });
+        this.setState({
+          paginated_orders: currentOrders2
+        });
+      }
 
     render(){
     
@@ -75,7 +109,9 @@ class DeliveredOrder extends Component {
     }
     let display=[];
     let addData=[];
-       let details = orderList.forEach ( (v,k,order) => {
+    let details;
+    if(this.state.paginated_orders!=null){
+        details = this.state.paginated_orders.forEach ( (v,k,order) => {
            console.log(order);
            console.log(" Yahahhahahaccchs")
 console.log(k)
@@ -125,7 +161,10 @@ display.push(
 total[++c]=0;  
 addData=[]; 
        }
-    )        
+    )   }
+    else{
+        details=<div style={{margin:"35px"}}> Nothing to Show!:(</div>
+    }     
         return(
             <div>
                 {redirectVar}
@@ -135,6 +174,21 @@ addData=[];
                         <hr></hr>
                       {details}
                       {display}
+                      <div className="row" style={{margin:"30px"}}>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            breakClassName={"break-me"}
+            pageCount={this.state.num_pages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={this.handlePageClick}
+            containerClassName={"pagination"}
+            subContainerClassName={"pages pagination"}
+            activeClassName={"active"}
+          />
+        </div>
                 </div> 
                
             </div> 

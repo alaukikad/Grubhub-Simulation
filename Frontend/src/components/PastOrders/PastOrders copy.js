@@ -7,6 +7,7 @@ import {Redirect} from 'react-router';
 import {pastOrder} from '../../js/actions/orders';
 import { connect } from "react-redux";
 
+
 let orderList;
 let total=[];
 let c=-1;
@@ -63,7 +64,9 @@ class PastOrders extends Component {
     }
   //  });
     }
-
+    onDragEnd = result => {
+        // To do Later Order columns
+      };
 
     render(){
     
@@ -142,7 +145,7 @@ total[++c]=0
                       {details}
                       {display}
                 </div> 
-               
+                
             </div> 
         )
     }
