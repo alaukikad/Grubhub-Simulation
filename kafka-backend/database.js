@@ -10,7 +10,7 @@ mongoose.Promise = require('bluebird');
     }
     
   _connect() {
-       mongoose.connect(connectionString,{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true} )
+       mongoose.connect(connectionString,{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, poolSize: 4 } )
          .then(() => {
            console.log('Database connection successful')
          })
