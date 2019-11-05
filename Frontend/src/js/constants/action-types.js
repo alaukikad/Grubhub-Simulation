@@ -1,5 +1,5 @@
 // host IP address 
-export const hostAddress = "localhost";
+export const hostAddress = "34.226.143.32";
 
 //Action-types
 
