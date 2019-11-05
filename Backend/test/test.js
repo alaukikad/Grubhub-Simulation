@@ -1,22 +1,24 @@
 var chai = require('chai'), chaiHttp = require('chai-http');
+const hostname="localhost";
+const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFsYXVAYWxhdS5jb20iLCJ1c2VyIjoicmVzdGF1cmFudCIsImlhdCI6MTU3MjkyODc4NCwiZXhwIjoxNTczMDE1MTg0fQ.lo6e4UAbFaVk0zXsTc6wIRjklhwSSWQpDPvFHUCss10"
 
 chai.use(chaiHttp);
 
 var expect = chai.expect;
 
 it("Customer Login - Should check credentials and return status code", function(done){
-    chai.request('http://localhost:3001')
+    chai.request('http://'+hostname+':3001')
     .post('/login/login')
     .send({ "username": "user15@user.com", "password" : "user15"})
     .end(function (err, res) {
         expect(res).to.have.status(200);
-        expect(res).to.have.cookie('cookie');
+      //  expect(res).to.have.cookie('cookie');
         done();
     });
 })
 
 it("Customer Registraion - Should check input Registration details for Customer and return status code", function(done){
-    chai.request('http://localhost:3001')
+    chai.request('http://'+hostname+':3001')
     .post('/cregister/cregister')
     .send({ 
     "email" : "sarah@jones.com",
@@ -32,7 +34,7 @@ it("Customer Registraion - Should check input Registration details for Customer 
 })
 
 it("Restaurant Registration - Should check input Registration details for Restaurant and return status code", function(done){
-    chai.request('http://localhost:3001')
+    chai.request('http://'+hostname+':3001')
     .post('/rregister/rregister')
     .send({
         "email" : "maggie@maggie.com",
@@ -51,8 +53,10 @@ it("Restaurant Registration - Should check input Registration details for Restau
 })
 
 it("Add Section - Should add Section to DB andreturn status code", function(done){
-    chai.request('http://localhost:3001')
+    chai.request('http://'+hostname+':3001')
+   //
     .post('/addsection/addsection')
+    .set("Authorization", "Bearer " + token)
     .send({ 
     "email" : "alau@alau.com",
     "sectionname" : "Breakfast"
@@ -64,9 +68,11 @@ it("Add Section - Should add Section to DB andreturn status code", function(done
 })
 
 
-it("Pending Order - Should check Restaurant ID and return status code", function(done){
-    chai.request('http://localhost:3001')
+it("Pending Order - Should check Restaurant ID and return status code", function(done){   
+    chai.request('http://'+hostname+':3001')
+    
     .post('/pendingOrder/pendingOrder')
+   // .set("Authorization", "Bearer " + token)
     .send({ 
     "email" : "alau@alau.com",
 })

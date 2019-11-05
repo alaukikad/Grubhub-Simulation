@@ -77,8 +77,13 @@ class ReceivedMessages extends Component {
     console.log(data.selected);
     let page_number = data.selected;
     let offset = Math.ceil(page_number * this.state.results_per_page);
+  
+    console.log(this.props.message.slice(
+      offset,
+      offset + this.props.results_per_page
+    ))
     this.setState({
-      paginated_messages: this.state.message.slice(
+      paginated_messages: this.props.message.slice(
         offset,
         offset + this.state.results_per_page
       )
