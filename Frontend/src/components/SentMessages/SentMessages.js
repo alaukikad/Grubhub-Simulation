@@ -95,7 +95,7 @@ this.props.getSentMessage(data);
           <div class="container">
             <br></br>
             <div>
-              <b>Restaurant : {msg.receiver}</b>
+              <b>Sent To : {msg.receiver}</b>
             </div>
             <div>
               {" "}

@@ -85,7 +85,9 @@ class UpcomingOrder extends Component {
 
   cancelMessage = e => {
     msgSend = null;
-    this.setState({});
+    this.setState({
+      message: ""
+    });
   };
 
   showMsg = e => {

@@ -10,6 +10,8 @@ import hostAddress from '../constants';
 import {addItem} from '../../js/actions/menu';
 import { connect } from "react-redux";
 
+let address,name,cuisine,email,rimage; 
+
 let updateFlag=false;
 let config = {
     headers:{
@@ -58,14 +60,15 @@ class AddItem extends Component{
     
     console.log(data);
 
-   var t1,t2,t3,t4;
+
     //make a post request with the user data
            axios.post('http://'+hostAddress+':3001/rprofile/rprofile',data2,config)
             .then((response) => {
-                t1= response.data.cuisine;
-                t2 = response.data.address;
-                t3=response.data.name;
-                t4=response.data.rimage;
+                cuisine= response.data.cuisine;
+                address = response.data.address;
+                name=response.data.name;
+                rimage=response.data.rimage;
+                console.log(response.data)
             })
 axios.post('http://'+hostAddress+':3001/getSection/getSection',data,config)
 .then((response) => {
@@ -78,14 +81,10 @@ let temp=response.data.map( sec=>{
 })
 this.setState({
         secList : response.data,
-        options : o,
-        restaurant : t3,
-        cuisine : t1,
-        address : t2,
-        rimage : t4
+        options : o
 });
 })
-    }
+}
 
 
     //email change handler to update state variable with the text entered by the user
@@ -122,12 +121,12 @@ this.setState({
             price : this.state.price,
             //sid : scid
             sid: this.state.section,
-            name : this.state.restaurant,
-            cuisine : this.state.cuisine,
-            address : this.state.address,
-            rimage : this.state.rimage
+            name : name,
+            cuisine : cuisine,
+            address : address,
+            rimage : rimage
         }
-
+console.log(data);
 if(this.itemname.value=="" || this.description.value=="" ||this.section.value=="" ||this.price.value=="" ){
 alert("Please fill all Fields!");
 }else{

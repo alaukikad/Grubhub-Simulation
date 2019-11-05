@@ -8,6 +8,7 @@ import ReactPaginate from "react-paginate";
 import {getMessage} from '../../js/actions/message';
 import { connect } from "react-redux";
 
+let msgSend = null;
 let config = {
   headers: {
     Authorization: "Bearer " + localStorage.getItem("jwtToken"),
@@ -20,6 +21,7 @@ class ReceivedMessages extends Component {
     super(props);
     this.state = {
       message: [],
+      message2: "",
       //for pagination
       paginated_messages: null,
       results_per_page: 2,
@@ -28,6 +30,10 @@ class ReceivedMessages extends Component {
       inc: []
     };
     this.handlePageClick = this.handlePageClick.bind(this);
+    this.showMsg = this.showMsg.bind(this);
+    this.onMessageChangeHandler = this.onMessageChangeHandler.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
+    this.cancelMessage = this.cancelMessage.bind(this);
   }
 
   componentDidMount() {
@@ -73,6 +79,54 @@ class ReceivedMessages extends Component {
     //   });
   }
 
+  cancelMessage = e => {
+    msgSend = null;
+    this.setState({
+      message2 : ""
+    });
+  };
+
+  sendMessage = e => {
+    if (this.state.message2 != "") {
+      const data = {
+        receiver: msgSend,
+        sender: cookie.load("email"),
+        body: this.state.message2
+      };
+      console.log(data)
+      axios.defaults.withCredentials = true;
+      axios
+        .post(
+          "http://" + hostAddress + ":3001/sendMessage/sendMessage",
+          data,
+          config
+        )
+        .then(response => {
+          console.log(response);
+          alert(response.data);
+          msgSend = null;
+        });
+    } else {
+      alert(" Please enter Message!");
+    }
+  };
+
+
+  showMsg = e => {
+    msgSend = e.target.name;
+    console.log("Hellooooo there alau")
+    console.log(msgSend)
+    console.log("Hellooooo there alauw222")
+    this.setState({});
+  };
+
+  onMessageChangeHandler = e => {
+    this.setState({
+      message2: e.target.value
+    });
+  };
+
+
   handlePageClick(data) {
     console.log(data.selected);
     let page_number = data.selected;
@@ -100,6 +154,36 @@ class ReceivedMessages extends Component {
     // }
     let display = [];
     let details;
+    let msgDisplay = null;
+    if (msgSend != null) {
+      msgDisplay = (
+        <div>
+          <form>
+            <input
+              type="text"
+              onChange={this.onMessageChangeHandler}
+              style={{ height: "40px" }}
+              placeholder="Type Your Text Here"
+            ></input>
+            <button
+              class="btn btn-primary8"
+              onClick={this.sendMessage}
+              style={{ margin: "5px" }}
+            >
+              Send
+            </button>
+            <button
+              class="btn btn-primary9"
+              onClick={this.cancelMessage}
+              style={{ margin: "5px" }}
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      );
+    }
+
     if (this.state.paginated_messages != null) {
       details = this.state.paginated_messages.map(msg => {
         console.log(msg);
@@ -108,7 +192,7 @@ class ReceivedMessages extends Component {
           <div class="container">
             <br></br>
             <div>
-              <b>Restaurant : {msg.receiver}</b>
+              <b>Sender : {msg.sender}</b>
             </div>
             <div>
               {" "}
@@ -117,6 +201,16 @@ class ReceivedMessages extends Component {
             <div>
               <h5> {msg.body}</h5>
             </div>
+            <button
+                        class="btn btn-primary7"
+                        name={msg.sender}
+                        onClick={this.showMsg}
+                      >
+                        Reply
+                      </button>
+                      <div style={{ padding: "10px", margin: "5px" }}>
+                        {msgDisplay}
+                      </div>
           </div>
         );
       });

@@ -66,7 +66,8 @@ router.post('/login',function(req,res){
 
 //      var pkg={
 //        msg: resMsg,
-//        token : signed_token
+//        token : signed_token,
+//        name: uname,
 //      } 
 //       res.end(JSON.stringify(pkg));
      

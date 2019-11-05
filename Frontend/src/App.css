@@ -91,6 +91,24 @@
   height: 10%;
 }
 
+.btn.btn-primary8 {
+  background: green none repeat scroll 0 0;
+  border-color: green;
+  color: #ffffff;
+  font-size: 14px;
+  width: 10%;
+  height: 10%;
+}
+
+.btn.btn-primary9 {
+  background: red none repeat scroll 0 0;
+  border-color: red;
+  color: #ffffff;
+  font-size: 14px;
+  width: 10%;
+  height: 10%;
+}
+
 .btn.btn-primary7 {
   background: grey none repeat scroll 0 0;
   border-color: grey;
