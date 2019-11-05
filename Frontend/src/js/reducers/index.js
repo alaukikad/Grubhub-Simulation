@@ -1,4 +1,4 @@
-import { RLOGIN,RSIGNUP,CLOGIN,CSIGNUP,RPROFILE,CPROFILE, DELIEVERED_ORDER, CANCELLED_ORDER,PAST_ORDER,PENDING_ORDER,UPCOMING_ORDER, SEARCH_FOOD,GET_SECTION,GET_MENU,CHECKOUT, CONFIRM_ORDER, CANCEL_ORDER, ADD_ITEM,ADD_SECTION,DELETE_ITEM,DELETE_SECTION,EDIT_ITEM,EDIT_SECTION  } from "../constants/action-types";
+import { RLOGIN,RSIGNUP,CLOGIN,CSIGNUP,RPROFILE,CPROFILE, DELIEVERED_ORDER, CANCELLED_ORDER,PAST_ORDER,PENDING_ORDER,UPCOMING_ORDER, SEARCH_FOOD,GET_SECTION,GET_MENU,CHECKOUT, CONFIRM_ORDER, CANCEL_ORDER, ADD_ITEM,ADD_SECTION,DELETE_ITEM,DELETE_SECTION,EDIT_ITEM,EDIT_SECTION, GET_SENT_MESSAGE,GET_MESSAGE  } from "../constants/action-types";
 import axios from 'axios';
 
 const initialState = {
@@ -213,6 +213,20 @@ function rootReducer(state = initialState, action) {
     console.log("processing in EDIT SECTION reducer")
     return Object.assign({},state,{
       editSectionMsg : action.data.editSectionMsg
+   })
+  }
+
+  if(action.type==GET_MESSAGE){
+    console.log("processing in GET MESSAGE reducer")
+    return Object.assign({},state,{
+      receivedMessage : action.data.responseMessage
+   })
+  }
+
+  if(action.type==GET_SENT_MESSAGE){
+    console.log("processing in GET SENT MESSAGE reducer")
+    return Object.assign({},state,{
+      sentMessage : action.data.responseMessage
    })
   }
 

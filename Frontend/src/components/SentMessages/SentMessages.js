@@ -5,8 +5,8 @@ import hostAddress from "../constants";
 import cookie from "react-cookies";
 import { Redirect } from "react-router";
 import ReactPaginate from "react-paginate";
-// import {pastOrder} from '../../js/actions/orders';
-// import { connect } from "react-redux";
+import {getSentMessage} from '../../js/actions/message';
+import { connect } from "react-redux";
 
 let config = {
   headers: {
@@ -19,7 +19,6 @@ class SentMessages extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: [],
       //for pagination
       paginated_messages: null,
       results_per_page: 2,
@@ -35,26 +34,35 @@ class SentMessages extends Component {
     const data = {
       email: cookie.load("email")
     };
+this.props.getSentMessage(data);
+    // axios.defaults.withCredentials = true;
+    // axios
+    //   .post(
+    //     "http://" + hostAddress + ":3001/getSentMessage/getSentMessage",
+    //     data,
+    //     config
+    //   )
+    //   .then(response => {
+    //     console.log(response.data);
 
-    axios.defaults.withCredentials = true;
-    axios
-      .post(
-        "http://" + hostAddress + ":3001/getSentMessage/getSentMessage",
-        data,
-        config
-      )
-      .then(response => {
-        console.log(response.data);
-        let arr = response.data.slice(0, this.state.results_per_page);
-        const pages = Math.ceil(
-          response.data.length / this.state.results_per_page
-        );
-        this.setState({
-          message: response.data,
-          num_pages: pages,
-          paginated_messages: arr
-        });
+    if(this.props.message!=null){
+      let arr = this.props.message.slice(0, this.state.results_per_page);
+      const pages = Math.ceil(
+        this.props.message.length / this.state.results_per_page
+      );
+      this.setState({
+        num_pages: pages,
+        paginated_messages: arr
       });
+    }else{
+      this.setState({
+        num_pages: 0,
+        paginated_messages: null
+      });
+    }
+        
+      //  });
+     // });
   }
 
   handlePageClick(data) {
@@ -62,7 +70,7 @@ class SentMessages extends Component {
     let page_number = data.selected;
     let offset = Math.ceil(page_number * this.state.results_per_page);
     this.setState({
-      paginated_messages: this.state.message.slice(
+      paginated_messages: this.props.message.slice(
         offset,
         offset + this.state.results_per_page
       )
@@ -136,4 +144,22 @@ class SentMessages extends Component {
   }
 }
 
-export default SentMessages;
+//export default SentMessages;
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getSentMessage: user => dispatch(getSentMessage(user))
+  };
+}
+
+function mapStateToProps(store) {
+  return {
+    message: store.sentMessage
+  };
+}
+
+const SentMessagesC = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SentMessages);
+export default SentMessagesC;

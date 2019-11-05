@@ -7,10 +7,13 @@ import hostAddress from "../constants";
 import { cancelledOrder } from "../../js/actions/orders";
 import { connect } from "react-redux";
 import ReactPaginate from "react-paginate";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
+let ix = 0;
 let orderList;
 let total = [];
 let c = -1;
+let currArr=[]; 
 let arr = [];
 let config = {
   headers: {
@@ -18,6 +21,20 @@ let config = {
     "Content-Type": "application/json"
   }
 };
+
+const grid = 4;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+  background: isDragging ? "grey" : "white",
+  // styles we need to apply on draggables
+  ...draggableStyle
+});
+
+const getListStyle = isDraggingOver => ({
+  background: isDraggingOver ? "pink" : "white",
+  padding: grid
+  //width: 250
+});
 
 class CancelledOrder extends Component {
   constructor(props) {
@@ -32,6 +49,8 @@ class CancelledOrder extends Component {
       inc: []
     };
     this.handlePageClick = this.handlePageClick.bind(this);
+    this.reorder = this.reorder.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   componentDidMount() {
@@ -55,7 +74,8 @@ class CancelledOrder extends Component {
             item: val.orderDetails[i].itemname,
             price: val.orderDetails[i].price,
             status: val.status,
-            quantity: val.orderDetails[i].qty
+            quantity: val.orderDetails[i].qty,
+            totalPrice:val.price
           };
           if (orderList.has(val._id)) {
             var temp = orderList.get(val._id);
@@ -67,7 +87,7 @@ class CancelledOrder extends Component {
           }
         }
       });
-      let currArr = arr.slice(0, this.state.results_per_page);
+       currArr = arr.slice(0, this.state.results_per_page);
       let currentOrders2 = new Map();
       currArr.forEach(i => {
         currentOrders2.set(i, orderList.get(i));
@@ -84,11 +104,47 @@ class CancelledOrder extends Component {
     //  });
   }
 
+  reorder = (list, startIndex, endIndex) => {
+    // const result = Array.from(list);
+    // const [removed] = result.splice(startIndex, 1);
+    // result.splice(endIndex, 0, removed);
+
+    // let currentOrders2 = new Map();
+    // result.forEach(i => {
+    //   currentOrders2.set(i, this.state.paginated_orders.get(i));
+    // });
+    console.log(currArr)
+    //console.log("Alaukika is checking again")
+    let currentOrders2 = new Map();
+    for(var i=0;i<currArr.length;i++){
+      currentOrders2.set(currArr[this.state.results_per_page-(1+i)],list.get(currArr[this.state.results_per_page-(1+i)]))
+    }
+    return currentOrders2;
+  };
+
+  onDragEnd(result) {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const items = this.reorder(
+      this.state.paginated_orders,
+      result.source.index,
+      result.destination.index
+    );
+
+    this.setState({
+      paginated_orders: items
+    });
+  }
+
+
   handlePageClick(data) {
     console.log(data.selected);
     let page_number = data.selected;
     let offset = Math.ceil(page_number * this.state.results_per_page);
-    let currArr = arr.slice(offset, offset + this.state.results_per_page);
+     currArr = arr.slice(offset, offset + this.state.results_per_page);
     let currentOrders2 = new Map();
     currArr.forEach(i => {
       currentOrders2.set(i, orderList.get(i));
@@ -107,29 +163,42 @@ class CancelledOrder extends Component {
       redirectVar = <Redirect to="/rlogin" />;
     }
     let display = [];
-    let addData = [];
+    //let addData = [];
     let details;
     if(this.state.paginated_orders!=null){
     details = this.state.paginated_orders.forEach((v, k, order) => {
+      ix = arr.indexOf(k) - 1;
+      let addData=[];
       console.log(order);
       console.log(" Yahahhahahahs in Cancelled Order");
       console.log(k);
       console.log(v);
       console.log("Hello there")
-      let det = v.forEach(det => {
-        total[c] += det.price;
-        console.log(det);
-        addData.push(
-          <tr class="card">
-            <td>{det["item"]}</td>
-            <td></td>
-            <td>{det.quantity}</td>
-            <td>${det.price}</td>
-          </tr>
-        );
-      });
+      // let det = v.forEach(det => {
+      //   total[c] += det.price;
+      //   console.log(det);
+      //   addData.push(
+      //     <tr class="card">
+      //       <td>{det["item"]}</td>
+      //       <td></td>
+      //       <td>{det.quantity}</td>
+      //       <td>${det.price}</td>
+      //     </tr>
+      //   );
+      // });
 
       display.push(
+        <Draggable key={v[0].ID} draggableId={v[0].ID} index={ix}>
+            {(provided, snapshot) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                style={getItemStyle(
+                  snapshot.isDragging,
+                  provided.draggableProps.style
+                )}
+              >
         <div
           class="card"
           style={{
@@ -158,7 +227,18 @@ class CancelledOrder extends Component {
                 <td>Item Price</td>
               </tr>
               <tbody>
-                {det}
+              {v.forEach(det => {
+                        total[c] += det.price;
+                        console.log(det);
+                        addData.push(
+                          <tr class="card">
+                            <td>{det["item"]}</td>
+                            <td></td>
+                            <td>{det.quantity}</td>
+                            <td>${det.price}</td>
+                          </tr>
+                        );
+                      })}
                 {addData}
               </tbody>
             </table>
@@ -166,12 +246,16 @@ class CancelledOrder extends Component {
             <div>
               <hr></hr>
               <pre>
-                <b> Total Amount : $ {total[c]} </b>
+                <b> Total Amount : $ {v[0].totalPrice} </b>
               </pre>
               <hr></hr>
             </div>
           </div>
         </div>
+        </div>
+            )}
+         
+         </Draggable>
       );
       total[++c] = 0;
       addData = [];
@@ -187,8 +271,21 @@ class CancelledOrder extends Component {
       >
         <h3>Cancelled Orders</h3>
         <hr></hr>
+        <DragDropContext onDragEnd={this.onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
         {details}
         {display}
+        {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
 
         <div className="row" style={{margin:"30px"}}>
           <ReactPaginate

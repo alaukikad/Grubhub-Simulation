@@ -7,18 +7,35 @@ import hostAddress from "../constants";
 import { upcomingOrder } from "../../js/actions/orders";
 import { connect } from "react-redux";
 import ReactPaginate from "react-paginate";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 let orderList;
+let currArr=[]; 
 let msgSend = null;
 let total = [];
 let c = -1;
 let arr = [];
+let ix = 0;
 let config = {
   headers: {
     Authorization: "Bearer " + localStorage.getItem("jwtToken"),
     "Content-Type": "application/json"
   }
 };
+
+const grid = 4;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+  background: isDragging ? "grey" : "white",
+  // styles we need to apply on draggables
+  ...draggableStyle
+});
+
+const getListStyle = isDraggingOver => ({
+  background: isDraggingOver ? "pink" : "white",
+  padding: grid
+  //width: 250
+});
 
 class UpcomingOrder extends Component {
   constructor(props) {
@@ -38,6 +55,8 @@ class UpcomingOrder extends Component {
     this.onMessageChangeHandler = this.onMessageChangeHandler.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.cancelMessage = this.cancelMessage.bind(this);
+    this.reorder = this.reorder.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   sendMessage = e => {
@@ -103,7 +122,8 @@ class UpcomingOrder extends Component {
             item: val.orderDetails[i].itemname,
             price: val.orderDetails[i].price,
             status: val.status,
-            quantity: val.orderDetails[i].qty
+            quantity: val.orderDetails[i].qty,
+            totalPrice: val.price
           };
           if (orderList.has(val._id)) {
             var temp = orderList.get(val._id);
@@ -115,7 +135,7 @@ class UpcomingOrder extends Component {
           }
         }
       });
-      let currArr = arr.slice(0, this.state.results_per_page);
+       currArr = arr.slice(0, this.state.results_per_page);
       let currentOrders2 = new Map();
       currArr.forEach(i => {
         currentOrders2.set(i, orderList.get(i));
@@ -131,11 +151,44 @@ class UpcomingOrder extends Component {
     }
   }
 
+  reorder = (list, startIndex, endIndex) => {
+    // const result = Array.from(list);
+    // const [removed] = result.splice(startIndex, 1);
+    // result.splice(endIndex, 0, removed);
+
+    // let currentOrders2 = new Map();
+    // result.forEach(i => {
+    //   currentOrders2.set(i, this.state.paginated_orders.get(i));
+    // });
+    console.log(currArr)
+    //console.log("Alaukika is checking again")
+    let currentOrders2 = new Map();
+    for(var i=0;i<currArr.length;i++){
+      currentOrders2.set(currArr[this.state.results_per_page-(1+i)],list.get(currArr[this.state.results_per_page-(1+i)]))
+    }
+    return currentOrders2;
+  };
+
+  onDragEnd(result) {
+   // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+    const items = this.reorder(
+      this.state.paginated_orders,
+      result.source.index,
+      result.destination.index
+    );
+    this.setState({
+      paginated_orders: items
+    });
+  }
+
   handlePageClick(data) {
     console.log(data.selected);
     let page_number = data.selected;
     let offset = Math.ceil(page_number * this.state.results_per_page);
-    let currArr = arr.slice(offset, offset + this.state.results_per_page);
+     currArr = arr.slice(offset, offset + this.state.results_per_page);
     let currentOrders2 = new Map();
     currArr.forEach(i => {
       currentOrders2.set(i, orderList.get(i));
@@ -189,78 +242,105 @@ class UpcomingOrder extends Component {
     let details;
     if (this.state.paginated_orders != null) {
       details = this.state.paginated_orders.forEach((v, k, order) => {
+        ix = arr.indexOf(k) - 1;
+        let addData = [];
         console.log(order);
         console.log(" Yahahhahahahs");
         console.log(k);
         console.log(v);
-        let det = v.forEach(det => {
-          total[c] += det.price;
-          console.log(det);
-          addData.push(
-            <tr class="card">
-              <td>{det["item"]}</td>
-              <td></td>
-              <td>{det.quantity}</td>
-              <td>${det.price}</td>
-            </tr>
-          );
-        });
+        // let det = v.forEach(det => {
+        //   total[c] += det.price;
+        //   console.log(det);
+        //   addData.push(
+        //     <tr class="card">
+        //       <td>{det["item"]}</td>
+        //       <td></td>
+        //       <td>{det.quantity}</td>
+        //       <td>${det.price}</td>
+        //     </tr>
+        //   );
+        // });
 
         display.push(
-          <div
-            class="card"
-            style={{
-              width: " 40rem",
-              border: "2px solid grey",
-              margin: "5px",
-              padding: "8px"
-            }}
-          >
-            <div class="card-body">
-              <h4 class="card-title">
-                <b>Restaurant : {v[0].restaurant}</b>
-              </h4>
-              <div>
-                <h5 class="card-title">Status : {v[0].status}</h5>
-                <button
-                  class="btn btn-primary7"
-                  name={v[0].rid}
-                  onClick={this.showMsg}
-                >
-                  Message
-                </button>
-                <div style={{ padding: "10px", margin: "5px" }}>
-                  {msgDisplay}
-                </div>
-              </div>
-              <table class="table">
-                <tr
+          <Draggable key={v[0].ID} draggableId={v[0].ID} index={ix}>
+            {(provided, snapshot) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                style={getItemStyle(
+                  snapshot.isDragging,
+                  provided.draggableProps.style
+                )}
+              >
+                <div
+                  class="card"
                   style={{
-                    backgroundColor: "red",
-                    color: "white",
-                    marginTop: "10px"
+                    width: " 40rem",
+                    border: "2px solid grey",
+                    margin: "5px",
+                    padding: "8px"
                   }}
                 >
-                  <td>Item Name</td>
-                  <td></td>
-                  <td>Item Quantity</td>
-                  <td>Item Price</td>
-                </tr>
-                <tbody>
-                  {det}
-                  {addData}
-                </tbody>
-              </table>
+                  <div class="card-body">
+                    <h4 class="card-title">
+                      <b>Restaurant : {v[0].restaurant}</b>
+                    </h4>
+                    <div>
+                      <h5 class="card-title">Status : {v[0].status}</h5>
+                      <button
+                        class="btn btn-primary7"
+                        name={v[0].rid}
+                        onClick={this.showMsg}
+                      >
+                        Message
+                      </button>
+                      <div style={{ padding: "10px", margin: "5px" }}>
+                        {msgDisplay}
+                      </div>
+                    </div>
+                    <table class="table">
+                      <tr
+                        style={{
+                          backgroundColor: "red",
+                          color: "white",
+                          marginTop: "10px"
+                        }}
+                      >
+                        <td>Item Name</td>
+                        <td></td>
+                        <td>Item Quantity</td>
+                        <td>Item Price</td>
+                      </tr>
+                      <tbody>
+                        {v.forEach(det => {
+                          total[c] += det.price;
+                          console.log(det);
+                          addData.push(
+                            <tr class="card">
+                              <td>{det["item"]}</td>
+                              <td></td>
+                              <td>{det.quantity}</td>
+                              <td>${det.price}</td>
+                            </tr>
+                          );
+                        })}
+                        {addData}
+                      </tbody>
+                    </table>
 
-              <div>
-                <hr></hr>
-                <pre>
-                  <b> Total Amount : $ {total[c]} </b>
-                </pre>
-                <hr></hr>
+                    <div>
+                      <hr></hr>
+                      <pre>
+                        <b> Total Amount : $ {v[0].totalPrice} </b>
+                      </pre>
+                      <hr></hr>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            )}
+          </Draggable>
         );
         total[++c] = 0;
         addData = [];
@@ -278,8 +358,21 @@ class UpcomingOrder extends Component {
         >
           <h3>Upcoming Orders</h3>
           <hr></hr>
-          {details}
-          {display}
+          <DragDropContext onDragEnd={this.onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  {details}
+                  {display}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
           <div className="row" style={{ margin: "30px" }}>
             <ReactPaginate
               previousLabel={"Previous"}

@@ -36,5 +36,8 @@ export const CHECKOUT = "CHECKOUT";
 export const CANCEL_ORDER = "CANCEL_ORDER";
 export const CONFIRM_ORDER = "CONFIRM_ORDER";
 
-
+//messages 
+export const SEND_MESSAGE = "SEND_MESSAGE";
+export const GET_MESSAGE = "GET_MESSAGE";
+export const GET_SENT_MESSAGE="GET_SENT_MESSAGE";
 
