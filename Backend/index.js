@@ -22,7 +22,7 @@ var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
 var kafka=require('./kafka/client');
 //use cors to allow cross origin resource sharing
-app.use(cors({ origin: 'http://18.212.32.134:3000', credentials: true }));
+app.use(cors({ origin: 'http://3.93.146.80:3000', credentials: true }));
 
 //use express session to maintain session data
 app.use(session({
@@ -126,7 +126,7 @@ const upload = multer({
 
 //Allow Access Control
 app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://18.212.32.134:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'http://3.93.146.80:3000');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
