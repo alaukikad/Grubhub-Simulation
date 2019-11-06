@@ -191,7 +191,7 @@ class PendingOrder extends Component {
           alert(response.data);
           msgSend = null;
           this.setState({
-            message2:""
+            message:""
           })
         });
     } else {

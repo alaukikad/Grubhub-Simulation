@@ -70,7 +70,7 @@ class UpcomingOrder extends Component {
       axios.defaults.withCredentials = true;
       axios
         .post(
-          "http://" + hostAddress + ":3001/sendMessage/sendMessage",
+          "http://"+hostAddress+":3001/sendMessage/sendMessage",
           data,
           config
         )
@@ -79,7 +79,7 @@ class UpcomingOrder extends Component {
           alert(response.data);
           msgSend = null;
           this.setState({
-            message2:""
+            message:""
           })
         });
     } else {
