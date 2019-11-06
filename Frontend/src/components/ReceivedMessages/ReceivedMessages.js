@@ -88,6 +88,7 @@ class ReceivedMessages extends Component {
 
   sendMessage = e => {
     if (this.state.message2 != "") {
+      e.preventDefault();
       const data = {
         receiver: msgSend,
         sender: cookie.load("email"),
@@ -97,14 +98,18 @@ class ReceivedMessages extends Component {
       axios.defaults.withCredentials = true;
       axios
         .post(
-          "http://" + hostAddress + ":3001/sendMessage/sendMessage",
+          "http://"+hostAddress+":3001/sendMessage/sendMessage",
           data,
           config
         )
         .then(response => {
           console.log(response);
+          
           alert(response.data);
           msgSend = null;
+          this.setState({ 
+            message2:""
+          })
         });
     } else {
       alert(" Please enter Message!");

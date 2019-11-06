@@ -61,6 +61,7 @@ class UpcomingOrder extends Component {
 
   sendMessage = e => {
     if (this.state.message != "") {
+      e.preventDefault();
       const data = {
         receiver: msgSend,
         sender: cookie.load("email"),
@@ -77,6 +78,9 @@ class UpcomingOrder extends Component {
           console.log(response);
           alert(response.data);
           msgSend = null;
+          this.setState({
+            message2:""
+          })
         });
     } else {
       alert(" Please enter Message!");
