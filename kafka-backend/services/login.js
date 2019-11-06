@@ -7,6 +7,7 @@ var passport = require('passport');
 const config = require('../config/settings');
 
 function handle_request(msg, callback){
+  
    console.log(msg.email);
    console.log("Inside Customer Login");  
 
