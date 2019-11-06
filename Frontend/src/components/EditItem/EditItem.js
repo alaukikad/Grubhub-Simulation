@@ -136,7 +136,7 @@ console.log(this.props.ItemID);
             console.log('Image uploaded')
             console.log(response.data.filename)
             this.setState({
-              oimage: "http://"+hostAddress+":3001/images/all/" + response.data.filename+ ""
+              image: "http://"+hostAddress+":3001/images/all/" + response.data.filename+ ""
             })
           })
           .catch(error => { })
@@ -192,6 +192,8 @@ alert("Please fill all Fields!");
 
      this.props.editItem(data);
      alert("Item Updated!")
+     if(this.state.file!="")
+        this.updateImage(e);
      updateFlag=true;
      this.setState({
      })
